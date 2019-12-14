@@ -1,0 +1,1276 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.14
+-- Dumped by pg_dump version 10.5
+
+-- Started on 2019-12-05 23:16:05
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 1 (class 3079 OID 12387)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2247 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 185 (class 1259 OID 57599)
+-- Name: document; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.document (
+    document_id integer NOT NULL,
+    application_id character varying(40),
+    document_path character varying(200),
+    create_at timestamp with time zone,
+    delete_at timestamp with time zone,
+    created_by character varying(40) NOT NULL,
+    document_title character varying(30),
+    update_at timestamp with time zone,
+    purpose character varying(80)
+);
+
+
+ALTER TABLE public.document OWNER TO postgres;
+
+--
+-- TOC entry 2248 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: COLUMN document.document_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.document.document_id IS 'Document ID';
+
+
+--
+-- TOC entry 2249 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: COLUMN document.application_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.document.application_id IS 'To indicate, document of which application, application_id referenced from application table, works as foreign key.';
+
+
+--
+-- TOC entry 2250 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: COLUMN document.document_path; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.document.document_path IS 'file path of the document';
+
+
+--
+-- TOC entry 2251 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: COLUMN document.create_at; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.document.create_at IS 'date and time of creating document';
+
+
+--
+-- TOC entry 2252 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: COLUMN document.delete_at; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.document.delete_at IS 'date and time of deleting document';
+
+
+--
+-- TOC entry 2253 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: COLUMN document.created_by; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.document.created_by IS 'This is the user id  to indicate who created the document. ';
+
+
+--
+-- TOC entry 2254 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: COLUMN document.update_at; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.document.update_at IS 'last updated timestamp';
+
+
+--
+-- TOC entry 186 (class 1259 OID 57602)
+-- Name: Document_document_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."Document_document_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Document_document_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 2255 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: Document_document_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."Document_document_id_seq" OWNED BY public.document.document_id;
+
+
+--
+-- TOC entry 187 (class 1259 OID 57604)
+-- Name: application; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.application (
+    application_id character varying(40) NOT NULL,
+    application_for character varying(30) DEFAULT NULL::character varying,
+    case_type integer,
+    case_no integer,
+    case_year integer,
+    petitioner character varying(300),
+    respondent character varying(300),
+    certificate_type_id integer,
+    document character varying(300) DEFAULT NULL::character varying,
+    application_written text,
+    order_date date,
+    create_at timestamp without time zone,
+    user_id character varying(40),
+    is_order character(1),
+    case_no_reference integer,
+    case_type_reference integer,
+    case_year_reference integer
+);
+
+
+ALTER TABLE public.application OWNER TO postgres;
+
+--
+-- TOC entry 2256 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.application_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.application_id IS 'this is primary key';
+
+
+--
+-- TOC entry 2257 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.application_for; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.application_for IS 'Whether urgent or ordinary';
+
+
+--
+-- TOC entry 2258 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.case_type; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.case_type IS 'case type
+';
+
+
+--
+-- TOC entry 2259 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.petitioner; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.petitioner IS 'Appellant or Petitioner';
+
+
+--
+-- TOC entry 2260 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.respondent; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.respondent IS 'Respondent or Opposite Party';
+
+
+--
+-- TOC entry 2261 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.certificate_type_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.certificate_type_id IS 'Certificate type whether Order Copy or Other';
+
+
+--
+-- TOC entry 2262 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.document; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.document IS 'Final document uploaded by Computer Operator';
+
+
+--
+-- TOC entry 2263 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.application_written; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.application_written IS 'Application written by applicant
+';
+
+
+--
+-- TOC entry 2264 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.order_date; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.order_date IS 'Date of Order or Disclosure';
+
+
+--
+-- TOC entry 2265 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.create_at; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.create_at IS 'Date of submission of the application';
+
+
+--
+-- TOC entry 2266 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.user_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.user_id IS 'The user who submits application';
+
+
+--
+-- TOC entry 2267 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.is_order; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.is_order IS 'whether the application is for Order Copy or not';
+
+
+--
+-- TOC entry 2268 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.case_no_reference; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.case_no_reference IS 'Refer to which case no';
+
+
+--
+-- TOC entry 2269 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.case_type_reference; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.case_type_reference IS 'Refer to which case type';
+
+
+--
+-- TOC entry 2270 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: COLUMN application.case_year_reference; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application.case_year_reference IS 'refer to which case year';
+
+
+--
+-- TOC entry 188 (class 1259 OID 57612)
+-- Name: application_log; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.application_log (
+    application_log_id character varying(40) NOT NULL,
+    application_id character varying(40),
+    user_id character varying(64),
+    action_date timestamp with time zone DEFAULT now(),
+    action_name character varying(30),
+    from_role_id integer DEFAULT '-1'::integer,
+    to_role_id integer DEFAULT '-1'::integer,
+    remark character varying(300) DEFAULT NULL::character varying,
+    from_process_id integer,
+    to_process_id integer,
+    user_ip character varying(30)
+);
+
+
+ALTER TABLE public.application_log OWNER TO postgres;
+
+--
+-- TOC entry 2271 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: COLUMN application_log.application_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application_log.application_id IS 'reference to appln_id of application table';
+
+
+--
+-- TOC entry 2272 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: COLUMN application_log.user_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application_log.user_id IS 'who commited the task
+';
+
+
+--
+-- TOC entry 2273 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: COLUMN application_log.action_date; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application_log.action_date IS 'date of action';
+
+
+--
+-- TOC entry 2274 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: COLUMN application_log.action_name; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application_log.action_name IS 'to indicate what task has been done on an application. Possible values are create, update, complete, withdraw, reject, forward, approve, lock, read, compare.';
+
+
+--
+-- TOC entry 2275 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: COLUMN application_log.user_ip; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.application_log.user_ip IS 'To show from which source the request is comming.';
+
+
+--
+-- TOC entry 189 (class 1259 OID 57622)
+-- Name: certificate_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.certificate_type (
+    certificate_type_id integer NOT NULL,
+    copy_name character varying(30)
+);
+
+
+ALTER TABLE public.certificate_type OWNER TO postgres;
+
+--
+-- TOC entry 190 (class 1259 OID 57625)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    user_id character varying(40) NOT NULL,
+    full_name character varying(300),
+    email character varying(50),
+    phone_no character varying(30),
+    role_id integer NOT NULL,
+    user_password character varying(64) NOT NULL,
+    verify boolean DEFAULT false,
+    create_at timestamp with time zone DEFAULT now() NOT NULL,
+    update_at timestamp with time zone,
+    delete_at timestamp with time zone,
+    profile_image character varying(300),
+    aadhaar character(12) DEFAULT NULL::character varying,
+    update_by character varying(40)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- TOC entry 2276 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN users.full_name; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.users.full_name IS 'User Full Name';
+
+
+--
+-- TOC entry 2277 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN users.user_password; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.users.user_password IS 'hashed password';
+
+
+--
+-- TOC entry 2278 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN users.verify; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.users.verify IS 'Whether user is verified or not';
+
+
+--
+-- TOC entry 2279 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN users.create_at; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.users.create_at IS 'The time when user is registered';
+
+
+--
+-- TOC entry 2280 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN users.update_at; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.users.update_at IS 'The last time when user details is updated';
+
+
+--
+-- TOC entry 2281 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN users.delete_at; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.users.delete_at IS 'The time when user account is deleted';
+
+
+--
+-- TOC entry 2282 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN users.aadhaar; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.users.aadhaar IS 'for future reference';
+
+
+--
+-- TOC entry 2283 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: COLUMN users.update_by; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.users.update_by IS 'the user id who update user details last time. update can be done by the user himself or by the admin';
+
+
+--
+-- TOC entry 191 (class 1259 OID 57634)
+-- Name: application_log_view; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.application_log_view AS
+ SELECT a.application_id,
+    a.application_for,
+    a.case_type,
+    a.case_no,
+    a.case_year,
+    a.petitioner,
+    a.respondent,
+    a.certificate_type_id,
+    a.document,
+    a.application_written,
+    a.order_date,
+    a.create_at,
+    a.user_id,
+    a.is_order,
+    a.case_no_reference,
+    a.case_type_reference,
+    a.case_year_reference,
+    ct.copy_name,
+    al_1.application_log_id,
+    al_1.user_id AS action_user_id,
+    al_1.action_date,
+    al_1.action_name,
+    al_1.from_role_id,
+    al_1.to_role_id,
+    al_1.remark,
+    al_1.from_process_id,
+    al_1.to_process_id,
+    u.full_name AS action_user_full_name
+   FROM (((public.application a
+     JOIN public.application_log al_1 ON (((a.application_id)::text = (al_1.application_id)::text)))
+     JOIN public.certificate_type ct ON ((a.certificate_type_id = ct.certificate_type_id)))
+     JOIN public.users u ON (((al_1.user_id)::text = (u.user_id)::text)));
+
+
+ALTER TABLE public.application_log_view OWNER TO postgres;
+
+--
+-- TOC entry 192 (class 1259 OID 57639)
+-- Name: latest_application_log_view; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.latest_application_log_view AS
+ SELECT a.application_id,
+    a.application_for,
+    a.case_type,
+    a.case_no,
+    a.case_year,
+    a.petitioner,
+    a.respondent,
+    a.certificate_type_id,
+    a.document,
+    a.application_written,
+    a.order_date,
+    a.create_at,
+    a.user_id,
+    a.is_order,
+    a.case_no_reference,
+    a.case_type_reference,
+    a.case_year_reference,
+    ct.copy_name,
+    al_1.application_log_id,
+    al_1.user_id AS action_user_id,
+    al_1.action_date,
+    al_1.action_name,
+    al_1.from_role_id,
+    al_1.to_role_id,
+    al_1.remark,
+    al_1.from_process_id,
+    al_1.to_process_id,
+    u.full_name AS action_user_full_name
+   FROM (((public.application a
+     JOIN public.application_log al_1 ON (((a.application_id)::text = (al_1.application_id)::text)))
+     JOIN public.certificate_type ct ON ((a.certificate_type_id = ct.certificate_type_id)))
+     JOIN public.users u ON (((al_1.user_id)::text = (u.user_id)::text)))
+  WHERE (al_1.action_date = ( SELECT max(al_2.action_date) AS max
+           FROM public.application_log al_2
+          WHERE ((al_2.application_id)::text = (al_1.application_id)::text)));
+
+
+ALTER TABLE public.latest_application_log_view OWNER TO postgres;
+
+--
+-- TOC entry 193 (class 1259 OID 57644)
+-- Name: logins; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.logins (
+    login_id character varying(60) NOT NULL,
+    login_time timestamp with time zone NOT NULL,
+    logout_time timestamp with time zone,
+    expiry timestamp with time zone,
+    source_ip character varying(30),
+    device character varying(250),
+    user_id character varying(40)
+);
+
+
+ALTER TABLE public.logins OWNER TO postgres;
+
+--
+-- TOC entry 2284 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: COLUMN logins.login_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.logins.login_id IS 'user login id';
+
+
+--
+-- TOC entry 2285 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: COLUMN logins.login_time; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.logins.login_time IS 'the time when user logs in';
+
+
+--
+-- TOC entry 2286 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: COLUMN logins.logout_time; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.logins.logout_time IS 'time when user logs out';
+
+
+--
+-- TOC entry 2287 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: COLUMN logins.expiry; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.logins.expiry IS 'date and time of expiry of the login session';
+
+
+--
+-- TOC entry 2288 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: COLUMN logins.source_ip; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.logins.source_ip IS 'login from which computer';
+
+
+--
+-- TOC entry 2289 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: COLUMN logins.device; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.logins.device IS 'name of the device or user agent through which login takes place';
+
+
+--
+-- TOC entry 2290 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: COLUMN logins.user_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.logins.user_id IS 'To indicate whose login';
+
+
+--
+-- TOC entry 194 (class 1259 OID 57647)
+-- Name: process; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.process (
+    process_id integer NOT NULL,
+    process_name character varying(50) NOT NULL,
+    process_description character varying(500),
+    number_of_role integer
+);
+
+
+ALTER TABLE public.process OWNER TO postgres;
+
+--
+-- TOC entry 195 (class 1259 OID 57653)
+-- Name: process_process_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.process_process_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.process_process_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2291 (class 0 OID 0)
+-- Dependencies: 195
+-- Name: process_process_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.process_process_id_seq OWNED BY public.process.process_id;
+
+
+--
+-- TOC entry 196 (class 1259 OID 57655)
+-- Name: process_role_map; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.process_role_map (
+    process_role_map_id integer NOT NULL,
+    process_id integer NOT NULL,
+    role_id integer NOT NULL,
+    role_level integer,
+    description character varying(300),
+    is_disabled character(1) DEFAULT 0
+);
+
+
+ALTER TABLE public.process_role_map OWNER TO postgres;
+
+--
+-- TOC entry 2292 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: COLUMN process_role_map.process_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.process_role_map.process_id IS 'work flow stage';
+
+
+--
+-- TOC entry 2293 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: COLUMN process_role_map.role_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.process_role_map.role_id IS 'Role of the user who is responsible for the current task (work flow stage)';
+
+
+--
+-- TOC entry 2294 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: COLUMN process_role_map.description; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.process_role_map.description IS 'description of the work flow stage';
+
+
+--
+-- TOC entry 197 (class 1259 OID 57659)
+-- Name: process_role_map_process_role_map_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.process_role_map_process_role_map_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+ALTER TABLE public.process_role_map_process_role_map_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 198 (class 1259 OID 57661)
+-- Name: process_role_map_process_role_map_id_seq1; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.process_role_map_process_role_map_id_seq1
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.process_role_map_process_role_map_id_seq1 OWNER TO postgres;
+
+--
+-- TOC entry 2295 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: process_role_map_process_role_map_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.process_role_map_process_role_map_id_seq1 OWNED BY public.process_role_map.process_role_map_id;
+
+
+--
+-- TOC entry 199 (class 1259 OID 57663)
+-- Name: role; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.role (
+    role_id integer DEFAULT nextval(('public.roles_role_id_seq'::text)::regclass) NOT NULL,
+    role_name character varying(30)
+);
+
+
+ALTER TABLE public.role OWNER TO postgres;
+
+--
+-- TOC entry 200 (class 1259 OID 57667)
+-- Name: process_role_map_view; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.process_role_map_view AS
+ SELECT pr.process_role_map_id,
+    pr.process_id,
+    pr.description AS user_description,
+    pr.is_disabled,
+    pr.role_id AS user_role_id,
+    pr.role_level AS user_level,
+    p.process_name,
+    p.process_description,
+    p.number_of_role,
+    r.role_name AS user_role_name,
+    ir.role_name AS next_role_name,
+    ir.role_id AS next_role_id,
+    irp.role_name AS previous_role_name,
+    irp.role_id AS previous_role_id
+   FROM ((((public.process_role_map pr
+     JOIN public.process p ON ((pr.process_id = p.process_id)))
+     JOIN public.role r ON ((pr.role_id = r.role_id)))
+     LEFT JOIN ( SELECT r_1.role_id,
+            r_1.role_name,
+            prm1.role_level,
+            prm1.process_id
+           FROM (public.role r_1
+             JOIN public.process_role_map prm1 ON ((r_1.role_id = prm1.role_id)))
+          WHERE (prm1.is_disabled = 'n'::bpchar)) ir ON ((((pr.role_level + 1) = ir.role_level) AND (pr.process_id = ir.process_id))))
+     LEFT JOIN ( SELECT r_2.role_id,
+            r_2.role_name,
+            prm2.role_level,
+            prm2.process_id
+           FROM (public.role r_2
+             JOIN public.process_role_map prm2 ON ((r_2.role_id = prm2.role_id)))
+          WHERE (prm2.is_disabled = 'n'::bpchar)) irp ON ((((pr.role_level - 1) = irp.role_level) AND (pr.process_id = irp.process_id))))
+  WHERE (pr.is_disabled = 'n'::bpchar);
+
+
+ALTER TABLE public.process_role_map_view OWNER TO postgres;
+
+--
+-- TOC entry 201 (class 1259 OID 57672)
+-- Name: roles_role_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.roles_role_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+ALTER TABLE public.roles_role_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1259 OID 57674)
+-- Name: written_application; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.written_application (
+    written_application_id integer NOT NULL,
+    application_id character varying(40),
+    body text
+);
+
+
+ALTER TABLE public.written_application OWNER TO postgres;
+
+--
+-- TOC entry 2296 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: COLUMN written_application.written_application_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.written_application.written_application_id IS 'Unique ID  of application written by client';
+
+
+--
+-- TOC entry 2297 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: COLUMN written_application.application_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.written_application.application_id IS 'Application Id referenced from application table, works as foreign key.';
+
+
+--
+-- TOC entry 2298 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: COLUMN written_application.body; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.written_application.body IS 'Application content or body written by client';
+
+
+--
+-- TOC entry 203 (class 1259 OID 57680)
+-- Name: written_application_written_application_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.written_application_written_application_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.written_application_written_application_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2299 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: written_application_written_application_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.written_application_written_application_id_seq OWNED BY public.written_application.written_application_id;
+
+
+--
+-- TOC entry 2064 (class 2604 OID 57682)
+-- Name: document document_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.document ALTER COLUMN document_id SET DEFAULT nextval('public."Document_document_id_seq"'::regclass);
+
+
+--
+-- TOC entry 2074 (class 2604 OID 57683)
+-- Name: process process_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.process ALTER COLUMN process_id SET DEFAULT nextval('public.process_process_id_seq'::regclass);
+
+
+--
+-- TOC entry 2076 (class 2604 OID 57684)
+-- Name: process_role_map process_role_map_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.process_role_map ALTER COLUMN process_role_map_id SET DEFAULT nextval('public.process_role_map_process_role_map_id_seq1'::regclass);
+
+
+--
+-- TOC entry 2078 (class 2604 OID 57685)
+-- Name: written_application written_application_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.written_application ALTER COLUMN written_application_id SET DEFAULT nextval('public.written_application_written_application_id_seq'::regclass);
+
+
+--
+-- TOC entry 2226 (class 0 OID 57604)
+-- Dependencies: 187
+-- Data for Name: application; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.application (application_id, application_for, case_type, case_no, case_year, petitioner, respondent, certificate_type_id, document, application_written, order_date, create_at, user_id, is_order, case_no_reference, case_type_reference, case_year_reference) FROM stdin;
+dc15a9e5-67b2-4a6d-8ea0-0ccbb0aabf0f	Ordinary Copy	63	3	2014	Yaikhomba	Manithoiba	2	\N	\N	2019-12-01	2019-12-05 22:42:32	f238775f-6e77-4df4-871d-7fb6fe8112b9	n	3	150	2013
+\.
+
+
+--
+-- TOC entry 2227 (class 0 OID 57612)
+-- Dependencies: 188
+-- Data for Name: application_log; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.application_log (application_log_id, application_id, user_id, action_date, action_name, from_role_id, to_role_id, remark, from_process_id, to_process_id, user_ip) FROM stdin;
+9b030b9e-d021-499c-acf9-a564394580ee	dc15a9e5-67b2-4a6d-8ea0-0ccbb0aabf0f	f238775f-6e77-4df4-871d-7fb6fe8112b9	2019-12-05 22:42:32.808154+05:30	create	14	3	Application is submitted	8	1	127.0.0.1
+\.
+
+
+--
+-- TOC entry 2228 (class 0 OID 57622)
+-- Dependencies: 189
+-- Data for Name: certificate_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.certificate_type (certificate_type_id, copy_name) FROM stdin;
+1	Order Copy
+2	Petition Copy
+3	Counter Affidavit or Affidavit
+4	Reply Affidavit
+5	Vakalatnama
+6	Others
+\.
+
+
+--
+-- TOC entry 2224 (class 0 OID 57599)
+-- Dependencies: 185
+-- Data for Name: document; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.document (document_id, application_id, document_path, create_at, delete_at, created_by, document_title, update_at, purpose) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2230 (class 0 OID 57644)
+-- Dependencies: 193
+-- Data for Name: logins; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.logins (login_id, login_time, logout_time, expiry, source_ip, device, user_id) FROM stdin;
+361y0bAL101n79gP1bzSc43qS56zb1mTY411d3Y165gmdP33m163fC0g5553	2019-12-05 20:28:39+05:30	2019-12-05 20:29:19+05:30	2019-12-05 22:28:39+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0	c43846c6-69ba-4161-9f06-a5f801791796
+K75bO0y5xb34btQf5vrd5xth5ztul54N27Nkeu73l7rde77u7J5yEted3HQ5	2019-12-05 20:29:27+05:30	\N	2019-12-05 22:29:27+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0	c43846c6-69ba-4161-9f06-a5f801791796
+a890580Fc1LuUjJja151825g7J5m95d82w053oq5d5z9e6V1vevD8oevy8qo	2019-12-05 22:40:02+05:30	2019-12-05 22:43:08+05:30	2019-12-06 00:40:02+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0	f238775f-6e77-4df4-871d-7fb6fe8112b9
+JWGY64YxTen3VIxYMpbYYbe9P655ljl7dSl7Yh462c64dRl5cY083Y50n66m	2019-12-05 22:43:31+05:30	2019-12-05 23:11:42+05:30	2019-12-06 00:43:31+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0	c43846c6-69ba-4161-9f06-a5f801791796
+24QJ9n1Sy14jJc2jDnKsD5PSw2957GQhhx54M1914C51J7vHt12Cwjs1nNH7	2019-12-05 23:12:01+05:30	2019-12-05 23:13:16+05:30	2019-12-06 01:12:01+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0	9cec8bde-53de-4770-b1d5-91dd67355fac
+\.
+
+
+--
+-- TOC entry 2231 (class 0 OID 57647)
+-- Dependencies: 194
+-- Data for Name: process; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.process (process_id, process_name, process_description, number_of_role) FROM stdin;
+8	Application Submission	Application submitted by client	1
+1	receive_not_order	To receive application for not order copy	1
+2	receive_order	To receive application for order copy	1
+3	search_case_body	To search for case body	1
+4	receive_order after case body	Copying section receive application along with case body and forward to CO	1
+5	CS to Jr. AA	Copying Section forwards to Jr. AA	1
+6	notesheet preparation and approval	Notesheet preparations by Jr. AA and approval	5
+7	certificate preparation	Certificate preparations by CO and further approval	5
+\.
+
+
+--
+-- TOC entry 2233 (class 0 OID 57655)
+-- Dependencies: 196
+-- Data for Name: process_role_map; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.process_role_map (process_role_map_id, process_id, role_id, role_level, description, is_disabled) FROM stdin;
+51	1	3	1		n
+52	2	2	1		n
+53	3	4	1	Searching for case body	n
+54	4	2	1	Copying Section forwards to Computer Operator	n
+55	5	2	1	Copying Section forwards to Jr. AA	n
+56	6	7	1	Prepares notesheet	n
+57	6	13	2	Then forwards to Assistant Registrar	n
+58	6	9	3	forwards to Deputy Registrar Judicial	n
+59	6	10	4	forwards to Registrar Judicial	n
+60	6	11	5	order for issue of certificate	n
+61	7	12	1	Starts preparing certificate with relevent documents	n
+62	7	7	2	read the certificate	n
+63	7	8	3	compare the certificate	n
+64	7	13	4	forward to Assistant Registrar	n
+65	7	9	5	complete the final process for issue of the certificate	n
+\.
+
+
+--
+-- TOC entry 2236 (class 0 OID 57663)
+-- Dependencies: 199
+-- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.role (role_id, role_name) FROM stdin;
+1	Admin
+2	Copying Section
+4	Judicial 1
+5	Judicial 2
+6	Judicial 3
+7	Jr. AA
+8	Sr. AA
+10	Deputy Registrar Judicial
+11	Registrar Judicial
+12	Computer Operator
+13	Superintendent
+14	Applicant
+3	Registrar General (RG)
+9	Assistant Registrar
+\.
+
+
+--
+-- TOC entry 2229 (class 0 OID 57625)
+-- Dependencies: 190
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (user_id, full_name, email, phone_no, role_id, user_password, verify, create_at, update_at, delete_at, profile_image, aadhaar, update_by) FROM stdin;
+f238775f-6e77-4df4-871d-7fb6fe8112b9	Khangenbam Nganthoiba	leecba@gmail.com	9089517468	14	82a3326339cfd75bdc0a667e21957437c58de70a5514aead2f8d2ed93f1fbd90	f	2019-12-05 18:58:42.532194+05:30	\N	\N	\N	\N	\N
+9cec8bde-53de-4770-b1d5-91dd67355fac	Tompok	tompok@gmail.com	9856732169	2	ba2df526dd770866fd1ae47fb641e7fbe38a0c5dc86a90ba431519431548c09e	f	2019-12-05 22:56:15.813122+05:30	\N	\N	\N	\N	\N
+c43846c6-69ba-4161-9f06-a5f801791796	Administrator	admin@gmail.com	9856732169	1	8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918	f	2019-12-05 19:01:10.340154+05:30	2019-12-05 23:10:15+05:30	\N	\N	123456789   	c43846c6-69ba-4161-9f06-a5f801791796
+\.
+
+
+--
+-- TOC entry 2238 (class 0 OID 57674)
+-- Dependencies: 202
+-- Data for Name: written_application; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.written_application (written_application_id, application_id, body) FROM stdin;
+1	dc15a9e5-67b2-4a6d-8ea0-0ccbb0aabf0f	Applying for petition copy
+\.
+
+
+--
+-- TOC entry 2300 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: Document_document_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Document_document_id_seq"', 1, false);
+
+
+--
+-- TOC entry 2301 (class 0 OID 0)
+-- Dependencies: 195
+-- Name: process_process_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.process_process_id_seq', 1, true);
+
+
+--
+-- TOC entry 2302 (class 0 OID 0)
+-- Dependencies: 197
+-- Name: process_role_map_process_role_map_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.process_role_map_process_role_map_id_seq', 1, true);
+
+
+--
+-- TOC entry 2303 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: process_role_map_process_role_map_id_seq1; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.process_role_map_process_role_map_id_seq1', 65, true);
+
+
+--
+-- TOC entry 2304 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: roles_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.roles_role_id_seq', 2, true);
+
+
+--
+-- TOC entry 2305 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: written_application_written_application_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.written_application_written_application_id_seq', 1, true);
+
+
+--
+-- TOC entry 2080 (class 2606 OID 57687)
+-- Name: document Document_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.document
+    ADD CONSTRAINT "Document_pkey" PRIMARY KEY (document_id);
+
+
+--
+-- TOC entry 2084 (class 2606 OID 57689)
+-- Name: application_log applications_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.application_log
+    ADD CONSTRAINT applications_log_pkey PRIMARY KEY (application_log_id);
+
+
+--
+-- TOC entry 2082 (class 2606 OID 57691)
+-- Name: application applications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.application
+    ADD CONSTRAINT applications_pkey PRIMARY KEY (application_id);
+
+
+--
+-- TOC entry 2086 (class 2606 OID 57693)
+-- Name: certificate_type certificate_copy_types_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.certificate_type
+    ADD CONSTRAINT certificate_copy_types_pkey PRIMARY KEY (certificate_type_id);
+
+
+--
+-- TOC entry 2093 (class 2606 OID 57695)
+-- Name: logins login_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logins
+    ADD CONSTRAINT login_pkey PRIMARY KEY (login_id);
+
+
+--
+-- TOC entry 2095 (class 2606 OID 57697)
+-- Name: process process_pkey1; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.process
+    ADD CONSTRAINT process_pkey1 PRIMARY KEY (process_id);
+
+
+--
+-- TOC entry 2097 (class 2606 OID 57699)
+-- Name: process_role_map process_role_map_Index01; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.process_role_map
+    ADD CONSTRAINT "process_role_map_Index01" UNIQUE (process_id, role_id);
+
+
+--
+-- TOC entry 2099 (class 2606 OID 57701)
+-- Name: process_role_map process_role_map_pkey1; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.process_role_map
+    ADD CONSTRAINT process_role_map_pkey1 PRIMARY KEY (process_role_map_id);
+
+
+--
+-- TOC entry 2101 (class 2606 OID 57703)
+-- Name: role roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.role
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (role_id);
+
+
+--
+-- TOC entry 2089 (class 2606 OID 57705)
+-- Name: users users_email_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_unique UNIQUE (email);
+
+
+--
+-- TOC entry 2091 (class 2606 OID 57707)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
+
+
+--
+-- TOC entry 2103 (class 2606 OID 57709)
+-- Name: written_application written_application_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.written_application
+    ADD CONSTRAINT written_application_pkey PRIMARY KEY (written_application_id);
+
+
+--
+-- TOC entry 2087 (class 1259 OID 57710)
+-- Name: aadhaar_unique; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX aadhaar_unique ON public.users USING btree (aadhaar);
+
+
+-- Completed on 2019-12-05 23:16:06
+
+--
+-- PostgreSQL database dump complete
+--
+
