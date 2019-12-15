@@ -138,6 +138,8 @@ class User_apiController extends Api{
                         $user->email = $data['email'];
                         $user->phone_no = $data['phone_no'];
                         $user->role_id = $data['role_id'];
+                        $user->update_at = date("Y-m-d H:i:s");
+                        $user->update_by = $login->user_id;
                         $this->response = $user->save();
                     }
                 }

@@ -48,10 +48,14 @@ if($response->status_code == 200){
                 <td style="max-width:120px"><?= $user->aadhaar ?></td>
                 <td><?= $user->role_name ?></td>
                 <td style="max-width:70px" align="right">
+                    <?php if($user->role_name != "Applicant"){ ?>
                     <a href="editUser/<?= $user->user_id ?>">Edit</a>
+                    <?php } ?>
                 </td>
                 <td style="max-width:70px" align="right">
+                    <?php if($user->role_name != "Applicant"){ ?>
                     <a href="javascript:removeUser('<?= $user->user_id ?>');">Remove</a>
+                    <?php } ?>
                 </td>
             </tr>
             <?php

@@ -132,8 +132,8 @@ class Users extends model{
     }
     /*** function to validate user data for login ***/
     private function isValidated(){
-        $this->response['status'] = false;
-        $this->response['status_code'] = 403;
+        $this->response->status = false;
+        $this->response->status_code = 403;
         if($this->full_name === ""){
             $this->response['msg'] = "Missing full name";
             return false;
