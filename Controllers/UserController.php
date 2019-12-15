@@ -124,5 +124,48 @@ class UserController extends Controller{
         return $this->view();
     }
     
+    public function editUser(){
+        if(!Logins::isAuthenticated()){
+            redirect("account", "login");
+        }
+        
+        if(Logins::getRoleName()!== "Admin"){
+            $this->response->set(array(
+                "msg"=>"You are not authorized to access this page.",
+                "status_code"=>403
+            ));
+        }
+        $param = $this->getParams();
+        if(sizeof($param)==0){
+            $this->response->set(array(
+                "msg"=>"Invalid request",
+                "status_code"=>403
+            ));
+        }
+        else{
+            $user_id = $param[0];
+            $user = new Users();
+            $user = $user->find($user_id);
+            if($user == null){
+                $this->response->set(array(
+                    "msg"=>"User not found",
+                    "status_code"=>404
+                ));
+            }
+            else{
+                $this->response->set(array(
+                    "msg"=>"User found",
+                    "status_code"=>200,
+                    "status"=>true,
+                    "data"=>$user
+                ));
+            }
+        }
+        $roles = new Role();
+        $res = $roles->read();
+        $this->data['roles'] = $res->data;
+        $this->data['response'] = $this->response;
+        return $this->view();
+    }
     
 }
