@@ -58,12 +58,11 @@ abstract class Api extends Controller
                 throw new Exception("Unexpected Header");
             }
         }
-
+        $headers = apache_request_headers();
+        $content_type = get_data_from_array("Content-Type",$headers);
         switch($this->method) {
             case 'DELETE':
             case 'POST':
-                $headers = apache_request_headers();
-                $content_type = get_data_from_array("Content-Type",$headers);
                 if($content_type === "application/json"){
                     $this->request = $this->_cleanInputs(json_decode(file_get_contents("php://input"),true));
                 }
@@ -76,11 +75,11 @@ abstract class Api extends Controller
                 $this->request = $this->_cleanInputs($_GET);
                 break;
             case 'PUT':
-                $this->request = $this->_cleanInputs($_GET);
+                $this->request = $this->_cleanInputs(json_decode(file_get_contents("php://input"),true));
                 $this->file = file_get_contents("php://input");
                 break;
             default:
-                $this->_response('Invalid Method', 405);
+                $this->_response(['msg'=>'Invalid Method'], 405);
                 break;
         }
     }
