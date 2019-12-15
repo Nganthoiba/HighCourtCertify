@@ -60,7 +60,7 @@ class User_apiController extends Api{
     //put your code here
     public function removeUser(){
         $login_id = getAuthorizedToken();
-        if(trim($this->method)!="PUT" || $login_id == null){
+        if(trim($this->method)!="DELETE" || $login_id == null){
             $this->response->msg="Invalid request.";
             $this->response->status_code=403;
         }
@@ -71,24 +71,83 @@ class User_apiController extends Api{
         else{
             $login = new Logins();
             $login = $login->find($login_id);
-            
-            $param = $this->getParams();
-            if(sizeof($param)){
-                $user = new Users();
-                $user = $user->find($param[0]);
-                if($user == null){
-                    $this->response->msg="User not found.";
-                    $this->response->status_code=404;
-                }
-                else{
-                    $this->response = $user->remove();
-                }
+            //check if user is authorized to access this functionality
+            if(!Users::isAdminUser($login->user_id)){
+                //if user role is not admin
+                $this->response->set(array(
+                    "status"=>false,
+                    "status_code"=>403,
+                    "msg"=>"You are not authorized."
+                ));
             }
             else{
-                $this->response->msg="Invalid request.";
-                $this->response->status_code=403;
+                $param = $this->getParams();
+                if(sizeof($param)){
+                    $user = new Users();
+                    $user = $user->find($param[0]);
+                    if($user == null){
+                        $this->response->msg="User not found.";
+                        $this->response->status_code=404;
+                    }
+                    else{
+                        $this->response = $user->remove();
+                    }
+                }
+                else{
+                    $this->response->msg="Invalid request.";
+                    $this->response->status_code=403;
+                }
             }
         }
         return $this->_response($this->response,$this->response->status_code);
     }
+    
+    public function updateUser(){
+        $login_id = getAuthorizedToken();
+        if(trim($this->method)!="POST" || $login_id == null){
+            $this->response->msg="Invalid request.";
+            $this->response->status_code=403;
+        }
+        else if(!Logins::isValidLogin($login_id)){
+            $this->response->msg="Please login again, your login token is expired.";
+            $this->response->status_code=403;
+        }
+        else{
+            $login = new Logins();
+            $login = $login->find($login_id);
+            //check if user is authorized to access this functionality
+            if(!Users::isAdminUser($login->user_id)){
+                //if user role is not admin
+                $this->response->set(array(
+                    "status"=>false,
+                    "status_code"=>403,
+                    "msg"=>"You are not authorized."
+                ));
+            }
+            else{
+                $data = $this->request;
+                if(sizeof($data)){
+                    $user = new Users();
+                    $user = $user->find($data['user_id']);
+                    if($user == null){
+                        $this->response->msg="User not found.";
+                        $this->response->status_code=404;
+                    }
+                    else{
+                        $user->full_name = $data['full_name'];
+                        $user->email = $data['email'];
+                        $user->phone_no = $data['phone_no'];
+                        $user->role_id = $data['role_id'];
+                        $this->response = $user->save();
+                    }
+                }
+                else{
+                    $this->response->msg="Invalid request.";
+                    $this->response->status_code=403;
+                }
+            }
+        }
+        return $this->_response($this->response,$this->response->status_code);
+    }
+    
 }
