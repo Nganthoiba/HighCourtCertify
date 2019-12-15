@@ -31,6 +31,7 @@ if($response->status_code == 200){
                 <th style="max-width:100px">Phone No</th>
                 <th style="max-width:120px">Aadhaar</th>
                 <th>User Role</th>
+                <th style="max-width:40px"></th>
                 <th style="max-width:70px"></th>
             </tr>
         </thead>
@@ -38,11 +39,6 @@ if($response->status_code == 200){
             <?php
                 $cnt = 0;
                 foreach ($users as $user){
-//                    $role = new role();
-//                    $role = $role->find($user->role_id);
-//                    if($role->role_name == "Admin"){
-//                        continue;//hide admin
-//                    }
             ?>
             <tr>
                 <td style="max-width:60px"><?= ++$cnt ?></td>
@@ -51,6 +47,9 @@ if($response->status_code == 200){
                 <td style="max-width:100px"><?= $user->phone_no ?></td>
                 <td style="max-width:120px"><?= $user->aadhaar ?></td>
                 <td><?= $user->role_name ?></td>
+                <td style="max-width:70px" align="right">
+                    <a href="editUser/<?= $user->user_id ?>">Edit</a>
+                </td>
                 <td style="max-width:70px" align="right">
                     <a href="javascript:removeUser('<?= $user->user_id ?>');">Remove</a>
                 </td>
@@ -85,13 +84,13 @@ if($response->status_code == 200){
                 }
             });
         }
-
+        
         function confirmRemoveUser(user_id){
             var url = "<?= Config::get('host') ?>/User_api/removeUser/"+user_id;
             var login_id = $("#login_id").val();
             $.ajax({
                 url: url,
-                type: "PUT",
+                type: "DELETE",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer '+login_id);
                 },
