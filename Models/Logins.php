@@ -35,7 +35,7 @@ class Logins extends model{
         $this->device = filter_input(INPUT_SERVER,'HTTP_USER_AGENT');
         $this->login_time = date('Y-m-d H:i:s');
         $Timestamp = strtotime($this->login_time);
-        $TotalTimeStamp = strtotime('+ 30 minutes', $Timestamp);//timestamp after 20 minutes
+        $TotalTimeStamp = strtotime('+ 3 hours', $Timestamp);//timestamp after 20 minutes
         $this->expiry = date('Y-m-d H:i:s',$TotalTimeStamp);//expiry date time set just at 20 minutes after login
         
         $data = array(
