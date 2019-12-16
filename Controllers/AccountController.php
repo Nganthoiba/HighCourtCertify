@@ -33,6 +33,13 @@ class AccountController extends Controller{
         }
         $data = $this->_cleanInputs($_POST);
         if(sizeof($data)){
+            //verify csrf token
+            $res = verifyCSRFToken();
+            if($res->status == false){
+                $this->data['login_response'] = $res->msg;
+                return $this->view();
+            }
+            //end token verification
             $res = $this->isLoginDataValid($data);
             $this->data['email']=$data['email'];
             $this->data['password']=$data['password'];
@@ -140,6 +147,12 @@ class AccountController extends Controller{
         $this->data['update_response'] = "";
         $input_data = $this->_cleanInputs($_POST);
         if(sizeof($input_data)){
+            //verify csrf token
+            $response = verifyCSRFToken();
+            if($response->status == false){
+                $this->data['update_response'] = $response->msg;
+                return $this->view();
+            }
             /* validation for updating user information */
             if(!isset($input_data['full_name']) || $input_data['full_name']=== ""){
                 $this->data['update_response'] = "Missing your full name.";
@@ -169,7 +182,7 @@ class AccountController extends Controller{
                 $user->update_by = $user->user_id;
                 try{
                     $res = $user->save();//saving user details
-                    $this->data['update_response'] = $res->msg;//json_encode($res);
+                    $this->data['update_response'] = $res->msg;
                 }catch(Exception $e){
                     $this->data['update_response'] = $e->getMessage();
                 }

@@ -17,6 +17,8 @@
             <div class="card-body px-lg-5 pt-0">
                 <!-- Form -->
                 <form class="text-center" style="color: #757575;" method="POST" autocomplete="off">
+                    <!-- CSRF token -->
+                    <?= writeCSRFToken() ?>
                     <!-- Email -->
                     <div class="md-form">
                         <input type="text" id="email" autocomplete="false" name="email" value="<?= $data['email'] ?>" class="form-control">

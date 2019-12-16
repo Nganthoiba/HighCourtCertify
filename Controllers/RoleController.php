@@ -21,9 +21,15 @@ class RoleController extends Controller{
         $data = $this->_cleanInputs($_POST);
         $this->data['addRoleResponse'] = "";
         if(isset($data['role_name']) && trim($data['role_name'])!==""){
-            $role->role_name = $data['role_name'];
-            $add_result= $role->add();
-            $this->data['addRoleResponse']=$add_result->msg;
+            $response = verifyCSRFToken();//verifying csrf token
+            if($response->status == false){
+                $this->data['addRoleResponse']=$response->msg;
+            }
+            else{
+                $role->role_name = $data['role_name'];
+                $add_result= $role->add();
+                $this->data['addRoleResponse']=$add_result->msg;
+            }
         }
         
         $res = $role->read();

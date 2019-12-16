@@ -7,6 +7,7 @@
                 <form name="add_role" method="POST">
                     <div>
                         <label>Enter Role Name</label>
+                        <?= writeCSRFToken() ?>
                         <input type="text" class="form-control" name="role_name" required />
                     </div>
                     <div style="text-align: center">

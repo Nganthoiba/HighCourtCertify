@@ -7,6 +7,7 @@ $roles = $data['roles'];
                     <div class="row">
                         <div class="col-sm-4 mx-auto">
                             <h3>Add user below:</h3>
+                            <?= writeCSRFToken() ?>
                         </div>
                     </div>
                     <div class="row">

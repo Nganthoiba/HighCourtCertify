@@ -11,23 +11,23 @@ class csrf
   
 
     /**
-     * Check CSRF tokens match between session and $origin. 
-     * Make sure you generated a token in the form before checking it.
-     *
-     * @param String $key The session and $origin key where to find the token.
-     * @param Mixed $origin The object/associative array to retreive the token data from (usually $_POST).
-     * @param Boolean $throwException (Facultative) TRUE to throw exception on check fail, FALSE or default to return false.
-     * @param Integer $timespan (Facultative) Makes the token expire after $timespan seconds. (null = never)
-	 * @param Boolean $multiple (Facultative) Makes the token reusable and not one-time. (Useful for ajax-heavy requests).
-     * 
-     * @return Boolean Returns FALSE if a CSRF attack is detected, TRUE otherwise.
-     */
-    public static function check( $key, $origin, $throwException=false, $timespan=null, $multiple=false )
+    * Check CSRF tokens match between session and $origin. 
+    * Make sure you generated a token in the form before checking it.
+    *
+    * @param String $key The session and $origin key where to find the token.
+    * @param Mixed $origin The object/associative array to get the token data from (usually $_POST).
+    * @param Boolean $throwException (Facultative) TRUE to throw exception on check fail, FALSE or default to return false.
+    * @param Integer $timespan (Facultative) Makes the token expire after $timespan seconds. (null = never)
+    * @param Boolean $multiple (Facultative) Makes the token reusable and not one-time. (Useful for ajax-heavy requests).
+    * 
+    * @return Boolean Returns FALSE if a CSRF attack is detected, TRUE otherwise.
+    */
+    public static function check( $key, $origin, $throwException=false, $timespan=null, $multiple=true )
     {
         session_regenerate_id();
         if ( !isset( $_SESSION[ 'csrf_' . $key ] ) ){
             if($throwException){
-                throw new Exception( 'ERROR ON CSRF9' );	//Missing CSRF session token.
+                throw new Exception( 'CSRF token is not set in session variable.' );	//Missing CSRF session token.
             }
             else{
                 return false;
@@ -36,7 +36,7 @@ class csrf
         
         if ( !isset( $origin[ 'csrf_'.$key ] ) ){
             if($throwException){
-                throw new Exception( 'ERROR ON CSRF0' );	//Missing CSRF form token.
+                throw new Exception( 'CSRF token is not passed by client.' );	//Missing CSRF form token.
             }else{
                 return false;
             }
@@ -53,7 +53,7 @@ class csrf
         if( self::$doOriginCheck && sha1( $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] ) != substr( base64_decode( $hash ), 10, 40 ) )
         {
             if($throwException)
-                throw new Exception( 'ERROR ON CSRF1' );	//Form origin does not match token origin.
+                throw new Exception( 'Form origin does not match token origin.' );	//Form origin does not match token origin.
             else
                 return false;
         }
@@ -61,7 +61,7 @@ class csrf
         // Check if session token matches form token
         if ( $origin['csrf_'. $key ] != $hash ){
             if($throwException)
-                throw new Exception( 'ERROR ON CSRF2' );	//Invalid CSRF token.
+                throw new Exception( 'Invalid CSRF token passed.' );	//Invalid CSRF token.
             else
                 return false;
         }
@@ -69,7 +69,7 @@ class csrf
         if ( $timespan != null && is_int( $timespan ) && intval( substr( base64_decode( $hash ), 0, 10 ) ) + $timespan < time() )
         {
             if($throwException)
-                throw new Exception( 'ERROR ON CSRF3' );	//CSRF token has expired.
+                throw new Exception( 'CSRF token has expired.' );	//CSRF token has expired.
             else
                 return false;
         }

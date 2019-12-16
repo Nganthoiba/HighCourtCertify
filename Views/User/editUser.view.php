@@ -18,6 +18,8 @@ if($response->status_code == 200){
         <div class="row">
             <div class="col-sm-4 mx-auto">
                 <h3>Edit user below:</h3>
+                <!-- CSRF Token inserted -->
+                <?= writeCSRFToken() ?>
                 <input type="hidden" name="user_id" id="user_id" value="<?= $user->user_id ?>" />
                 <input type="hidden" name="login_id" id="login_id" value="<?= $login_id ?>" />
             </div>

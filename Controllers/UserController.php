@@ -100,6 +100,7 @@ class UserController extends Controller{
             //redirect("account", "signup");
         }
         
+        
         $roles = new Role();
         $res = $roles->read();
         $this->data['roles'] = $res->data;
@@ -107,6 +108,11 @@ class UserController extends Controller{
         
         $data = $this->_cleanInputs($_POST);
         if(sizeof($data)){
+            $this->response = verifyCSRFToken();//verifying csrf token
+            if($this->response->status == false){
+                $this->data['response'] = $this->response->msg;
+                return $this->view();
+            }
             if($data['password'] !== $data['confirm_password']){
                 $this->data['response'] = "Please enter confirmation password correctly.";
             }

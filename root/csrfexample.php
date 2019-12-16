@@ -28,7 +28,7 @@ else
 }
 // Generate CSRF token to use in form hidden field
 $token = csrf::generate( 'token' );
-print_r($_SESSION);
+//print_r($_SESSION);
 ?>
 
 
@@ -47,7 +47,7 @@ else{
 </div>
 <form name="csrf_form" action="#" method="post">
     <h2>Form using generated token.</h2>
-    <input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
+    <input type="text" name="csrf_token" value="<?php echo $token; ?>">
     <input type="text" name="field" value="somevalue">
     <input type="submit" value="Send form">
 </form>

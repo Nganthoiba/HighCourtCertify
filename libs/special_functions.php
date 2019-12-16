@@ -97,3 +97,34 @@ function isLinkActive($link){
         return "";
     }
 }
+
+//CSRF based functions
+function writeCSRFToken($csrf_token=""){
+    //if token is not passed
+    if($csrf_token === ""){
+        $csrf_token = csrf::generate('token');
+    }
+    return "<input type='hidden' name='csrf_token' id='csrf_token' value='".$csrf_token."' />";
+}
+
+//function to verify csrf token
+function verifyCSRFToken(){
+    $response = new Response();
+    try{
+        $origin = $_REQUEST;
+        if(csrf::check('token', $origin, true)){
+            $response->set(array(
+                "msg"=>"token matched",
+                "status"=>true,
+                "status_code"=>200
+            ));
+        }
+    } catch (Exception $e){
+        $response->set(array(
+            "msg"=>$e->getMessage(),
+            "status"=>false,
+            "status_code"=>403
+        ));
+    }
+    return $response;
+}

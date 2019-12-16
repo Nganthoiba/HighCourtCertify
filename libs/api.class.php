@@ -83,14 +83,7 @@ abstract class Api extends Controller
                 break;
         }
     }
-    /*
-    public function processAPI() {
-        if (method_exists($this, $this->endpoint)) {
-            return $this->_response($this->{$this->endpoint}($this->args));
-        }
-        return $this->_response("No Endpoint: $this->endpoint", 404);
-    }
-    */
+    
     public function _response($data, $status = 200) {
         header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
         return json_encode($data);

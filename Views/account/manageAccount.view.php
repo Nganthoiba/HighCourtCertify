@@ -14,6 +14,7 @@ $user =  $data['user'];
         <div class="row">
             <div class="col-sm-4 mx-auto">
                 <h3>Update your profile below:</h3>
+                <?= writeCSRFToken() ?>
             </div>
         </div>
         <div class="row">
