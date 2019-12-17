@@ -1,7 +1,8 @@
 <div class="container">            
     <div id="application_form_layout" >
         <form name="application_form" id="application_form" class="needs-validation" novalidate method="POST" action="#">
-            <input type="hidden" name="action" value="submit" />
+            
+            <div><?= writeCSRFToken() ?></div>
             <div class="row" style="width: 100%; text-align: center">
                 <div class="col-sm-12">
                     <h4>FORM NO. 13</h4>
@@ -242,12 +243,13 @@
                     <div class="custom-control custom-checkbox custom-control-inline">
                         <input type="checkbox" class="custom-control-input" onclick="enableSubmitButton(this);"
                                name="agree" id="agree" required/>
-                        <label class="custom-control-label" for="agree">
+                        <label class="custom-control-label" for="agree" 
+                               style="font-size: 10pt;font-style:oblique;color: #005cbf;cursor: pointer ">
                         I confirm that the information I am submitting is true and correct up to my knowledge. And I 
                         bear the responsibility of the correctness of the above information. 
                         </label>
                     </div>
-                    <div class="alert alert-light">
+                    <div class="alert alert-warning">
                         #Note: Application once submitted cannot be changed
                     </div>
                 </div>
@@ -395,6 +397,7 @@
         var textData = (tinyMCE.get('textData').getContent()).trim();//$("#textData").val().trim();
         var certificate_type_id = $("#certificate_type_id").val().trim();
         var order_date = $("#order_date").val().trim();
+        var csrf_token = $("#csrf_token").val().trim();
         
         var data = {
             urgent_ordinary: urgent_ordinary,
@@ -408,7 +411,8 @@
             respondant_opp: respondant_opp,
             textData: textData,
             certificate_type_id: certificate_type_id,
-            order_date: order_date
+            order_date: order_date,
+            csrf_token: csrf_token
         };
         //$("#application_form").serialize();
         $.ajax({

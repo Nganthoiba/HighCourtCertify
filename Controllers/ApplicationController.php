@@ -64,6 +64,10 @@ class ApplicationController extends Controller{
         $data = $this->_cleanInputs($_POST);
         
         if(sizeof($data)){
+            $response = verifyCSRFToken();
+            if($response->status == false){
+                return $this->send_data($response, $response->status_code);
+            }
             $this->response->status_code = 403;//Bad Request
             
             //$aadhaar = isset($data['aadhaar'])?str_replace(" ","",$data['aadhaar']):""; //Aadhaar 

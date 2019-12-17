@@ -84,7 +84,7 @@ abstract class Api extends Controller
         }
     }
     
-    public function _response($data, $status = 200) {
+    public function _response($data = array(), $status = 200) {
         header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
         return json_encode($data);
     }
