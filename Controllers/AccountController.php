@@ -36,7 +36,7 @@ class AccountController extends Controller{
             //verify csrf token
             $res = verifyCSRFToken();
             if($res->status == false){
-                $this->data['login_response'] = $res->msg;
+                $this->data['login_response'] = $res->msg." Please, refresh the page.";
                 return $this->view();
             }
             //end token verification

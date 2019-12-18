@@ -68,7 +68,7 @@ class Users extends model{
                 . " on U.role_id = R.role_id) as USER_TABLE "
                 . " ".$where." ".$order_by;
         $stmt = self::$conn->prepare($qry);
-        $res = $stmt->execute();
+        $res = is_array($cond)?$stmt->execute(array_values($cond)):$stmt->execute();
         if($res){
             if($stmt->rowCount()==0){
                 return $this->response->set(array(
@@ -114,10 +114,19 @@ class Users extends model{
     }
     //finding a user 
     public function find($id) {
-        $user = parent::find($id);
-        //unset($user->user_password);
-        unset($user->table_name);
-        return $user;
+        //$user = parent::find($id);
+        $resp = $this->read(array(), array("user_id"=>$id));
+        
+        if($resp->status == false){
+            return null;
+        }
+        //unset($user->table_name);
+        $user_data = $resp->data[0];
+        unset($user_data->user_password);
+        foreach ($user_data as $col_name=>$val){
+            $this->$col_name = $val;
+        }
+        return $this;
     }
     
     /*** PRIVATE METHODS ***/

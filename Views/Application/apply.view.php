@@ -249,7 +249,7 @@
                         bear the responsibility of the correctness of the above information. 
                         </label>
                     </div>
-                    <div class="alert alert-warning">
+                    <div class="alert alert-danger" style="text-align: center">
                         #Note: Application once submitted cannot be changed
                     </div>
                 </div>
@@ -476,7 +476,7 @@
         if(resp.status === true){
             var cert_list = resp.data;
             /*** displaying certificate type list ***/
-            //certificate_type_id
+            
             var layout="<option value='' selected>-- Select --</option>";
             for(var i=0; i<cert_list.length; i++){
                 layout += "<option value='"+cert_list[i].certificate_type_id+"'>"+cert_list[i].copy_name+"</option>";

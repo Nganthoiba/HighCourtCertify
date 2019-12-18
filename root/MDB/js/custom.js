@@ -48,11 +48,19 @@ function ajax_request(args)
             //alert(csrf_token);
             //xhr.setRequestHeader('Authorization', csrf_token);
         },
-        success: function(datalist){
-            result =  datalist;
+        success: function(response){
+            result =  response;
         },
-        error: function(e){
-            result = {"Error":JSON.stringify(e)};
+        error: function (jqXHR, exception, errorThrown) {
+            result = {};
+            if (jqXHR.status === 0) {
+                result['msg'] = 'Not connect.\n Verify Network.';
+                result['status'] = jqXHR.status;
+            } 
+            else{
+                result = JSON.parse(jqXHR.responseText);
+            }
+            
         }
     });
     return result;

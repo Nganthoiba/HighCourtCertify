@@ -208,7 +208,6 @@ if($response->status_code == 200){
     function getFormDataToJson(form){
         var obj = {};
         for(var i=0;i<form.elements.length;i++){
-            //alert(form.elements[i].name+" = "+form.elements[i].value+" Type = "+form.elements[i].type);
             if((form.elements[i].type).toLowerCase()!="submit"){
                 obj[form.elements[i].name] = form.elements[i].value;
             }

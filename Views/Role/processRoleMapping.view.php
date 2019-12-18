@@ -25,7 +25,6 @@
         height:340px;
         overflow: hidden;
         overflow-y: scroll;
-        background-color: #4c656f;
         margin: auto;
     }
     strong{

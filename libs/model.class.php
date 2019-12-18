@@ -13,7 +13,7 @@ class model {
     protected $response;//output
     
     public function __construct(){
-        self::$conn = new PDO(Config::get('DB_DRIVER').':host='.Config::get('DB_HOST').';dbname='.Config::get('DBNAME'), Config::get('DB_USERNAME'), Config::get('DB_PASSWORD'));
+        self::$conn = Database::connect();
         $this->key = "";
         $this->response = new Response();
     }

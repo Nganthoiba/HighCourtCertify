@@ -49,6 +49,14 @@ $user =  $data['user'];
                 <input type="text" class="form-control" id="aadhaar" name="aadhaar" value="<?= $user->aadhaar ?>">
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="control-label" for="role">User Role:</label>
+            </div>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="role" name="role" value="<?= $user->role_name ?>" readonly />
+            </div>
+        </div>
         <div class="row" style="text-align: center">
             <div class="col-sm-4 mx-auto">
                 <button type="submit" class="btn btn-primary">Submit</button>

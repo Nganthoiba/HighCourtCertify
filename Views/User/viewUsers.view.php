@@ -21,7 +21,7 @@ if($response->status_code == 200){
         </div>
     </p>
     <input type="hidden" value="<?= $login_id ?>" id="login_id" />
-    <table class="table_style yellow_header table-scroll">
+    <table class="table_style table_style-striped yellow_header table-scroll">
         <thead>
             <tr>
                 <!--<th>User ID</th>-->

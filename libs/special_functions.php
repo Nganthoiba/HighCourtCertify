@@ -112,7 +112,8 @@ function verifyCSRFToken(){
     $response = new Response();
     try{
         $origin = $_REQUEST;
-        if(csrf::check('token', $origin, true)){
+        // Run CSRF check, on REQUEST(whether POST or GET) data, in exception mode, for 10 minutes, in one-time mode.
+        if(csrf::check('token', $origin, true,60*10, false)){
             $response->set(array(
                 "msg"=>"token matched",
                 "status"=>true,

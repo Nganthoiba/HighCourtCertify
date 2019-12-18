@@ -161,6 +161,9 @@ class ApplicationController extends Controller{
     }
     
     public function viewDetails(){
+        $user_info = $_SESSION['user_info'];
+        $role_id = $user_info['role_id'];
+        
         $this->data['msg'] = "";
         $this->data['status'] = false;
         $param = $this->getParams();
@@ -170,6 +173,12 @@ class ApplicationController extends Controller{
             $this->data['process_id'] = $process_id;
             $application = new Application();
             $application = $application->find($application_id);
+            $user = new Users();
+            $user = $user->find($application->user_id);
+            $application->applicant_name = $user->full_name;
+            $pending = isTaskPending(Database::connect(), $application_id, $process_id, $role_id);
+            $application->isTaskPending = $pending['status'];
+            
             if($application == null){
                 $this->data['status'] = false;
                 $this->data['msg'] = "Application not found!";
@@ -238,13 +247,13 @@ class ApplicationController extends Controller{
         $process_id = $params[1]??'';
         $app = new application;
         $user_info = $_SESSION['user_info'];
-        $m = new model();
-        $resp = insertApplicationLog($m::$conn, 'approve', $application_id, $process_id , 'The application has been approved.');
+        //$m = new model();
+        $resp = insertApplicationLog(Database::connect(), 'approve', $application_id, $process_id , 'The application has been approved.');
         return $this->send_data($resp, $resp['status_code']);
     }
     
     public function reject(){
-        $response = $response = new Response();
+        $response = new Response();
         $params = $this->getParams();
         if(sizeof($params)==0){
             $response->set(array(
@@ -258,8 +267,7 @@ class ApplicationController extends Controller{
         $process_id = $params[1]??'';
         $app = new application;
         $user_info = $_SESSION['user_info'];
-        $m = new model();
-        $resp = insertApplicationLog($m::$conn, 'reject', $application_id, $process_id , 'The application has been rejected.');
+        $resp = insertApplicationLog(Database::connect(), 'reject', $application_id, $process_id , 'The application has been rejected.');
         
         return $this->send_data($resp, $resp['status_code']);
     }

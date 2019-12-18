@@ -8,7 +8,6 @@ class csrf
 {
 
     protected static $doOriginCheck = true;
-  
 
     /**
     * Check CSRF tokens match between session and $origin. 
@@ -22,7 +21,7 @@ class csrf
     * 
     * @return Boolean Returns FALSE if a CSRF attack is detected, TRUE otherwise.
     */
-    public static function check( $key, $origin, $throwException=false, $timespan=null, $multiple=true )
+    public static function check( $key, $origin, $throwException=false, $timespan=null, $multiple=false )
     {
         session_regenerate_id();
         if ( !isset( $_SESSION[ 'csrf_' . $key ] ) ){
@@ -36,7 +35,7 @@ class csrf
         
         if ( !isset( $origin[ 'csrf_'.$key ] ) ){
             if($throwException){
-                throw new Exception( 'CSRF token is not passed by client.' );	//Missing CSRF form token.
+                throw new Exception( 'CSRF token is not passed in the form.' );	//Missing CSRF form token.
             }else{
                 return false;
             }

@@ -17,6 +17,7 @@ function insertApplicationLog($conn,$action, $application_id,$process_id,$remark
             }
             break;
         case 'reject' :
+            //Drop the application direct to applicant
             $to_process_id = 8; //applicant process id
             $to_role_id = 14; //applicant role id
             break;
@@ -33,25 +34,27 @@ function insertApplicationLog($conn,$action, $application_id,$process_id,$remark
             }
             $to_process_id = $res['to_process_id'];
             $to_role_id = $res['next_role_id'];
+            //if new process started
+            if($process_id != $to_process_id){ //process changes
+                if($to_process_id == -1){
+                    $to_role_id = -1;
+                }
+                else{
+                    $result =  firstRoleIdProcess($conn, $to_process_id);
+                    if(!$result['status']){
+                        return $result;
+                    }
+                    $to_role_id = $result['data']['role_id'];
+                }
+
+            }
             break;
     }
-    $canContinue = canContinue($conn, $application_id,$process_id,$role_id);
-    if(!$canContinue['status']){
-        return $canContinue;
+    $isTaskPending = isTaskPending($conn, $application_id,$process_id,$role_id);
+    if(!$isTaskPending['status']){
+        return $isTaskPending;
     }
-    if($process_id != $to_process_id){ //process changes
-        if($to_process_id == -1){
-            $to_role_id = -1;
-        }
-        else{
-            $result =  firstRoleIdProcess($conn, $to_process_id);
-            if(!$result['status']){
-                return $result;
-            }
-            $to_role_id = $result['data']['role_id'];
-        }
-        
-    }
+    
         
     $qry = "insert into application_log"
             . "("
@@ -76,9 +79,9 @@ function insertApplicationLog($conn,$action, $application_id,$process_id,$remark
     $stmt = $conn->prepare($qry);
     $res = $stmt->execute($params);
     if(!$res){
-        return array("status"=>false,"msg"=>"Failed to insert into application logs","error"=>$stmt->errorInfo(),"status_code"=>500);
+        return array("status"=>false,"msg"=>"Failed to complete task","error"=>$stmt->errorInfo(),"status_code"=>500);
     }
-    return array("status"=>true,"msg"=>"Submitted to application log","status_code"=>200,"error"=>array());
+    return array("status"=>true,"msg"=>"Task completed","status_code"=>200,"error"=>array());
 }
 
 function getNextPrevRolesAndProcess($conn,$roles_id,$process_id,$application_id,$is_order){
@@ -142,23 +145,26 @@ function firstRoleIdProcess($conn, $process_id){
     $qry = "select user_role_id as role_id from process_role_map_view where process_id = ? and user_level = 1";
     $stmt = $conn->prepare($qry);
     $res = $stmt->execute(array($process_id));
-    if(!$res || $stmt->rowCount() == 0){
-        return array('status'=>false, 'msg'=> 'Internal Server Problem.','error'=>$stmt->errorInfo());
+    if(!$res){
+        return array('status'=>false,'status_code'=>500, 'msg'=> 'Internal Server Problem.','error'=>$stmt->errorInfo());
+    }
+    if($stmt->rowCount() == 0){
+        return array('status'=>false,'status_code'=>404, 'msg'=> 'No role found.');
     }
     $rows = $stmt->fetch(PDO::FETCH_ASSOC);
-    return array('status'=>true, 'data'=>$rows);
+    return array('status'=>true,'status_code'=>200, 'data'=>$rows);
 }// end of function firstRoleIdProcess($conn, $process_id)
 
-function canContinue($conn, $application_id,$process_id,$role_id){
+function isTaskPending($conn, $application_id,$process_id,$role_id){
     $qry = "select count(*) as c from application_log_view where application_id=? and from_process_id=? and from_role_id=?";
     $stmt = $conn->prepare($qry);
     $res = $stmt->execute(array($application_id,$process_id,$role_id));
     if(!$res){
-        return array('status'=>false, 'msg'=> 'Internal Server Problem.','error'=>$stmt->errorInfo());
+        return array('status'=>false,'status_code'=>500, 'msg'=> 'Internal Server Problem.','error'=>$stmt->errorInfo());
     }
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if($row['c'] != 0){
-        return array('status'=>false, 'msg'=> 'The task is already performed.'); 
+        return array('status'=>false,'status_code'=>403, 'msg'=> 'The task is already performed.'); 
     }
     return  array('status'=>true);
     

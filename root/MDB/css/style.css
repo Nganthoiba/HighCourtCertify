@@ -91,11 +91,11 @@ footer {
     padding: 5px;
 }
 
-.table_style tr:nth-child(even) {
+.table_style-striped tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-.table_style tr:hover {
+.table_style-striped tr:hover {
     background-color: #ddd;
 }
 .table_style tr:checked {
