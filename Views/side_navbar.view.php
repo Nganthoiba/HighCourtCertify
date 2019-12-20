@@ -48,13 +48,21 @@
                     </li>
                     <?php
                     }
+                    //Copying Section Menu
                     else if((Logins::getRoleName()) == "Copying Section"){
                     ?>
-                    <li class="<?= isLinkActive('application/application_list/in') ?>">
+                    <li class="<?= isLinkActive('application/application_list/2/in') ?>">
                         <a href="<?=Config::get('host')?>/application/application_list/2/in"><i class="fa fa-desktop"></i> Receive Application</a>
+                    </li>
+                    <li class="<?= isLinkActive('application/application_list/4/in') ?>">
+                        <a href="<?=Config::get('host')?>/application/application_list/4/in"><i class="fa fa-desktop"></i> Forward to CO</a>
+                    </li>
+                    <li class="<?= isLinkActive('application/application_list/5/in') ?>">
+                        <a href="<?=Config::get('host')?>/application/application_list/5/in"><i class="fa fa-desktop"></i> Forward to Jr. A.A.</a>
                     </li>
                     <?php    
                     }
+                    //Registrar General (RG) Menu
                     else if(Logins::getRoleName() == "Registrar General (RG)"){
                     ?>
                     <li class="<?= isLinkActive('application/application_list/1/in') ?>">
@@ -62,10 +70,19 @@
                     </li>
                     <?php
                     }
+                    //Judicial 1,2,3 Menu
                     else if(Logins::getRoleName() == "Judicial 1" || Logins::getRoleName() == "Judicial 2" || Logins::getRoleName() == "Judicial 3"){
                     ?>
                     <li class="<?= isLinkActive('application/application_list/3/in') ?>">
                         <a href="<?=Config::get('host')?>/application/application_list/3/in"><i class="fa fa-desktop"></i> Receive Application </a>
+                    </li>
+                    <?php
+                    }
+                    //Computer Operator Menu
+                    else if(Logins::getRoleName() == "Computer Operator"){
+                    ?>
+                    <li class="<?= isLinkActive('application/application_list/7/in') ?>">
+                        <a href="<?=Config::get('host')?>/application/application_list/7/in"><i class="fa fa-desktop"></i> Receive Application </a>
                     </li>
                     <?php
                     }

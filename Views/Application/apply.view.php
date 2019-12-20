@@ -245,18 +245,25 @@
                                name="agree" id="agree" required/>
                         <label class="custom-control-label" for="agree" 
                                style="font-size: 10pt;font-style:oblique;color: #005cbf;cursor: pointer ">
-                        I confirm that the information I am submitting is true and correct up to my knowledge. And I 
+                        I have confirmed that the information I am submitting is true and correct up to my knowledge. And I 
                         bear the responsibility of the correctness of the above information. 
                         </label>
                     </div>
-                    <div class="alert alert-danger" style="text-align: center">
+                    <div class="alert alert-danger" style="font-size: 10pt;font-style:oblique;text-align: center">
                         #Note: Application once submitted cannot be changed
                     </div>
                 </div>
             </div>
-            <center>
-                <button id="submit_application" type="submit" class="btn btn-secondary" disabled>Submit</button>
-            </center>
+            <div class="row" id="order_date_layout">
+                <div class="col-sm-4">
+                    
+                </div>
+                <div class="col-md-6" >
+                    <center>
+                        <button id="submit_application" type="submit" class="btn btn-secondary" disabled>Submit</button>
+                    </center>
+                </div>
+            </div>
         </form>
     </div>
     
