@@ -6,15 +6,21 @@
     }
 </style>
 <div class="vertical-center">
+    
     <div class="col-md-4 mb-4 login_layout">
         <!-- Material form login -->
         <div class="card">
-
-            <h5 class="card-header default-color white-text text-center py-4">
-              <strong>Sign in</strong>
-            </h5>
+            
+            <h5 class="card-header default-color white-text text-center py-4">Welcome, <strong>Sign in</strong></h5>
+            <!--
+            <div style="text-align: center">
+                <img class="rounded-circle"
+                         src="<?= Config::get('host') ?>/root/MDB/img/high_court_logo.jpg" alt="not found"/>
+            </div>
+            -->
             <!--Card content-->
             <div class="card-body px-lg-5 pt-0">
+                
                 <!-- Form -->
                 <form class="text-center" style="color: #757575;" method="POST" autocomplete="off">
                     <!-- CSRF token -->
@@ -52,7 +58,7 @@
                         <a href="<?=Config::get('host')?>/account/signup">Sign Up</a>
                     </p>
                     <p style="color: red"><?= $data['login_response'] ?></p>
-                    <!-- Social login 
+                    <!-- Social login -->
                     <p>or sign in with:</p>
 
                     <a type="button" class="btn-floating btn-fb btn-sm">
@@ -67,7 +73,7 @@
                     <a type="button" class="btn-floating btn-git btn-sm">
                       <i class="fab fa-github"></i>
                     </a>
-                    -->
+                    
                 </form>
                 <!-- Form -->
 

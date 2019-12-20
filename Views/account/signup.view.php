@@ -1,5 +1,5 @@
 <div class="container-fluid">
-        <div class="">
+        <div class="vertical-center">
             <div class="card signup_card">
                 <h5 class="card-header default-color white-text text-center py-3">
                     <strong>Sign in</strong>
