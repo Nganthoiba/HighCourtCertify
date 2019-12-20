@@ -3,7 +3,8 @@
  * Description of model:
  * This based class has been designed so that developer does not have to write the underlying database queries 
  * The basic CRUDE operations are defined in this class as methods as create, read, update and delete
- *
+ * This model class acts as an entity in this framework
+ * 
  * @author Nganthoiba
  */
 class model {

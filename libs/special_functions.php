@@ -122,9 +122,10 @@ function verifyCSRFToken(){
         }
     } catch (Exception $e){
         $response->set(array(
-            "msg"=>$e->getMessage(),
+            "msg"=>"An error occurs, please consult with an expert",
             "status"=>false,
-            "status_code"=>403
+            "status_code"=>403,
+            "error"=>$e->getMessage()
         ));
     }
     return $response;

@@ -13,6 +13,7 @@ else{
 	<thead>
 		<tr>
 			<th>Sl. No.</th>
+			<th>Applicant</th>
 			<th>Application For</th>
 			<th>Date</th>
 			<th>Case Type</th>
@@ -30,6 +31,7 @@ else{
 		foreach($data['data'] as $item){
 			echo '<tr>';
 			echo '<td>'.$i++.'</td>';
+			echo '<td>'.$item['applicant_name'].'</td>';
 			echo '<td>'.$item['application_for'].'</td>';
 			echo '<td>'.date('d-m-Y',strtotime($item['action_date'])).'</td>';
 			echo '<td>'.$item['case_type'].'</td>';

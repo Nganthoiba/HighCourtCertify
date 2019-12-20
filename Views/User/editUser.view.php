@@ -28,7 +28,7 @@ if($response->status_code == 200){
             <div class="col-sm-4">
                 <label for="full_name" class="control-label">Full Name:</label>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <input type="text" value="<?= $user->full_name ?>" name="full_name" id="full_name" class="form-control" required/>
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback">Name can not be left blank.</div>
@@ -38,7 +38,7 @@ if($response->status_code == 200){
             <div class="col-sm-4">
                 <label for="email" class="control-label">Email:</label>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <input type="text" value="<?= $user->email ?>" onblur="checkEmail();" onchange="checkEmail();" onkeyup="checkEmail();" name="email" id="email" class="form-control" required/>
                 <div class="valid-feedback"></div>
                 <div id="email_invalid_feedback" class="invalid-feedback">Email can not be left blank.</div>
@@ -49,7 +49,7 @@ if($response->status_code == 200){
             <div class="col-sm-4">
                 <label for="phone_no" class="control-label">Mobile Phone No.:</label>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <input type="text" value="<?= $user->phone_no ?>" autocomplete="new-password" maxlength="10" onblur="validatePhoneNo();" onchange="validatePhoneNo();" onkeyup="validatePhoneNo();" onkeypress="return isNumber(event);" name="phone_no" id="phone_no" class="form-control" required/>
                 <div class="valid-feedback"></div>
                 <div id="phone_no_invalid_feedback" class="invalid-feedback">Mobile Phone No can not be left blank.</div>
@@ -60,7 +60,7 @@ if($response->status_code == 200){
             <div class="col-sm-4">
                 <label for="role_id" class="control-label">User Role:</label>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <select class="custom-select small_font" name="role_id" id="role_id" required>
                     <option value="">--- Select Role ---</option>
                     <?php
@@ -84,7 +84,7 @@ if($response->status_code == 200){
             <div class="col-sm-4">
                 &nbsp;
             </div>
-            <div class="col-sm-6" style="text-align: center">
+            <div class="col-sm-4" style="text-align: center">
                 <button type="submit" class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0">Update</button>
             </div>
         </div>
@@ -92,7 +92,7 @@ if($response->status_code == 200){
             <div class="col-sm-4">
                 &nbsp;
             </div>
-            <div class="col-sm-6" style="text-align: center">
+            <div class="col-sm-4" style="text-align: center">
                 <div id="edit_user_response" style="text-align: center"></div>
             </div>
         </div>

@@ -144,31 +144,31 @@ class Users extends model{
         $this->response->status = false;
         $this->response->status_code = 403;
         if($this->full_name === ""){
-            $this->response['msg'] = "Missing full name";
+            $this->response->msg = "Missing full name";
             return false;
         }
         if($this->email === ""){
-            $this->response['msg'] = "Missing email";
+            $this->response->msg = "Missing email";
             return false;
         }
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $this->response['msg'] = "Invalid email format";
+            $this->response->msg = "Invalid email format";
             return false;
         }
         if($this->isEmailExist($this->email)){
-            $this->response['msg'] = "The email already exists with another account, please try with another.";
+            $this->response->msg = "The email already exists with another account, please try with another.";
             return false;
         }
         if($this->phone_no === ""){
-            $this->response['msg'] = "Missing Phone No.";
+            $this->response->msg = "Missing Phone No.";
             return false;
         }
         if($this->role_id === "" || $this->role_id === 0){
-            $this->response['msg'] = "Missing User Role.";
+            $this->response->msg = "Missing User Role.";
             return false;
         }
         if($this->user_password === ""){
-            $this->response['msg'] = "Missing password.";
+            $this->response->msg = "Missing password.";
             return false;
         }
         return true;

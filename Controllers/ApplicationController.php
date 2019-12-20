@@ -211,6 +211,9 @@ class ApplicationController extends Controller{
         else{
             $approve = $reject = array();
             foreach($resp->data as $item){
+                $applicant = new Users();
+                $applicant = $applicant->find($item['user_id']);
+                $item['applicant_name'] = $applicant->full_name;
                 if($item['action_name']=='approve'){
                     $approve[] = $item;
                 }

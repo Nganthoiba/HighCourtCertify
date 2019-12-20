@@ -48,10 +48,24 @@
                     </li>
                     <?php
                     }
-                    else{
+                    else if((Logins::getRoleName()) == "Copying Section"){
                     ?>
                     <li class="<?= isLinkActive('application/application_list/in') ?>">
-                        <a href="<?=Config::get('host')?>/application/application_list/1/in"><i class="fa fa-bullhorn"></i> Process1</a>
+                        <a href="<?=Config::get('host')?>/application/application_list/2/in"><i class="fa fa-desktop"></i> Receive Application</a>
+                    </li>
+                    <?php    
+                    }
+                    else if(Logins::getRoleName() == "Registrar General (RG)"){
+                    ?>
+                    <li class="<?= isLinkActive('application/application_list/in') ?>">
+                        <a href="<?=Config::get('host')?>/application/application_list/1/in"><i class="fa fa-desktop"></i> Receive Application </a>
+                    </li>
+                    <?php
+                    }
+                    else if(Logins::getRoleName() == "Judicial 1" || Logins::getRoleName() == "Judicial 2" || Logins::getRoleName() == "Judicial 3"){
+                    ?>
+                    <li class="<?= isLinkActive('application/application_list/3/in') ?>">
+                        <a href="<?=Config::get('host')?>/application/application_list/3/in"><i class="fa fa-desktop"></i> Receive Application </a>
                     </li>
                     <?php
                     }
