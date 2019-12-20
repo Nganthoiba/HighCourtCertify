@@ -100,6 +100,9 @@ class Controller {
                 $view_path = VIEWS_PATH.DS.$controller_name.DS.$view_path.'.view.php';   
             }
         }
+        
+        header('X-Frame-Options: SAMEORIGIN');//preventing clickjacking as the page can only be displayed in a frame on the same origin as the page itself. 
+        //header('X-Frame-Options: deny');//The page cannot be displayed in a frame, regardless of the site attempting to do so.
         $view_obj = new View($this->getData(),$view_path);
         $content = $view_obj->render();
         $layout = $this->router->getRoute();

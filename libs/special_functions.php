@@ -53,10 +53,9 @@ function get_data_from_array($key_data,$array){
 /*function to start session*/
 function startSecureSession() {
     if (session_status() === PHP_SESSION_NONE){
-        
         ini_set('session.use_only_cookies', 1); // Forces sessions to only use cookies. 
         ini_set("session.cookie_httponly", 1);//(No xxs)This will prevent from javascript to display session cookies over browser
-        
+        ini_set('session.httponly',true);/* securing cookies and session*/
         session_start(); // Start the php session
         session_regenerate_id(true); // regenerated the session, delete the old one.   
     }
@@ -122,7 +121,7 @@ function verifyCSRFToken(){
         }
     } catch (Exception $e){
         $response->set(array(
-            "msg"=>"An error occurs, please consult with an expert",
+            "msg"=>"An error occurs, please consult with an expert. Try gain after reloading the page.",
             "status"=>false,
             "status_code"=>403,
             "error"=>$e->getMessage()
