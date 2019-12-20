@@ -5,73 +5,84 @@ $login_id = $user_info['login_id'];
 if($response->status_code == 200){
     $users = $response->data;
 ?>
-<style>
-    .background_circle{
-        padding: 5px;
-        border-radius: 50%;
-        background-color: #996000;
-        color: #FFFFFF;
-        font-size: 8pt;
-    }
-</style>
-    <p>
-        <div style="float:left">List of users: </div>
-        <div style="float:right">Total Users:
-            <span class="background_circle"><?= count($users)-1 ?></span>
-        </div>
-    </p>
-    <input type="hidden" value="<?= $login_id ?>" id="login_id" />
-    <table class="table_style table_style-striped yellow_header table-scroll">
-        <thead>
-            <tr>
-                <!--<th>User ID</th>-->
-                <th style="max-width:60px">Sl. No.</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th style="max-width:100px">Phone No</th>
-                <th style="max-width:120px">Aadhaar</th>
-                <th>User Role</th>
-                <th style="max-width:40px"></th>
-                <th style="max-width:70px"></th>
-            </tr>
-        </thead>
-        <tbody id="users_content" class="tbody_max_height">
-            <?php
-                $cnt = 0;
-                foreach ($users as $user){
-            ?>
-            <tr>
-                <td style="max-width:60px"><?= ++$cnt ?></td>
-                <td><?= $user->full_name ?></td>
-                <td><?= $user->email ?></td>
-                <td style="max-width:100px"><?= $user->phone_number ?></td>
-                <td style="max-width:120px"><?= $user->aadhaar ?></td>
-                <td><?= $user->role_name ?></td>
-                <td style="max-width:70px" align="right">
-                    <?php if($user->role_name != "Applicant"){ ?>
-                    <a href="editUser/<?= $user->user_id ?>">Edit</a>
-                    <?php } ?>
-                </td>
-                <td style="max-width:70px" align="right">
-                    <?php if($user->role_name != "Applicant"){ ?>
-                    <a href="javascript:removeUser('<?= $user->user_id ?>');">Remove</a>
-                    <?php } ?>
-                </td>
-            </tr>
-            <?php
-                }
-            ?>
-        </tbody>
-    </table>
+    <style>
+        .background_circle{
+            padding: 5px;
+            border-radius: 50%;
+            background-color: #996000;
+            color: #FFFFFF;
+            font-size: 8pt;
+        }
+    </style>
+    <link href="<?= Config::get('host') ?>/root/MDB/css/dataTable.css" rel="stylesheet" 
+          type="text/css"/>
+    <div class="container-fluid">
+        <p>
+            <div style="float:left">List of users: </div>
+            <div style="float:right">Total Users:
+                <span class="background_circle"><?= count($users)-1 ?></span>
+            </div>
+        </p>
+        <input type="hidden" value="<?= $login_id ?>" id="login_id" />
+        <table id="user_list_table" class="table_style table_style-striped yellow_header">
+            <thead>
+                <tr>
+                    <!--<th>User ID</th>-->
+                    <th style="max-width:60px">Sl. No.</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th style="max-width:100px">Phone No</th>
+                    <th style="max-width:120px">Aadhaar</th>
+                    <th>User Role</th>
+                    <th style="max-width:40px"></th>
+                    <th style="max-width:70px"></th>
+                </tr>
+            </thead>
+            <tbody id="users_content">
+                <?php
+                    $cnt = 0;
+                    foreach ($users as $user){
+                ?>
+                <tr>
+                    <td style="max-width:60px"><?= ++$cnt ?></td>
+                    <td><?= $user->full_name ?></td>
+                    <td><?= $user->email ?></td>
+                    <td style="max-width:100px"><?= $user->phone_number ?></td>
+                    <td style="max-width:120px"><?= $user->aadhaar ?></td>
+                    <td><?= $user->role_name ?></td>
+                    <td style="max-width:70px" align="right">
+                        <?php if($user->role_name != "Applicant"){ ?>
+                        <a href="editUser/<?= $user->user_id ?>">Edit</a>
+                        <?php } ?>
+                    </td>
+                    <td style="max-width:70px" align="right">
+                        <?php if($user->role_name != "Applicant"){ ?>
+                        <a href="javascript:removeUser('<?= $user->user_id ?>');">Remove</a>
+                        <?php } ?>
+                    </td>
+                </tr>
+                <?php
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div>
+    <script src="<?=Config::get('host')?>/root/MDB/js/dataTable.js" type="text/javascript"></script>
+    <script src="<?=Config::get('host')?>/root/MDB/js/dataTables.bootstrap4.js" type="text/javascript"></script>
     <script>
         
         $(document).ready(function () {
-            $(".table-scroll thead").mCustomScrollbar({
-                theme: "minimal"
-            });
+//            $(".table-scroll thead").mCustomScrollbar({
+//                theme: "minimal"
+//            });
 //            $(".table-scroll tbody").mCustomScrollbar({
 //                theme: "minimal"
 //            });
+            $('#user_list_table').DataTable({
+                "language":{
+                    "emptyTable":"No record available."
+                }
+            });
         });
 
         function removeUser(user_id){ 
