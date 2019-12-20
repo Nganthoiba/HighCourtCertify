@@ -16,7 +16,7 @@ class UserAddModel{
     public  $user_id , 
             $full_name ,     
             $email  ,        
-            $phone_no  ,     
+            $phone_number  ,     
             $role_id,        
             $user_password,  
             $verify,  
@@ -27,7 +27,7 @@ class UserAddModel{
             $this->user_id = $user->user_id;
             $this->full_name = $user->full_name;
             $this->email = $user->email;
-            $this->phone_no = $user->phone_no;
+            $this->phone_number = $user->phone_number;
             $this->role_id = $user->role_id;
             $this->user_password = $user->user_password;
             $this->verify = $user->verify;
