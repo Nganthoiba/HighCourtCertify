@@ -400,7 +400,7 @@ CREATE TABLE public.users (
     user_id character varying(40) NOT NULL,
     full_name character varying(300),
     email character varying(50),
-    phone_no character varying(30),
+    phone_number character varying(30),
     role_id integer NOT NULL,
     user_password character varying(64) NOT NULL,
     verify boolean DEFAULT false,
@@ -1080,7 +1080,7 @@ COPY public.role (role_id, role_name) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (user_id, full_name, email, phone_no, role_id, user_password, verify, create_at, update_at, delete_at, profile_image, aadhaar, update_by) FROM stdin;
+COPY public.users (user_id, full_name, email, phone_number, role_id, user_password, verify, create_at, update_at, delete_at, profile_image, aadhaar, update_by) FROM stdin;
 f238775f-6e77-4df4-871d-7fb6fe8112b9	Khangenbam Nganthoiba	leecba@gmail.com	9089517468	14	82a3326339cfd75bdc0a667e21957437c58de70a5514aead2f8d2ed93f1fbd90	f	2019-12-05 18:58:42.532194+05:30	\N	\N	\N	\N	\N
 9cec8bde-53de-4770-b1d5-91dd67355fac	Tompok	tompok@gmail.com	9856732169	2	ba2df526dd770866fd1ae47fb641e7fbe38a0c5dc86a90ba431519431548c09e	f	2019-12-05 22:56:15.813122+05:30	\N	\N	\N	\N	\N
 c43846c6-69ba-4161-9f06-a5f801791796	Administrator	admin@gmail.com	9856732169	1	8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918	f	2019-12-05 19:01:10.340154+05:30	2019-12-05 23:10:15+05:30	\N	\N	123456789   	c43846c6-69ba-4161-9f06-a5f801791796

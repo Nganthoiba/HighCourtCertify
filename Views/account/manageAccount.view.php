@@ -35,10 +35,10 @@ $user =  $data['user'];
         </div>
         <div class="row">
             <div class="col-sm-4">
-                <label class="control-label" for="phone_no">Mobile Phone No.:</label>
+                <label class="control-label" for="phone_number">Mobile Phone No.:</label>
             </div>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="phone_no" name="phone_no" value="<?= $user->phone_no ?>">
+                <input type="text" class="form-control" id="phone_number" name="phone_number" value="<?= $user->phone_number ?>">
             </div>
         </div>
         <div class="row">

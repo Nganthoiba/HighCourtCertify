@@ -26,7 +26,7 @@ class UserLoginModel{
             'user_id',
             'full_name',
             'email',
-            'phone_no',
+            'phone_number',
             'role_id',
             'verify',
             'aadhaar'), $cond);

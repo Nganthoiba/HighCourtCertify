@@ -44,7 +44,7 @@ if($response->status_code == 200){
                 <td style="max-width:60px"><?= ++$cnt ?></td>
                 <td><?= $user->full_name ?></td>
                 <td><?= $user->email ?></td>
-                <td style="max-width:100px"><?= $user->phone_no ?></td>
+                <td style="max-width:100px"><?= $user->phone_number ?></td>
                 <td style="max-width:120px"><?= $user->aadhaar ?></td>
                 <td><?= $user->role_name ?></td>
                 <td style="max-width:70px" align="right">
@@ -164,7 +164,7 @@ if($response->status_code == 200){
                                 "<td>"+(i+1)+"</td>"+
                                 "<td>"+users[i].full_name+"</td>"+
                                 "<td>"+users[i].email+"</td>"+
-                                "<td>"+users[i].phone_no+"</td>"+
+                                "<td>"+users[i].phone_number+"</td>"+
                                 "<td>"+aadhaar+"</td>"+
                                 "<td>"+users[i].role_name+"</td>"+
                                 "<td align=\"right\"><a href=\"javascript: removeUser('"+users[i].user_id.trim()+"')\">Remove</a></td>"+

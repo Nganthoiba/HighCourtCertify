@@ -9,7 +9,7 @@ class Users extends model{
     public  $user_id , 
             $full_name ,     
             $email  ,        
-            $phone_no  ,     
+            $phone_number  ,     
             $role_id,        
             $user_password,  
             $verify,         
@@ -31,7 +31,7 @@ class Users extends model{
         if(sizeof($data)){
             $this->full_name = isset($data['full_name'])?$data['full_name']:"";
             $this->email = isset($data['email'])?$data['email']:"";
-            $this->phone_no = isset($data['phone_no'])?$data['phone_no']:"";
+            $this->phone_number = isset($data['phone_number'])?$data['phone_number']:"";
             $this->role_id = isset($data['role_id'])?$data['role_id']:0;
             $this->user_password = isset($data['password'])? hash("sha256", $data['password']):"";
             $this->verify = 0;
@@ -159,7 +159,7 @@ class Users extends model{
             $this->response->msg = "The email already exists with another account, please try with another.";
             return false;
         }
-        if($this->phone_no === ""){
+        if($this->phone_number === ""){
             $this->response->msg = "Missing Phone No.";
             return false;
         }
@@ -180,7 +180,7 @@ class Users extends model{
             "user_id" => $this->user_id,
             "full_name" => $this->full_name,
             "email" => $this->email,
-            "phone_no" => $this->phone_no,
+            "phone_number" => $this->phone_number,
             "role_id" => $this->role_id,
             "verify" => $this->verify,
             "create_at" => $this->create_at,

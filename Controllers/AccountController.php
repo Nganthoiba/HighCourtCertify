@@ -166,7 +166,7 @@ class AccountController extends Controller{
             else if($this->isEmailExist($user->user_id,$input_data['email'])){
                 $this->data['update_response'] = "Your new email '".$input_data['email']."' already exist with another account try another.";
             }
-            else if(!isset($input_data['phone_no']) || $input_data['phone_no']=== ""){
+            else if(!isset($input_data['phone_number']) || $input_data['phone_number']=== ""){
                 $this->data['update_response'] = "Missing your phone number";
             }
             else if(isset($input_data['aadhaar']) && $this->isAadhaarExist($user->user_id, $input_data['aadhaar'])){
@@ -176,7 +176,7 @@ class AccountController extends Controller{
             {
                 $user->full_name = $input_data['full_name'];
                 $user->email = $input_data['email'];
-                $user->phone_no = $input_data['phone_no'];
+                $user->phone_number = $input_data['phone_number'];
                 $user->aadhaar = $input_data['aadhaar']==""?null:$input_data['aadhaar'];
                 $user->update_at = date('Y-m-d H:i:s');
                 $user->update_by = $user->user_id;

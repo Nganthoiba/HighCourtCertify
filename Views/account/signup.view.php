@@ -32,12 +32,12 @@
                         
                         <div class="row">
                             <div class="col-sm-4">
-                                <label for="phone_no" class="control-label">Mobile Phone No.:</label>
+                                <label for="phone_number" class="control-label">Mobile Phone No.:</label>
                             </div>
                             <div class="col-sm-6">
-                                <input type="text" maxlength="10" onblur="validatePhoneNo();" onchange="validatePhoneNo();" onkeyup="validatePhoneNo();" onkeypress="return isNumber(event);" name="phone_no" id="phone_no" class="form-control" required/>
+                                <input type="text" maxlength="10" onblur="validatePhoneNo();" onchange="validatePhoneNo();" onkeyup="validatePhoneNo();" onkeypress="return isNumber(event);" name="phone_number" id="phone_number" class="form-control" required/>
                                 <div class="valid-feedback"></div>
-                                <div id="phone_no_invalid_feedback" class="invalid-feedback">Mobile Phone No can not be left blank.</div>
+                                <div id="phone_number_invalid_feedback" class="invalid-feedback">Mobile Phone No can not be left blank.</div>
                             </div>
                         </div>
                         <!--
@@ -133,21 +133,21 @@
                 img.src = img.src.substring(0,img.src.lastIndexOf("?"))+"?rand="+Math.random()*1000+"&action=captcha";
             }  
             function validatePhoneNo(){
-                var phone_no = $("#phone_no").val().trim();
-                if(phone_no === ""){
-                    $("#phone_no_invalid_feedback").show();
-                    $("#phone_no_invalid_feedback").html("Phone number can not be left blank.");
-                    $("#phone_no").addClass("custom_invalid_field");
+                var phone_number = $("#phone_number").val().trim();
+                if(phone_number === ""){
+                    $("#phone_number_invalid_feedback").show();
+                    $("#phone_number_invalid_feedback").html("Phone number can not be left blank.");
+                    $("#phone_number").addClass("custom_invalid_field");
                 }
-                else if(phone_no.length!==10 || isNaN(phone_no)){
-                    $("#phone_no_invalid_feedback").show();
-                    $("#phone_no_invalid_feedback").html("Invalid phone number");
-                    $("#phone_no").addClass("custom_invalid_field");
+                else if(phone_number.length!==10 || isNaN(phone_number)){
+                    $("#phone_number_invalid_feedback").show();
+                    $("#phone_number_invalid_feedback").html("Invalid phone number");
+                    $("#phone_number").addClass("custom_invalid_field");
                 }
                 else{
-                    $("#phone_no_invalid_feedback").hide();
-                    $("#phone_no_invalid_feedback").html("Mobile Phone No can not be left blank.");
-                    $("#phone_no").removeClass("custom_invalid_field");
+                    $("#phone_number_invalid_feedback").hide();
+                    $("#phone_number_invalid_feedback").html("Mobile Phone No can not be left blank.");
+                    $("#phone_number").removeClass("custom_invalid_field");
                     return true;
                 }
                 return false;

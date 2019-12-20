@@ -27,7 +27,7 @@ class User_apiController extends Api{
                 'user_id' , 
                 'full_name' ,     
                 'email'  ,        
-                'phone_no'  ,     
+                'phone_number'  ,     
                 'role_id',       
                 'verify',         
                 'create_at',     
@@ -136,7 +136,7 @@ class User_apiController extends Api{
                     else{
                         $user->full_name = $data['full_name'];
                         $user->email = $data['email'];
-                        $user->phone_no = $data['phone_no'];
+                        $user->phone_number = $data['phone_number'];
                         $user->role_id = $data['role_id'];
                         $user->update_at = date("Y-m-d H:i:s");
                         $user->update_by = $login->user_id;
