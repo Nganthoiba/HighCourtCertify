@@ -121,7 +121,7 @@ function verifyCSRFToken(){
         }
     } catch (Exception $e){
         $response->set(array(
-            "msg"=>"An error occurs, please consult with an expert. Try gain after reloading the page.",
+            "msg"=>"An error occurs, please consult with an expert. Try again after reloading the page.",
             "status"=>false,
             "status_code"=>403,
             "error"=>$e->getMessage()
