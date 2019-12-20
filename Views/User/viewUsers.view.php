@@ -20,7 +20,7 @@ if($response->status_code == 200){
         <p>
             <div style="float:left">List of users: </div>
             <div style="float:right">Total Users:
-                <span class="background_circle"><?= count($users)-1 ?></span>
+                <span class="background_circle"><?= count($users) ?></span>
             </div>
         </p>
         <input type="hidden" value="<?= $login_id ?>" id="login_id" />
