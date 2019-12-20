@@ -203,13 +203,15 @@ class ApplicationController extends Controller{
         $app = new application;
         $resp = $app->application_history($role_id,$task_type,$process_id,true);
 
+        $this->data['resp'] = $resp;
+        
         $this->data['process_id'] = $process_id;
         if(!$resp->status){
                 $this->data['status'] =  false;
                 $this->data['msg'] =  $resp['msg'];
         }
         else{
-            $approve = $reject = array();
+            $all = $approve = $reject = array();
             foreach($resp->data as $item){
                 $applicant = new Users();
                 $applicant = $applicant->find($item['user_id']);
@@ -220,6 +222,7 @@ class ApplicationController extends Controller{
                 else if($item['action_name']=='reject'){
                     $reject[] = $item;
                 }
+                $all[] = $item;
             }
             if($task_type == 'out'){
                 if(strtolower($approve_reject) == 'approve'){
@@ -229,8 +232,17 @@ class ApplicationController extends Controller{
                     $resp->data = $reject;
                 }
             }
+            else if($task_type == 'in'){
+                $resp->data = $all;
+            }
             $this->data['status'] =  true;
             $this->data['data'] = $resp->data;
+            if($task_type == "in"){
+                $this->data['active_tab'] = "incomming";
+            }
+            else{
+                $this->data['active_tab'] = $approve_reject;
+            }
         }
         return $this->view();
     }

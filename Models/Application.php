@@ -203,16 +203,19 @@ class Application extends model{
 
 
         $stmt = $db->prepare($qry);
-        $resp = $stmt->execute(array($id,$process_id));
+        $resp = $stmt->execute(array($id,(int)$process_id));
         if(!$resp){			
             $response->error = $stmt->errorInfo();
-            $response->msg = json_encode($stmt->errorInfo());
+            $response->msg = "Internal Server Error";
+            $response->status_code = 500;
             return $response;
         }
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $rows = $stmt->fetchall(PDO::FETCH_ASSOC);
         $response->status = true;
         $response->status_code = 200;
         $response->data = $rows;
+        $response->msg = "Record found";
         return $response;
     }
     /*

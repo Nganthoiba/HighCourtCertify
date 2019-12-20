@@ -10,7 +10,7 @@ function redirectTo() {
             break;
         default :
             //echo "default ".Logins::getRoleName();
-            redirect("default", "testing");
+            redirect("default", "index");
     }
 }
 

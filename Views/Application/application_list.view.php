@@ -1,14 +1,26 @@
 <link href="<?= Config::get('host') ?>/root/MDB/css/dataTable.css" rel="stylesheet" type="text/css"/>
 <?php
 if(!$data['status']){
-	echo $data['msg'];
+    echo $data['msg'];
 }
 else{
+    /*** Tab display ***/
+    $active_tab = $data['active_tab'];
+    function setClass($active_tab,$param){
+        if($param == $active_tab){
+            return "btn btn-success";
+        }
+        return "btn btn-default";
+    }
+    /************************/
 ?>
 <div class="container-fluid">
-    <a href="javascript: location.assign('<?= config::get('host') ?>/Application/application_list/<?= $data['process_id'] ?>/in');">Incomming</a> |
-    <a href="javascript: location.assign('<?= config::get('host') ?>/Application/application_list/<?= $data['process_id'] ?>/out/approve');">Approved</a> |
-    <a href="javascript: location.assign('<?= config::get('host') ?>/Application/application_list/<?= $data['process_id'] ?>/out/reject');">Rejected</a> 
+    <div class="btn-group">
+        <a class="<?= setClass($active_tab,'incomming') ?>" href="javascript: location.assign('<?= config::get('host') ?>/Application/application_list/<?= $data['process_id'] ?>/in');">Incomming</a> 
+        <a class="<?= setClass($active_tab,'approve') ?>" href="javascript: location.assign('<?= config::get('host') ?>/Application/application_list/<?= $data['process_id'] ?>/out/approve');">Approved</a> 
+        <a class="<?= setClass($active_tab,'reject') ?>" href="javascript: location.assign('<?= config::get('host') ?>/Application/application_list/<?= $data['process_id'] ?>/out/reject');">Rejected</a>
+    </div>
+    
     <table class="table_style yellow_header" id="application_list" >
 	<thead>
 		<tr>

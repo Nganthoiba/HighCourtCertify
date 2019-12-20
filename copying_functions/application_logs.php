@@ -12,7 +12,7 @@ function insertApplicationLog($conn,$action, $application_id,$process_id,$remark
                 $to_process_id = 2;
             }
             else{            
-                $to_role_id = 1;
+                $to_role_id = 3;//move to Registrar general
                 $to_process_id = 1;
             }
             break;

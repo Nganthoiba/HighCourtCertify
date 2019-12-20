@@ -57,7 +57,7 @@
                     }
                     else if(Logins::getRoleName() == "Registrar General (RG)"){
                     ?>
-                    <li class="<?= isLinkActive('application/application_list/in') ?>">
+                    <li class="<?= isLinkActive('application/application_list/1/in') ?>">
                         <a href="<?=Config::get('host')?>/application/application_list/1/in"><i class="fa fa-desktop"></i> Receive Application </a>
                     </li>
                     <?php

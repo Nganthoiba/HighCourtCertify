@@ -122,6 +122,7 @@ else{
                 //resp = JSON.stringify(resp);
                 //alert(resp);
                 //console.log(resp);
+                window.history.back();
             }
             function reject(){
                 var url = "<?= Config::get('host') ?>/Application/reject/<?= $application->application_id ?>/<?= $data['process_id']  ?>";
@@ -149,6 +150,7 @@ else{
                 //resp = JSON.stringify(resp);
                 //alert(resp);
                 //console.log(resp);
+                window.history.back();
             }
         </script>
 <?php
