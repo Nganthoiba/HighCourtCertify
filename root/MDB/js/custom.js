@@ -97,6 +97,17 @@ function isValidEmail(email)
     return re.test(email);
 }
 
+//function to convert form data to json
+function getFormDataToJson(form){
+    var obj = {};
+    for(var i=0;i<form.elements.length;i++){
+        if((form.elements[i].type).toLowerCase()!="submit" && (form.elements[i].type).toLowerCase()!="button"){
+            obj[form.elements[i].name] = form.elements[i].value;
+        }
+    }
+    return obj;
+}
+
 // client side validation module
 // Disable form submissions if there are invalid fields
 (function() {

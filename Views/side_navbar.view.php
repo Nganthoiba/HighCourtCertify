@@ -46,6 +46,9 @@
                     <li class="<?= isLinkActive('role/processRoleMapping') ?>">
                         <a href="<?=Config::get('host')?>/role/processRoleMapping"><i class="fa fa-bullhorn"></i> Process Roles Mapping</a>
                     </li>
+                    <li class="<?= isLinkActive('Menu/displayMenu') ?>">
+                        <a href="<?=Config::get('host')?>/Menu/displayMenu"><i class="fa fa-medium"></i> Menu</a>
+                    </li>
                     <?php
                     }
                     //Copying Section Menu

@@ -151,7 +151,7 @@ if($response->status_code == 200){
             //document.forms["editUser"].submit();
             var url = "<?= Config::get('host') ?>/User_api/updateUser";
             var login_id = $("#login_id").val(); 
-            var formData = getFormDataToJson(this);
+            var formData = getFormDataToJson(this);//function available in custom.js
             //return;
             $.ajax({
                 url: url,
@@ -205,15 +205,7 @@ if($response->status_code == 200){
         return true;
     }
     
-    function getFormDataToJson(form){
-        var obj = {};
-        for(var i=0;i<form.elements.length;i++){
-            if((form.elements[i].type).toLowerCase()!="submit"){
-                obj[form.elements[i].name] = form.elements[i].value;
-            }
-        }
-        return obj;
-    }
+    
 </script>
 <?php
 }
