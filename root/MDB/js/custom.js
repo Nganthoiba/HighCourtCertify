@@ -12,28 +12,17 @@
  */
 function ajax_request(args)
 {
-    if( ! args.url === undefined){
-            var resp = {success: 0, msg: "Url not found!"};
-            return resp;
+    if(args.url === undefined || args.url === ""){
+        var resp = {status: false, msg: "Url not found!"};
+        return resp;
     }
     var url = args.url;
 
-    var param = '';
-    if( ! args.param  != undefined){
-            param = args.param;
+    var param = (args.param  === undefined)?'':args.param;
 
-    }
-
-    var type = 'JSON';
-    if(  ! args.type === undefined){
-            type = args.type;
-    }
-
+    var type = (args.type === undefined)?'JSON':args.type;
     
-    var method = "GET";
-    if( ! args.method === undefined){
-            method = args.method;
-    }
+    var method = (args.method === undefined)?"GET":args.method;
     
 
     var result;
@@ -100,11 +89,65 @@ function isValidEmail(email)
 //function to convert form data to json
 function getFormDataToJson(form){
     var obj = {};
+    var curr_key = "";//current key
+    var curr_val = "";//current value
+    var prev_key = [];//previous keys
+    var array_val = [];
+    var checkbox_arr = [];
+    var current_element;
     for(var i=0;i<form.elements.length;i++){
-        if((form.elements[i].type).toLowerCase()!="submit" && (form.elements[i].type).toLowerCase()!="button"){
-            obj[form.elements[i].name] = form.elements[i].value;
+        current_element = form.elements[i];
+        if((current_element.type).toLowerCase()!=="submit" && (current_element.type).toLowerCase()!=="button"){
+            
+            curr_key = current_element.name.trim().replace("[]","");
+            curr_val = current_element.value.trim();
+            
+            if(prev_key.includes(curr_key)){
+                //If current key already encountered in the prevoius key list, then
+                
+                //For checkbox with same key name
+                if((current_element.type).toLowerCase()==="checkbox"){
+                    if(current_element.checked === true){
+                        checkbox_arr.push(curr_val);
+                    }
+                    if(!Array.isArray(obj[curr_key])){
+                        if(!checkbox_arr.includes(obj[curr_key])){
+                            checkbox_arr.push(obj[curr_key]);
+                        }
+                    }
+                    obj[curr_key]=checkbox_arr;
+                    
+                }
+                else if((current_element.type).toLowerCase() === "radio"){
+                    if(current_element.checked === true){
+                        obj[curr_key]= curr_val;
+                    }
+                }
+                else{
+                    array_val.push(curr_val);
+                    obj[curr_key]=array_val;
+                }
+                
+            }
+            else{
+                obj[curr_key]= curr_val;
+            }
+            prev_key.push(curr_key);//adding the current key
         }
     }
+    /*
+    form.forEach((value, key) => {
+        // Reflect.has in favor of: object.hasOwnProperty(key)
+        if(!Reflect.has(obj, key)){
+            obj[key] = value;
+            return;
+        }
+        if(!Array.isArray(obj[key])){
+            obj[key] = [obj[key]];    
+        }
+        obj[key].push(value);
+    });
+    */
     return obj;
 }
 

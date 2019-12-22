@@ -107,6 +107,9 @@ $parent_menu = $data['parent_menu'];
         }
         sub_menu_form.onsubmit = function(event){
             event.preventDefault();
+            if(sub_menu_form.menu_name.value.trim() === "" || sub_menu_form.link.value.trim()){
+                return false;
+            }
             var url="";
             var menu = {
                 parent_menu_id : sub_menu_form.parent_menu_id.value,

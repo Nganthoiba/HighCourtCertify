@@ -155,6 +155,118 @@ class MenuController extends Controller{
         return $this->send_data($this->response,$this->response->status_code);
     }
     
+    //For roles and Menu mapping
+    public function AssociateRoles(){
+        //if data is posted for menus and roles mapping
+        $input_data = $this->_cleanInputs($_POST);
+        if(sizeof($input_data)){
+            $response = new Response();
+            $response = $this->saveMenuRoleMapping($input_data);
+            //$response->data = $input_data;
+            return $this->send_data($response,$response->status_code);
+        }
+        
+        $param = $this->getParams();
+        $this->data['all_roles'] = array();
+        $this->data['accociated_roles'] = array();
+        $this->data['menu'] = null;
+        if(sizeof($param)){
+            $this->menu = $this->menu->find($param[0]);
+            if($this->menu != null){
+                $this->data['menu'] = $this->menu;
+                $associated_roles = $this->getAssociatedRoles($this->menu);
+                $role = new Role();
+                $resp = $role->readAll();
+                $roles = $resp->data;
+                $temp_roles = array();
+                foreach($roles as $role){
+                    $role->isRoleAccociatedWithMenu = $this->isRoleAccociatedWithMenu($associated_roles,$role);
+                    $temp_roles[]=$role;
+                }
+                $this->data['all_roles'] = $temp_roles;
+                $this->data['associated_roles'] = $associated_roles;
+            }
+        }
+        return $this->view();
+    }
+    
+    private function saveMenuRoleMapping($data){
+        
+        //validating data
+        if(!isset($data['menu_id'])){
+            $this->response->set(array(
+                "msg"=>"Menu Id is missing",
+                "status_code"=>403
+            ));
+        }
+        else if(!isset($data['associated_roles'])){
+            $this->response->set(array(
+                "msg"=>"Menu Id is missing",
+                "status_code"=>403
+            ));
+        }
+        else{
+            $menu_id = $data['menu_id'];
+            $associated_roles = $data['associated_roles'];//only role id is passed
+            
+            $conn = $this->menu::$conn;
+            $conn->beginTransaction();
+            try{
+                $qry = "delete from menu_role_mapping where menu_id = ? ";
+                $stmt = $conn->prepare($qry);
+                $stmt->execute([$menu_id]);
+                if($associated_roles !== null && $associated_roles !== ""){                
+                    foreach ($associated_roles as $role_id){
+                        $ins_qry = "insert into menu_role_mapping(menu_id, role_id)"
+                                . " values(?,?)";
+                        $stmt=$conn->prepare($ins_qry);
+                        if(!$stmt->execute([
+                                $menu_id,
+                                $role_id
+                            ]))
+                        {
+                            $conn->rollback();
+                            $this->response->set(array(
+                                "error"=>$stmt->errorInfo()
+                            ));
+                            break;
+                        }
+                    }
+                }
+            } 
+            catch (Exception $e){
+                $conn->rollback();
+                $this->response->set(array(
+                    "error"=>$e
+                ));
+            }
+            $conn->commit();
+            $this->response->set(array(
+                "msg"=>"Saved successfully",
+                "status"=>true,
+                "status_code"=>200
+            ));
+        }
+        return $this->response;
+    }
+    
+    //function to check if role is associated with menu or not
+    private function isRoleAccociatedWithMenu($associated_roles = array(), Role $role){
+        foreach ($associated_roles as $associated_role){
+            if($associated_role['role_id'] === $role->role_id){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private function getAssociatedRoles(Menu $menu){
+        $qry = "select role_id from menu_role_mapping where menu_id = ? ";
+        $stmt = $menu::$conn->prepare($qry);
+        $stmt->execute([$menu->menu_id]);
+        return $stmt->fetchall(PDO::FETCH_ASSOC);
+    }
+    //check for valid menu data
     private function isValidMenuData($data){
         $response = new Response();
         if(!isset($data['menu_name']) || $data['menu_name']==""){

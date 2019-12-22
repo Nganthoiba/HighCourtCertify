@@ -90,7 +90,7 @@
             <tr>
                 <th>Menu Name</th>
                 <th>Link</th>
-                <th colspan="3">Actions</th>
+                <th colspan="4">Actions</th>
             </tr>
         </thead>
         <tbody id="menu_data">
@@ -215,13 +215,14 @@
                 layout += "<tr>"+
                     "<td>"+menu.menu_name+"</td>"+    
                     "<td>"+menu.link+"</td>"+    
+                    "<td><a href='<?= Config::get('host') ?>/Menu/AssociateRoles/"+menu.menu_id+"'>Associate User Roles</a></td>"+    
                     "<td><a href='javascript:void(0)' onclick='setMenuData("+JSON.stringify(menu)+");' data-toggle='modal' data-target='#editMenuModal'>Edit</a></td>"+    
                     "<td><a href='javascript:removeMenu(\""+menu.menu_id+"\");'>Remove</a></td>"+    
                     "<td><a href='<?= Config::get('host') ?>/Menu/displaySubMenu/"+menu.menu_id+"'>Sub Menus</a></td>"+    
                 "</tr>";
             }
             if(layout == ""){
-                layout = "<tr><td colspan='5' align='center'>No record found</td></tr>";
+                layout = "<tr><td colspan='6' align='center'>No record found</td></tr>";
             }
             $("#menu_data").html(layout);
         }

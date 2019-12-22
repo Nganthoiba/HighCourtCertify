@@ -29,7 +29,7 @@ class Menu extends model{
     }
     //Add new menu
     public function add(){
-        $this->menu_id = $this->findMaxRoleId()+1;
+        $this->menu_id = $this->findMaxMenuId()+1;
         $data = [
             "menu_id"=>$this->menu_id,
             "menu_name"=>$this->menu_name,
@@ -62,7 +62,8 @@ class Menu extends model{
         return parent::delete($cond);
     }
     
-    private function findMaxRoleId(){
+    //find maximum menu id
+    private function findMaxMenuId(){
         $stmt = self::$conn->prepare("select max(menu_id) as max_val from ".$this->getTable());
         $stmt->execute();
         if($stmt->rowCount() == 0){

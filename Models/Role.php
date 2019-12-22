@@ -50,13 +50,18 @@ class Role extends model{
         if($res->status_code == 200 && sizeof($res->data)>0){
             $roles = array();
             foreach ($res->data as $role){
-               if($role->role_name == "Admin"){
+               if($role->role_name == "Admin"){//filter Admin
                    continue;
                }
                $roles[] = $role;
             }
             $res->data = $roles;//replaced
         }
+        return $res;
+    }
+    //read all roles
+    public function readAll($columns = array(), $cond = array(), $order_by = "role_name") {
+        $res = parent::read($columns, $cond, $order_by);
         return $res;
     }
     

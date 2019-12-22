@@ -208,7 +208,7 @@ class ApplicationController extends Controller{
         $this->data['process_id'] = $process_id;
         if(!$resp->status){
                 $this->data['status'] =  false;
-                $this->data['msg'] =  $resp['msg'];
+                $this->data['msg'] =  $resp->msg;
         }
         else{
             $all = $approve = $reject = array();
