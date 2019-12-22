@@ -5,103 +5,9 @@
                 <div class="sidebar-header">
                     <p style="color:#000">Welcome</p>
                 </div>
-
+                
                 <ul class="list-unstyled components">
-                    <?php 
-                    //Applicant Menu
-                    if(strtolower(Logins::getRoleName()) == "applicant"){
-                    ?>
-                    <li class="<?= isLinkActive('application/index') ?><?= isLinkActive('application') ?><?= isLinkActive('') ?>">
-                        <a href="<?=Config::get('host')?>/application/index">
-                            <i class="fa fa-home"></i>
-                            Home
-                        </a>
-                    </li>
-                    <li class="<?= isLinkActive('application/apply') ?>">
-                        <a href="<?=Config::get('host')?>/application/apply"><i class="fa fa-edit"></i> Apply for copy</a>
-                    </li>
-                    <!--
-                    <li class="<?= isLinkActive('application/status') ?>">
-                        <a href="<?=Config::get('host')?>/application/status"><i class="fa fa-clone"></i> Check Status</a>
-                    </li>
-                    -->
-                    <li class="<?= isLinkActive('application/viewApplications') ?>">
-                        <a href="<?=Config::get('host')?>/application/viewApplications"><i class="fa fa-desktop"></i> View Applications</a>
-                    </li>
-                    <?php 
-                    }
-                    //Admin Menu
-                    else if(strtolower(Logins::getRoleName()) == "admin"){
-                    ?>
-                    <li class="<?= isLinkActive('user/viewUsers') ?>">
-                        <a href="<?=Config::get('host')?>/user/viewUsers"><i class="fa fa-edit"></i> 
-                            View Users</a>
-                    </li>
-                    <li class="<?= isLinkActive('user/addUsers') ?>">
-                        <a href="<?=Config::get('host')?>/user/addUsers"><i class="fa fa-plus-circle"></i> Add User</a>
-                    </li>
-                    <li class="<?= isLinkActive('role/addRoles') ?>">
-                        <a href="<?=Config::get('host')?>/role/addRoles"><i class="fa fa-plus-circle"></i> Add Roles</a>
-                    </li>
-                    <li class="<?= isLinkActive('role/processRoleMapping') ?>">
-                        <a href="<?=Config::get('host')?>/role/processRoleMapping"><i class="fa fa-bullhorn"></i> Process Roles Mapping</a>
-                    </li>
-                    <li class="<?= isLinkActive('Menu/displayMenu') ?>">
-                        <a href="<?=Config::get('host')?>/Menu/displayMenu"><i class="fa fa-medium"></i> Menu</a>
-                    </li>
-                    <?php
-                    }
-                    //Copying Section Menu
-                    else if((Logins::getRoleName()) == "Copying Section"){
-                    ?>
-                    <li class="<?= isLinkActive('application/application_list/2/in') ?>">
-                        <a href="<?=Config::get('host')?>/application/application_list/2/in"><i class="fa fa-desktop"></i> Receive Application</a>
-                    </li>
-                    <li class="<?= isLinkActive('application/application_list/4/in') ?>">
-                        <a href="<?=Config::get('host')?>/application/application_list/4/in"><i class="fa fa-desktop"></i> Forward to CO</a>
-                    </li>
-                    <li class="<?= isLinkActive('application/application_list/5/in') ?>">
-                        <a href="<?=Config::get('host')?>/application/application_list/5/in"><i class="fa fa-desktop"></i> Forward to Jr. A.A.</a>
-                    </li>
-                    <?php    
-                    }
-                    //Registrar General (RG) Menu
-                    else if(Logins::getRoleName() == "Registrar General (RG)"){
-                    ?>
-                    <li class="<?= isLinkActive('application/application_list/1/in') ?>">
-                        <a href="<?=Config::get('host')?>/application/application_list/1/in"><i class="fa fa-desktop"></i> Receive Application </a>
-                    </li>
-                    <?php
-                    }
-                    //Judicial 1,2,3 Menu
-                    else if(Logins::getRoleName() == "Judicial 1" || Logins::getRoleName() == "Judicial 2" || Logins::getRoleName() == "Judicial 3"){
-                    ?>
-                    <li class="<?= isLinkActive('application/application_list/3/in') ?>">
-                        <a href="<?=Config::get('host')?>/application/application_list/3/in"><i class="fa fa-desktop"></i> Receive Application </a>
-                    </li>
-                    <?php
-                    }
-                    //Computer Operator Menu
-                    else if(Logins::getRoleName() == "Computer Operator"){
-                    ?>
-                    <li class="<?= isLinkActive('application/application_list/7/in') ?>">
-                        <a href="<?=Config::get('host')?>/application/application_list/7/in"><i class="fa fa-desktop"></i> Receive Application </a>
-                    </li>
-                    <?php
-                    }
-                    ?>
-                    
-                    <!-- 
-                    <li class="<?= isLinkActive('default/index') ?><?= isLinkActive('default') ?><?= isLinkActive('') ?>" >
-                        <a href="<?=Config::get('host')?>/default/index">Home</a>
-                    </li>
-                    <li class="<?= isLinkActive('default/contact')?>" >
-                        <a href="<?=Config::get('host')?>/default/contact">Contact</a>
-                    </li>
-                    <li class="<?= isLinkActive('default/about') ?>" >
-                        <a href="<?=Config::get('host')?>/default/about">About</a>
-                    </li>
-                    -->
+                    <?= writeSidebarMenus() ?>
                 </ul>
             </nav>
             <script type="text/javascript">
@@ -118,3 +24,31 @@
                     });
                 });
             </script>
+<?php
+function writeSidebarMenus(){
+    $user_info = $_SESSION['user_info'];
+    $role_id = $user_info['role_id'];
+    $menuReader = new MenuReader();
+    $menus = $menuReader->readMenu($role_id);
+    return getMenuHtml($menus);
+}
+
+function getMenuHtml($menus=array()){
+    $str="";
+    foreach ($menus as $menu){
+        if(sizeof($menu['child_menu'])){
+            $str .=   "<li>"
+                    . "<a href='#Submenu".$menu['menu_id']."' data-toggle='collapse' aria-expanded='false' class='dropdown-toggle'>".$menu['menu_name']."</a>"
+                    . "<ul class='collapse list-unstyled' id='Submenu".$menu['menu_id']."'>"
+                    . getMenuHtml($menu['child_menu'])
+                    . "</ul>"
+                    . "</li>";
+            
+        }
+        else{
+            $str .= "<li class='".isLinkActive($menu['link'])."'><a href='".$menu['link']."'>".$menu['menu_name']."</a></li>";
+        }
+    }
+    return $str;
+}
+?>

@@ -21,6 +21,20 @@ class MenuController extends Controller{
         }
         $this->menu = new Menu();
     }
+    
+    public function index(){
+        $param = $this->getParams();
+        if(sizeof($param)){
+            $role_id = $param[0];
+            $menuReader = new MenuReader();
+            $menus = $menuReader->readMenu($role_id);
+            $data = ["msg"=>"Menu List","data"=>$menus];
+        }
+        else{
+            $data = ["msg"=>"Invalid request, missing role perameter."];
+        }
+        return $this->send_data($data, 200);
+    }
 
     public function displayMenu(){
         return $this->view();
@@ -199,15 +213,17 @@ class MenuController extends Controller{
                 "status_code"=>403
             ));
         }
+        /*
         else if(!isset($data['associated_roles'])){
             $this->response->set(array(
-                "msg"=>"Menu Id is missing",
+                "msg"=>"No roles are passed.",
                 "status_code"=>403
             ));
         }
+        */
         else{
             $menu_id = $data['menu_id'];
-            $associated_roles = $data['associated_roles'];//only role id is passed
+            $associated_roles = isset($data['associated_roles'])?$data['associated_roles']:null;//only role id is passed
             
             $conn = $this->menu::$conn;
             $conn->beginTransaction();

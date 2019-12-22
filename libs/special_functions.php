@@ -88,6 +88,7 @@ function redirect($controller, $action){
 }
 
 function isLinkActive($link){
+    $link = str_replace(Config::get('host'), "", $link);
     $current_link = strtolower(filter("uri", "GET"));
     if(strtolower(trim($link, '/')) == trim($current_link,'/')){
         return "active";

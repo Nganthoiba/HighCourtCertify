@@ -91,7 +91,7 @@ $parent_menu = $data['parent_menu'];
             ?>
         </tbody>
     </table>
-    <a href="javascript: window.history.back();">Back to parent menus</a>
+    <a href="javascript: window.history.back();">Back to parent menu</a>
     <script>
         var sub_menu_form = document.forms['sub_menu_form'];
         
@@ -107,7 +107,9 @@ $parent_menu = $data['parent_menu'];
         }
         sub_menu_form.onsubmit = function(event){
             event.preventDefault();
-            if(sub_menu_form.menu_name.value.trim() === "" || sub_menu_form.link.value.trim()){
+            //Validating form
+            if(sub_menu_form.menu_name.value.trim() === "" || sub_menu_form.link.value.trim() === "")
+            {
                 return false;
             }
             var url="";
