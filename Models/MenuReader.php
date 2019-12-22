@@ -1,14 +1,7 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of MenuReader
- *
+ *  A model class to get read menus and sub-menus recursively
  * @author Nganthoiba
  */
 class MenuReader {
@@ -33,7 +26,7 @@ class MenuReader {
                 "     select MRM.menu_id  ".
                 "     from menu_role_mapping MRM ".
                 "     where MRM.role_id=? ".
-                ") ".      
+                ") and M.parent_menu_id is NULL ".      
                 "Order by M.menu_name ";
         $stmt = $this->conn->prepare($qry);
         $stmt->execute([$role_id]);
