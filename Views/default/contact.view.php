@@ -69,7 +69,36 @@
                     </div>
                 </div>
                 <!--Grid row-->
+                <input type="checkbox" name="mybox" value="mybox1"/>mybox1<br/>
+                <input type="checkbox" name="mybox" value="mybox2"/>mybox2<br/>
+                <input type="checkbox" name="mybox" value="mybox3"/>mybox3<br/>
+                <input type="checkbox" name="mybox" value="mybox4"/>mybox4<br/>
                 
+                <input type="radio" name="myradio" value="myradio1"/>myradio1<br/>
+                <input type="radio" name="myradio" value="myradio2"/>myradio2<br/>
+                <input type="radio" name="myradio" value="myradio3"/>myradio3<br/>
+                
+                <input type="checkbox" name="mybox" value="mybox5"/>mybox5<br/>
+                <input type="checkbox" name="mybox" value="mybox6"/>mybox6<br/>
+                
+                <input type="radio" name="myradio" value="myradio4"/>myradio4<br/>
+                <input type="radio" name="myradio" value="myradio5"/>myradio5<br/>
+                <input type="radio" name="myradio" value="myradio6"/>myradio6<br/>
+                
+                <input type="checkbox" name="mybox2" value="mybox21"/>mybox21<br/>
+                <input type="checkbox" name="mybox2" value="mybox22"/>mybox22<br/>
+                <input type="checkbox" name="mybox2" value="mybox23"/>mybox23<br/>
+                <input type="radio" name="mynewradio" value="mynewradio1"/>mynewradio1<br/>
+                <input type="radio" name="mynewradio" value="mynewradio2"/>mynewradio2<br/>
+                <input type="radio" name="mynewradio" value="mynewradio3"/>mynewradio3<br/>
+                <input type="text" name="students" /><br/>
+                <input type="text" name="students" /><br/>
+                <input type="text" name="students" /><br/>
+                <input type="text" name="students" /><br/>
+                <input type="text" name="students" /><br/>
+                <input type="text" name="friend" /><br/>
+                <input type="text" name="friend" /><br/>
+                <input type="text" name="students" /><br/>
 
             </form>
 
@@ -104,6 +133,7 @@
 <!--Section: Contact v.2-->
 <script>
 function validateForm() {
+    /*
   var name =  document.getElementById('name').value;
   if (name === "") {
       document.getElementById('status').innerHTML = "Name cannot be empty";
@@ -130,8 +160,10 @@ function validateForm() {
       document.getElementById('status').innerHTML = "Message cannot be empty";
       return false;
   }
-  document.getElementById('status').innerHTML = "Sending...";
-  document.getElementById('contact-form').submit();
-
+  */
+  //document.getElementById('contact-form').submit();
+    var data = getFormDataToJson(document.forms['contact-form']);
+    //alert(JSON.stringify(data));
+    document.getElementById('status').innerHTML = "Sending..."+JSON.stringify(data)+" mybox-length="+data.mybox.length;
   }
 </script>

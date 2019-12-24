@@ -161,6 +161,9 @@ class ApplicationController extends Controller{
     }
     
     public function viewDetails(){
+        if(!Logins::isAuthenticated()){
+            redirect("Account", "Login");
+        }
         $user_info = $_SESSION['user_info'];
         $role_id = $user_info['role_id'];
         
@@ -269,22 +272,37 @@ class ApplicationController extends Controller{
     
     public function reject(){
         $response = new Response();
-        $params = $this->getParams();
-        if(sizeof($params)==0){
+        $params = $this->_cleanInputs($_POST);
+        if(sizeof($params)==0 || !$this->isValidForRejectApplication($params)){
             $response->set(array(
-                'msg'=>'Provide a valid application Id.',
+                'msg'=>'Invalid request.',
                 'status'=>false,
                 'status_code'=>403
                 ));
             return $this->send_data($response, $response->status_code);
         }
-        $application_id = $params[0];
-        $process_id = $params[1]??'';
-        $app = new application;
-        $user_info = $_SESSION['user_info'];
-        $resp = insertApplicationLog(Database::connect(), 'reject', $application_id, $process_id , 'The application has been rejected.');
+        $application_id = $params['application_id'];
+        $process_id = $params['process_id'];
+        $remark = $params['remark'];
+        
+        //$app = new application();
+        //$user_info = $_SESSION['user_info'];
+        $resp = insertApplicationLog(Database::connect(), 'reject', $application_id, $process_id , $remark);
         
         return $this->send_data($resp, $resp['status_code']);
+    }
+    
+    private function isValidForRejectApplication($params){
+        if(!isset($params['application_id']) || $params['application_id'] == ""){
+            return false;
+        }
+        if(!isset($params['process_id']) || $params['process_id'] == ""){
+            return false;
+        }
+        if(!isset($params['remark']) || $params['remark'] == ""){
+            return false;
+        }
+        return true;
     }
     
     public function status(){
