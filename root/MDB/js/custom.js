@@ -89,29 +89,29 @@ function isValidEmail(email)
 //function to convert form data to json
 function getFormDataToJson(form){
     var obj = {};//json object
-    var curr_element;
+    var curr_element; //current element
     var curr_key = "";//current key
     var curr_val = "";//current value
     var prev_key = [];//previous keys
-    var array_val = {};
-    var checkbox_arr = {};
+    var array_val = {};//Object of array of values of same key name
     
     for(var i=0;i<form.elements.length;i++){
+        //check for every element in the form 
         curr_element = form.elements[i];
         if((curr_element.type).toLowerCase()!=="submit" && (curr_element.type).toLowerCase()!=="button"){
             
             curr_key = curr_element.name.trim().replace("[]","");
             curr_val = curr_element.value.trim();
-            if(checkbox_arr[curr_key] === undefined){
-                checkbox_arr[curr_key] = [];
-            }
-            
+
+            if(array_val[curr_key] === undefined){
+                array_val[curr_key] = [];
+            }    
             //For checkbox with same key name
             if((curr_element.type).toLowerCase()==="checkbox"){
                 if(curr_element.checked === true){
-                    checkbox_arr[curr_key].push(curr_val);
+                    array_val[curr_key].push(curr_val);
                 }
-                obj[curr_key]=checkbox_arr[curr_key];
+                obj[curr_key]=array_val[curr_key];
             }
             else if((curr_element.type).toLowerCase() === "radio"){
                 if(curr_element.checked === true){
@@ -119,12 +119,9 @@ function getFormDataToJson(form){
                 }
             }
             else{
-                //if the key name already exists
+                //If current key already encountered in the prevoius key list, then
                 if(prev_key.includes(curr_key)){
-                    if(array_val[curr_key] === undefined){
-                        array_val[curr_key] = [];
-                    }
-                    //If current key already encountered in the prevoius key list, then
+                    
                     if(!Array.isArray(obj[curr_key])){
                         if(!array_val[curr_key].includes(obj[curr_key]) && obj[curr_key]!==""){
                             array_val[curr_key].push(obj[curr_key]);
@@ -136,26 +133,12 @@ function getFormDataToJson(form){
                     obj[curr_key]=array_val[curr_key];
                 }
                 else{
-                    obj[curr_key]= curr_val;
+                    obj[curr_key] = curr_val;
                     prev_key.push(curr_key);//adding the current key in the previous key list
                 }
             }
-            
         }
     }
-    /*
-    form.forEach((value, key) => {
-        // Reflect.has in favor of: object.hasOwnProperty(key)
-        if(!Reflect.has(obj, key)){
-            obj[key] = value;
-            return;
-        }
-        if(!Array.isArray(obj[key])){
-            obj[key] = [obj[key]];    
-        }
-        obj[key].push(value);
-    });
-    */
     return obj;
 }
 
