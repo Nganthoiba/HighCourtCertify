@@ -1,3 +1,4 @@
+
 /*
  * 
  * Data structure of args
@@ -28,7 +29,7 @@ function ajax_request(args)
     $.ajax({
         async: false,
         url: url,
-        type: method,
+        method: method,
         data: param,
         dataType: type,
         beforeSend: function(xhr){
@@ -87,79 +88,66 @@ function isValidEmail(email)
 
 //function to convert form data to json
 function getFormDataToJson(form){
-    //form means form object
     var obj = {};
-    var curr_element;//current element
     var curr_key = "";//current key
     var curr_val = "";//current value
     var prev_key = [];//previous keys
-    var array_val = {};//object for array of values of same key name
-    var checkbox_arr = {};//object for array of values of same key name for check boxes
-    
+    var array_val = [];
+    var checkbox_arr = [];
+    var current_element;
     for(var i=0;i<form.elements.length;i++){
-        curr_element = form.elements[i];
-        if((curr_element.type).toLowerCase()!=="submit" && (curr_element.type).toLowerCase()!=="button"){
+        current_element = form.elements[i];
+        if((current_element.type).toLowerCase()!=="submit" && (current_element.type).toLowerCase()!=="button"){
             
-            curr_key = curr_element.name.trim().replace("[]","");
-            curr_val = curr_element.value.trim();
-            if(checkbox_arr[curr_key] === undefined){
-                checkbox_arr[curr_key] = [];
-            }
-            if(array_val[curr_key] === undefined){
-                array_val[curr_key] = [];
-            }
+            curr_key = current_element.name.trim().replace("[]","");
+            curr_val = current_element.value.trim();
+            
             if(prev_key.includes(curr_key)){
                 //If current key already encountered in the prevoius key list, then
                 
                 //For checkbox with same key name
-                if((curr_element.type).toLowerCase()==="checkbox"){
-                    if(curr_element.checked === true){
-                        checkbox_arr[curr_key].push(curr_val);
+                if((current_element.type).toLowerCase()==="checkbox"){
+                    if(current_element.checked === true){
+                        checkbox_arr.push(curr_val);
                     }
-                    obj[curr_key]=checkbox_arr[curr_key];
+                    if(!Array.isArray(obj[curr_key])){
+                        if(!checkbox_arr.includes(obj[curr_key])){
+                            checkbox_arr.push(obj[curr_key]);
+                        }
+                    }
+                    obj[curr_key]=checkbox_arr;
+                    
                 }
-                //For radio button with same name
-                else if((curr_element.type).toLowerCase() === "radio"){
-                    if(curr_element.checked === true){
+                else if((current_element.type).toLowerCase() === "radio"){
+                    if(current_element.checked === true){
                         obj[curr_key]= curr_val;
-                        //For radio button there is only one choice, so there is no need of array of values
                     }
                 }
                 else{
-                    if(!Array.isArray(obj[curr_key])){
-                        if(!array_val[curr_key].includes(obj[curr_key])){
-                            if(obj[curr_key].trim()!==""){
-                                array_val[curr_key].push(obj[curr_key]);
-                            }
-                        }
-                    }
-                    if(curr_val.trim()!==""){
-                        array_val[curr_key].push(curr_val);
-                    }
-                    obj[curr_key]=array_val[curr_key];
+                    array_val.push(curr_val);
+                    obj[curr_key]=array_val;
                 }
                 
             }
             else{
-                if((curr_element.type).toLowerCase()==="checkbox"){
-                    if(curr_element.checked === true){
-                        checkbox_arr[curr_key].push(curr_val);
-                        obj[curr_key]=checkbox_arr[curr_key];
-                    }
-                }
-                else if((curr_element.type).toLowerCase() === "radio"){
-                    if(curr_element.checked === true){
-                        obj[curr_key]= curr_val;
-                    }
-                }
-                else{
-                    obj[curr_key]= curr_val;
-                }
+                obj[curr_key]= curr_val;
             }
             prev_key.push(curr_key);//adding the current key
         }
     }
-    
+    /*
+    form.forEach((value, key) => {
+        // Reflect.has in favor of: object.hasOwnProperty(key)
+        if(!Reflect.has(obj, key)){
+            obj[key] = value;
+            return;
+        }
+        if(!Array.isArray(obj[key])){
+            obj[key] = [obj[key]];    
+        }
+        obj[key].push(value);
+    });
+    */
     return obj;
 }
 
