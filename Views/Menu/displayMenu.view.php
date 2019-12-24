@@ -215,10 +215,10 @@
                 layout += "<tr>"+
                     "<td>"+menu.menu_name+"</td>"+    
                     "<td>"+menu.link+"</td>"+    
-                    "<td><a href='<?= Config::get('host') ?>/Menu/AssociateRoles/"+menu.menu_id+"'>Associate User Roles</a></td>"+    
+                    "<td><a href='<?= Config::get('host') ?>/Menu/AssociateRoles/"+menu.menu_id+"'>Associate User Roles</a></td>"+ 
+                    "<td><a href='<?= Config::get('host') ?>/Menu/displaySubMenu/"+menu.menu_id+"'>Sub Menus</a></td>"+
                     "<td><a href='javascript:void(0)' onclick='setMenuData("+JSON.stringify(menu)+");' data-toggle='modal' data-target='#editMenuModal'>Edit</a></td>"+    
-                    "<td><a href='javascript:removeMenu(\""+menu.menu_id+"\");'>Remove</a></td>"+    
-                    "<td><a href='<?= Config::get('host') ?>/Menu/displaySubMenu/"+menu.menu_id+"'>Sub Menus</a></td>"+    
+                    "<td><a href='javascript:removeMenu(\""+menu.menu_id+"\");'>Remove</a></td>"+     
                 "</tr>";
             }
             if(layout == ""){
