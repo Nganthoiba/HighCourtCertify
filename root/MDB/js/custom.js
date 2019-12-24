@@ -88,51 +88,59 @@ function isValidEmail(email)
 
 //function to convert form data to json
 function getFormDataToJson(form){
-    var obj = {};
+    var obj = {};//json object
+    var curr_element;
     var curr_key = "";//current key
     var curr_val = "";//current value
     var prev_key = [];//previous keys
-    var array_val = [];
-    var checkbox_arr = [];
-    var current_element;
+    var array_val = {};
+    var checkbox_arr = {};
+    
     for(var i=0;i<form.elements.length;i++){
-        current_element = form.elements[i];
-        if((current_element.type).toLowerCase()!=="submit" && (current_element.type).toLowerCase()!=="button"){
+        curr_element = form.elements[i];
+        if((curr_element.type).toLowerCase()!=="submit" && (curr_element.type).toLowerCase()!=="button"){
             
-            curr_key = current_element.name.trim().replace("[]","");
-            curr_val = current_element.value.trim();
+            curr_key = curr_element.name.trim().replace("[]","");
+            curr_val = curr_element.value.trim();
+            if(checkbox_arr[curr_key] === undefined){
+                checkbox_arr[curr_key] = [];
+            }
             
-            if(prev_key.includes(curr_key)){
-                //If current key already encountered in the prevoius key list, then
-                
-                //For checkbox with same key name
-                if((current_element.type).toLowerCase()==="checkbox"){
-                    if(current_element.checked === true){
-                        checkbox_arr.push(curr_val);
-                    }
-                    if(!Array.isArray(obj[curr_key])){
-                        if(!checkbox_arr.includes(obj[curr_key])){
-                            checkbox_arr.push(obj[curr_key]);
-                        }
-                    }
-                    obj[curr_key]=checkbox_arr;
-                    
+            //For checkbox with same key name
+            if((curr_element.type).toLowerCase()==="checkbox"){
+                if(curr_element.checked === true){
+                    checkbox_arr[curr_key].push(curr_val);
                 }
-                else if((current_element.type).toLowerCase() === "radio"){
-                    if(current_element.checked === true){
-                        obj[curr_key]= curr_val;
-                    }
+                obj[curr_key]=checkbox_arr[curr_key];
+            }
+            else if((curr_element.type).toLowerCase() === "radio"){
+                if(curr_element.checked === true){
+                    obj[curr_key]= curr_val;
                 }
-                else{
-                    array_val.push(curr_val);
-                    obj[curr_key]=array_val;
-                }
-                
             }
             else{
-                obj[curr_key]= curr_val;
+                //if the key name already exists
+                if(prev_key.includes(curr_key)){
+                    if(array_val[curr_key] === undefined){
+                        array_val[curr_key] = [];
+                    }
+                    //If current key already encountered in the prevoius key list, then
+                    if(!Array.isArray(obj[curr_key])){
+                        if(!array_val[curr_key].includes(obj[curr_key]) && obj[curr_key]!==""){
+                            array_val[curr_key].push(obj[curr_key]);
+                        }
+                    }
+                    if(curr_val!==""){
+                        array_val[curr_key].push(curr_val);
+                    }
+                    obj[curr_key]=array_val[curr_key];
+                }
+                else{
+                    obj[curr_key]= curr_val;
+                    prev_key.push(curr_key);//adding the current key in the previous key list
+                }
             }
-            prev_key.push(curr_key);//adding the current key
+            
         }
     }
     /*

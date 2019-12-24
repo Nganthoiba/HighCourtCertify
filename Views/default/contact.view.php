@@ -69,7 +69,37 @@
                     </div>
                 </div>
                 <!--Grid row-->
+                <input type="checkbox" name="fruits" value="Mango"/>Mango<br/>
+                <input type="checkbox" name="fruits" value="Banana"/>Banana<br/>
+                <input type="checkbox" name="fruits" value="Papaya"/>Papaya<br/>
+                <input type="checkbox" name="fruits" value="Orange"/>Orange<br/>
+
+                <input type="radio" name="myradio" value="myradio1"/>myradio1<br/>
+                <input type="radio" name="myradio" value="myradio2"/>myradio2<br/>
+                <input type="radio" name="myradio" value="myradio3"/>myradio3<br/>
+
+                <input type="checkbox" name="tools" value="Pen"/>Pen<br/>
+                <input type="checkbox" name="tools" value="Pencils"/>Pencils<br/>
                 
+                <input type="checkbox" name="fruits" value="Lemon"/>Lemon<br/>
+                
+                <input type="radio" name="myradio" value="myradio4"/>myradio4<br/>
+                <input type="radio" name="myradio" value="myradio5"/>myradio5<br/>
+                <input type="radio" name="myradio" value="myradio6"/>myradio6<br/>
+
+                <input type="checkbox" name="flowers" value="Sunflower"/>Sunflower<br/>
+                <input type="checkbox" name="flowers" value="China Rose"/>China Rose<br/>
+                <input type="checkbox" name="flowers" value="Marigold"/>Marigold<br/>
+
+                <input type="text" name="friends" />Friend<br/>
+                <input type="text" name="students" />students<br/>
+                <input type="text" name="students" />students<br/>
+                <input type="text" name="students" />students<br/>
+                <input type="text" name="friends" />Friend<br/>
+                <input type="text" name="friends" />Friend<br/>
+                <input type="text" name="students" />students<br/>
+                <input type="text" name="students" />students<br/>
+                <input type="text" name="students" />students<br/>
 
             </form>
 
@@ -97,13 +127,13 @@
             </ul>
         </div>
         <!--Grid column-->
-
+        
     </div>
 
 </section>
 <!--Section: Contact v.2-->
 <script>
-function validateForm() {
+function validateForm() {/*
   var name =  document.getElementById('name').value;
   if (name === "") {
       document.getElementById('status').innerHTML = "Name cannot be empty";
@@ -132,6 +162,9 @@ function validateForm() {
   }
   document.getElementById('status').innerHTML = "Sending...";
   document.getElementById('contact-form').submit();
-
+  */
+  var data = getFormDataToJson(document.forms['contact-form']);
+    //alert(JSON.stringify(data));
+    document.getElementById('status').innerHTML = "Sending..."+JSON.stringify(data);
   }
 </script>
