@@ -60,15 +60,15 @@
     var associate_role_with_menu = document.forms['associate_role_with_menu'];
     associate_role_with_menu.onsubmit = function(event){
         event.preventDefault();
-        //var json_data = getFormDataToJson(associate_role_with_menu);
-        //if(json_data.associated_roles.length == 0){
-            //json_data.associated_roles = null;
-        //}
+        var json_data = getFormDataAsJson(associate_role_with_menu);
+        if(json_data.associated_roles.length == 0){
+            json_data.associated_roles = null;
+        }
         
         var resp = ajax_request({
             url: associate_role_with_menu.action,
             method: "POST",
-            param: $("#associate_role_with_menu").serialize()
+            param: json_data;//$("#associate_role_with_menu").serialize()
         });
         
         if(resp.status){

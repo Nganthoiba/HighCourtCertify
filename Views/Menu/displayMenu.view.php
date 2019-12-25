@@ -112,7 +112,7 @@
             }
             $.ajax({
                 url: add_menu_form.action,
-                data: getFormDataToJson(add_menu_form),
+                data: getFormDataAsJson(add_menu_form),
                 type: "POST",
                 success: function(resp){
                     swal.fire({
@@ -156,7 +156,7 @@
             }
             $.ajax({
                 url: edit_menu_form.action,
-                data: getFormDataToJson(edit_menu_form),
+                data: getFormDataAsJson(edit_menu_form),
                 type: "POST",
                 success: function(resp){
                     swal.fire({

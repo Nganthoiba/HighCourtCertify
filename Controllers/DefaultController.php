@@ -28,6 +28,10 @@ class DefaultController extends Controller{
         //$this->data['content'] = 'Hello this is the about action of default controller.';
         return $this->view();
     }
+    public function feedback(){
+        Config::set('site_name', 'Feedback');
+        return $this->view();
+    }
     /*** just for testing ***/
     public function add(){
         $params = $this->getParams(); 
