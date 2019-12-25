@@ -5,7 +5,7 @@
 -- Dumped from database version 9.6.14
 -- Dumped by pg_dump version 10.5
 
--- Started on 2019-12-24 13:26:25
+-- Started on 2019-12-25 22:20:31
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -695,11 +695,21 @@ CREATE TABLE public.menu (
     menu_id integer NOT NULL,
     menu_name character varying(90),
     link character varying(100),
-    parent_menu_id integer
+    parent_menu_id integer,
+    sequence integer
 );
 
 
 ALTER TABLE public.menu OWNER TO postgres;
+
+--
+-- TOC entry 2315 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: COLUMN menu.sequence; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.menu.sequence IS 'sequence for displaying menu';
+
 
 --
 -- TOC entry 202 (class 1259 OID 57713)
@@ -717,7 +727,7 @@ CREATE SEQUENCE public.menu_menu_id_seq
 ALTER TABLE public.menu_menu_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2315 (class 0 OID 0)
+-- TOC entry 2316 (class 0 OID 0)
 -- Dependencies: 202
 -- Name: menu_menu_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -785,7 +795,7 @@ CREATE SEQUENCE public.process_process_id_seq
 ALTER TABLE public.process_process_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2316 (class 0 OID 0)
+-- TOC entry 2317 (class 0 OID 0)
 -- Dependencies: 193
 -- Name: process_process_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -811,7 +821,7 @@ CREATE TABLE public.process_role_map (
 ALTER TABLE public.process_role_map OWNER TO postgres;
 
 --
--- TOC entry 2317 (class 0 OID 0)
+-- TOC entry 2318 (class 0 OID 0)
 -- Dependencies: 194
 -- Name: COLUMN process_role_map.process_id; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -820,7 +830,7 @@ COMMENT ON COLUMN public.process_role_map.process_id IS 'work flow stage';
 
 
 --
--- TOC entry 2318 (class 0 OID 0)
+-- TOC entry 2319 (class 0 OID 0)
 -- Dependencies: 194
 -- Name: COLUMN process_role_map.role_id; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -829,7 +839,7 @@ COMMENT ON COLUMN public.process_role_map.role_id IS 'Role of the user who is re
 
 
 --
--- TOC entry 2319 (class 0 OID 0)
+-- TOC entry 2320 (class 0 OID 0)
 -- Dependencies: 194
 -- Name: COLUMN process_role_map.description; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -868,7 +878,7 @@ CREATE SEQUENCE public.process_role_map_process_role_map_id_seq1
 ALTER TABLE public.process_role_map_process_role_map_id_seq1 OWNER TO postgres;
 
 --
--- TOC entry 2320 (class 0 OID 0)
+-- TOC entry 2321 (class 0 OID 0)
 -- Dependencies: 196
 -- Name: process_role_map_process_role_map_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -962,7 +972,7 @@ CREATE SEQUENCE public.written_application_written_application_id_seq
 ALTER TABLE public.written_application_written_application_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2321 (class 0 OID 0)
+-- TOC entry 2322 (class 0 OID 0)
 -- Dependencies: 201
 -- Name: written_application_written_application_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1038,6 +1048,7 @@ f099e550-38e8-4196-be4b-5c793da923e2	Ordinary Copy	152	3	2013	Tompok	Romesh	2	20
 de7b449d-dbce-4241-a768-8516bc7ffa3f	Urgent Copy	86	20	2014	Yumkhaibam Mani	Yumkhaibam Johnny	2	2019-12-08	2019-12-20 15:56:16	6e6cae79-b531-4596-bcbe-4cc5522c1536	n	3	148	2010
 27eb8e8e-a1d1-4fca-bbee-a1d14dc76ef9	Urgent Copy	152	23	2014	tomba	Bobby	1	2019-12-01	2019-12-23 13:02:53	c039de78-d396-4156-94ef-11f67c5991d9	y	-1	-1	-1
 123e8fbb-552d-4932-8709-76f90e365644	Ordinary Copy	153	14	2014	Gokul	Kaiku	2	2019-12-07	2019-12-23 13:04:11	c039de78-d396-4156-94ef-11f67c5991d9	n	-1	-1	-1
+64ab79b8-2c20-49b0-808b-ad4955f53b73	Urgent Copy	153	3	2014	Toman	Chanchan	1	2019-12-01	2019-12-24 13:45:29	c039de78-d396-4156-94ef-11f67c5991d9	y	-1	-1	-1
 \.
 
 
@@ -1106,6 +1117,12 @@ ea100d44-fd1e-40ab-96a1-0cde9150af97	ee214941-1d4d-45f8-a921-e5c3b90f8d38	f9f63f
 05fc53cc-ff8e-4e76-9f9c-17d3ee50985d	f099e550-38e8-4196-be4b-5c793da923e2	f9f63fae-b09d-41bf-a915-9aa75fd40f0f	2019-12-23 14:27:37.875953+05:30	reject	2	14	The application has been rejected.	5	8	127.0.0.1
 9dfc7ff5-631d-4c71-a9fe-c6547513dafb	6051ef9d-54d8-45b6-9302-95efe4faa767	f9f63fae-b09d-41bf-a915-9aa75fd40f0f	2019-12-23 14:28:14.05759+05:30	approve	2	7	The application has been approved.	5	6	127.0.0.1
 e6af6612-60d5-4164-8617-62e964767279	27eb8e8e-a1d1-4fca-bbee-a1d14dc76ef9	900985bb-b940-4c59-b11f-75413b3414d5	2019-12-23 14:47:21.234759+05:30	approve	12	7	The application has been approved.	7	7	127.0.0.1
+26cf31c4-80be-4849-ba1e-920773b9ca16	64ab79b8-2c20-49b0-808b-ad4955f53b73	c039de78-d396-4156-94ef-11f67c5991d9	2019-12-24 13:45:29.874885+05:30	create	14	2	Application is submitted	8	2	127.0.0.1
+4112d848-814b-4ef6-a9bb-419449bd31d2	c05282f5-1043-45a6-a07a-c92ef3fe6247	80bd49f7-a31c-4902-88f0-16cbc9740c8c	2019-12-24 14:58:15.177088+05:30	reject	2	14	I have nothing to say	2	8	127.0.0.1
+5c65600c-e50a-4d58-acd3-cdfc567c2591	dcc627f2-8d62-42f7-a34c-0d78bf11c4b8	80bd49f7-a31c-4902-88f0-16cbc9740c8c	2019-12-24 14:59:41.35316+05:30	reject	2	14	Not Appropriate	2	8	127.0.0.1
+218595e3-8c48-43e4-8b80-387f95eaa0d2	64ab79b8-2c20-49b0-808b-ad4955f53b73	80bd49f7-a31c-4902-88f0-16cbc9740c8c	2019-12-24 15:01:46.239725+05:30	approve	2	4	The application has been approved.	2	3	127.0.0.1
+910c0228-c694-48c1-8c6b-00b3a3e50b43	ee214941-1d4d-45f8-a921-e5c3b90f8d38	030c2683-8ff2-47f8-81fa-f05dd8657f58	2019-12-24 15:04:50.625355+05:30	reject	4	14	Judicial 1 rejects it for misinformation.	3	8	127.0.0.1
+2fc5d9e8-fdf4-4a1f-aa6b-ad979bee77b0	1b5b4b59-7696-4d36-87d7-85bedfedb991	030c2683-8ff2-47f8-81fa-f05dd8657f58	2019-12-24 15:10:20.698576+05:30	approve	4	2	The application has been approved.	3	5	127.0.0.1
 \.
 
 
@@ -1264,6 +1281,21 @@ m2097dTg03v7wsde82N0s0swTdHP555NK0c6H68Ce5OdC77130B24OF0m34I	2019-12-23 14:07:40
 l4JN78cY3n4YJ7u10aRmXc0ej6L0BJ5l58tqUIYhi1jz0k1aQJ8a46NfLyR0	2019-12-23 14:29:06+05:30	2019-12-23 14:47:29+05:30	2019-12-23 17:29:06+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36	900985bb-b940-4c59-b11f-75413b3414d5
 E2bNpN6ddmdCdHQE71ttbD5d7dYFFo11077075Hu505E67S5eH1p5Hp6Q80o	2019-12-23 14:05:51+05:30	2019-12-23 14:47:32+05:30	2019-12-23 17:05:51+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
 3UgJ4213vR12WeH25e5FM390Sr631N9i71V54l12M64g9f0710nR11fC617d	2019-12-23 22:50:30+05:30	2019-12-23 22:51:08+05:30	2019-12-24 01:50:30+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c039de78-d396-4156-94ef-11f67c5991d9
+5ZuEz58e5c909zxV74359z7fcB25W7Zz7z775Scx01UW5c7bK87kGb7c21c5	2019-12-24 13:44:01+05:30	2019-12-24 13:44:27+05:30	2019-12-24 16:44:01+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	6c6ca4dd-0ef6-4584-8d01-ea922578fa20
+Rz2Yg2s0RR2MJ8ru9152Rl5R4h58blcl3MHg19vS585bM68F12F5GRC88MRG	2019-12-24 13:44:42+05:30	2019-12-24 13:45:54+05:30	2019-12-24 16:44:42+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c039de78-d396-4156-94ef-11f67c5991d9
+0v0031q7q35M7T57qG95BMJ9O07zBy6W0B5f4614c0405T0MWx5y4Z5W7To9	2019-12-24 13:46:37+05:30	\N	2019-12-24 16:46:37+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	80bd49f7-a31c-4902-88f0-16cbc9740c8c
+5Ba15GuK009uOR91u4Rrr1u1bQQd9dKrO7ScO5Z47J1iQ5FH6R0C06o54uSc	2019-12-24 14:55:00+05:30	2019-12-24 14:55:34+05:30	2019-12-24 17:55:00+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
+Q2dl8oC7EG74505K57u59uX59507Y6uF57xT752e85Pd141f7C78184PZtxt	2019-12-24 14:55:44+05:30	2019-12-24 15:02:24+05:30	2019-12-24 17:55:44+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	80bd49f7-a31c-4902-88f0-16cbc9740c8c
+6V7646p673Z4bYYD1YQel1y7K5Vs5d7pE1e7Ab0lV4YUpw1Qp97gqJIQyc5s	2019-12-24 15:02:54+05:30	2019-12-24 15:03:16+05:30	2019-12-24 18:02:54+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	1d6ce7ba-7161-487f-b566-7202e9222174
+YKzeef8dC0dWLi7KDCd9vd1l1XSJieM513EeC1114E1bn7ClLAd86191K5DK	2019-12-24 15:03:31+05:30	2019-12-24 15:31:54+05:30	2019-12-24 18:03:31+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	030c2683-8ff2-47f8-81fa-f05dd8657f58
+dt0D10G3072iad3Q656Y2dMfMmdA2vF0jwalpmD817J2bM822OGMa55uTkds	2019-12-25 08:23:07+05:30	2019-12-25 08:24:46+05:30	2019-12-25 11:23:07+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	f238775f-6e77-4df4-871d-7fb6fe8112b9
+9rf39d4Q1DddrsfTFf5Qff4l02QbB54Gex8XT2Tf294H0Plrf92f3Xdre152	2019-12-25 10:56:13+05:30	2019-12-25 13:29:32+05:30	2019-12-25 13:56:13+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
+ze8N2Bs9wdNt855J380dEF83jT0EJe574ar2511e58aBhNaae8rHXJBh00zy	2019-12-25 14:43:02+05:30	\N	2019-12-25 17:43:02+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
+BCQ34Td914ZO9737z5Tc5c6f5gbyO1WNWpbZ2P543TT82FZcrJpf53dH57cW	2019-12-25 15:00:37+05:30	2019-12-25 15:17:36+05:30	2019-12-25 18:00:37+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
+6Y1952cEd9RgK38K4W13FEmecTgjG9IETF9cE761e200WGFKzK926V61e084	2019-12-25 15:46:32+05:30	\N	2019-12-25 18:46:32+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
+jgw52xM5iMc2Yztg1BcMyx7gW2xxK3o9KWYyQ4ggyu2T8225OQ7Io4ejYoYW	2019-12-25 18:02:32+05:30	\N	2019-12-25 21:02:32+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
+65m204U2kHjdoyeem5E5ZARCglA175EX0Mlmrdkqe7l1myi101vet1EeORFA	2019-12-25 18:32:25+05:30	\N	2019-12-25 21:32:25+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
+fEc1OcMvL7G1GL6591c9g9676Av10P8H07717L999d786hXg5a9729Qa8H13	2019-12-25 21:36:30+05:30	\N	2019-12-26 00:36:30+05:30	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0	c43846c6-69ba-4161-9f06-a5f801791796
 \.
 
 
@@ -1273,23 +1305,26 @@ E2bNpN6ddmdCdHQE71ttbD5d7dYFFo11077075Hu505E67S5eH1p5Hp6Q80o	2019-12-23 14:05:51
 -- Data for Name: menu; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.menu (menu_id, menu_name, link, parent_menu_id) FROM stdin;
-2	Add User	http://copying.nic.in/user/addUsers	\N
-3	Add Roles	http://copying.nic.in/role/addRoles	\N
-4	Process Role Mapping	http://copying.nic.in/role/processRoleMapping	\N
-1	View Users	http://copying.nic.in/user/viewUsers	\N
-7	Apply for copy	http://copying.nic.in/application/apply	\N
-8	View Applications	http://copying.nic.in/application/viewApplications	\N
-10	Receive Applications	http://copying.nic.in/Application/application_list/2/in	\N
-11	Forward to Jr. A.A.	http://copying.nic.in/application/application_list/5/in	\N
-12	Forward to C.O.	http://copying.nic.in/application/application_list/4/in	\N
-13	Receive Applications	http://copying.nic.in/application/application_list/3/in	\N
-14	Notesheet Preparation and Approval	http://copying.nic.in/Application/application_list/6/in	\N
-9	Certificate Preparation	http://copying.nic.in/Application/application_list/7/in	\N
-5	Menu	http://copying.nic.in/Menu/displayMenu	\N
-15	Home	http://copying.nic.in/default/index	\N
-16	Test	test_link	\N
-17	Receive Applications	http://copying.nic.in/Application/application_list/1/in	\N
+COPY public.menu (menu_id, menu_name, link, parent_menu_id, sequence) FROM stdin;
+20	Feedback	http://copying.nic.in/Default/feedback	16	1
+18	Default	http://copying.nic.in/default/index	16	2
+19	Contact	http://copying.nic.in/Default/contact	16	3
+15	Home	http://copying.nic.in/default/index	\N	1
+1	View Users	http://copying.nic.in/user/viewUsers	\N	2
+5	Menu	http://copying.nic.in/Menu/displayMenu	\N	3
+16	Test	test_link	\N	4
+13	Receive Applications	http://copying.nic.in/application/application_list/3/in	\N	5
+11	Forward to Jr. A.A.	http://copying.nic.in/application/application_list/5/in	\N	6
+14	Notesheet Preparation and Approval	http://copying.nic.in/Application/application_list/6/in	\N	7
+9	Certificate Preparation	http://copying.nic.in/Application/application_list/7/in	\N	8
+17	Receive Applications	http://copying.nic.in/Application/application_list/1/in	\N	9
+2	Add User	http://copying.nic.in/user/addUsers	\N	10
+3	Add Roles	http://copying.nic.in/role/addRoles	\N	11
+4	Process Role Mapping	http://copying.nic.in/role/processRoleMapping	\N	12
+7	Apply for copy	http://copying.nic.in/application/apply	\N	13
+8	View Applications	http://copying.nic.in/application/viewApplications	\N	14
+10	Receive Applications	http://copying.nic.in/Application/application_list/2/in	\N	15
+12	Forward to C.O.	http://copying.nic.in/application/application_list/4/in	\N	16
 \.
 
 
@@ -1301,9 +1336,10 @@ COPY public.menu (menu_id, menu_name, link, parent_menu_id) FROM stdin;
 
 COPY public.menu_role_mapping (menu_id, role_id, menu_role_mapping_id) FROM stdin;
 17	3	88
+2	1	93
+16	1	94
 5	1	35
 3	1	36
-2	1	37
 4	1	38
 1	1	39
 6	14	40
@@ -1424,6 +1460,8 @@ c039de78-d396-4156-94ef-11f67c5991d9	Khangembam Alica	alica@gmail.com	9856732167
 dc6e8456-7fc5-472d-adde-28939b3da901	Registrar General	rg@gmail.com	5423368788	3	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-09 13:55:58.697748+05:30	2019-12-15 22:43:23+05:30	\N	\N	\N	c43846c6-69ba-4161-9f06-a5f801791796
 1d6ce7ba-7161-487f-b566-7202e9222174	Judicial 2	judicial2@gmail.com	9089517462	5	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-10 07:03:48.018414+05:30	2019-12-19 07:33:41+05:30	\N	\N	\N	c43846c6-69ba-4161-9f06-a5f801791796
 f9f63fae-b09d-41bf-a915-9aa75fd40f0f	Kuraijam Siddhart	siddhart@yahoo.in	9856732148	2	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-16 21:29:29.229472+05:30	2019-12-19 17:34:35+05:30	\N	\N	\N	c43846c6-69ba-4161-9f06-a5f801791796
+e4b7fc43-406d-437b-a946-a22d7bc52d38	Assistant Registrar	assistant_rg@gmail.com	5641239772	9	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-09 14:00:11.947769+05:30	2019-12-25 10:56:20+05:30	\N	\N	\N	c43846c6-69ba-4161-9f06-a5f801791796
+aa02b8ca-6da7-4088-b8c4-75d5c4cb09f9	Khangembam Thoibi	thoibi@gmail.com	9856732169	9	f565df210b29157d76cf761e29f4909ad7a8704949b071fe12e98576ca76e48f	f	2019-12-09 15:37:14.82123+05:30	2019-12-25 14:43:18+05:30	\N	\N	\N	c43846c6-69ba-4161-9f06-a5f801791796
 003c8504-caad-4e36-a34e-a1cc54f9e4ce	Superintendent	sp@gmail.com	5641237895	13	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-09 13:58:46.373194+05:30	2019-12-15 22:55:47+05:30	\N	\N	\N	c43846c6-69ba-4161-9f06-a5f801791796
 900985bb-b940-4c59-b11f-75413b3414d5	Laishram Bonita	bonita@gmail.com	9856732164	12	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-15 22:58:04.069324+05:30	\N	\N	\N	\N	\N
 c43846c6-69ba-4161-9f06-a5f801791796	Administrator	admin@gmail.com	9856732169	1	8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918	f	2019-12-05 19:01:10.340154+05:30	2019-12-19 18:14:53+05:30	\N	\N	1234567891  	c43846c6-69ba-4161-9f06-a5f801791796
@@ -1431,11 +1469,9 @@ c43846c6-69ba-4161-9f06-a5f801791796	Administrator	admin@gmail.com	9856732169	1	
 f238775f-6e77-4df4-871d-7fb6fe8112b9	Khangenbam Nganthoiba	leecba@gmail.com	9089517468	14	82a3326339cfd75bdc0a667e21957437c58de70a5514aead2f8d2ed93f1fbd90	f	2019-12-05 18:58:42.532194+05:30	2019-12-20 12:57:08+05:30	\N	\N	763384620895	f238775f-6e77-4df4-871d-7fb6fe8112b9
 6e6cae79-b531-4596-bcbe-4cc5522c1536	Yendrembam Lumfu	lumfu@gmail.com	9856732148	14	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-20 14:29:20.550335+05:30	\N	\N	\N	\N	\N
 80bd49f7-a31c-4902-88f0-16cbc9740c8c	Okram Ibobi Singh	ibobi@gmail.com	7854621389	2	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-10 07:05:58.198767+05:30	2019-12-20 14:35:51+05:30	\N	\N	763384620891	80bd49f7-a31c-4902-88f0-16cbc9740c8c
-e4b7fc43-406d-437b-a946-a22d7bc52d38	Assistant Registrar	assistant_rg@gmail.com	5641239772	9	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-09 14:00:11.947769+05:30	2019-12-21 16:10:26+05:30	\N	\N	\N	c43846c6-69ba-4161-9f06-a5f801791796
 e40a7414-8020-4472-8669-767db5f90979	Junior Account Assistant	jraa@gmail.com	2364178958	7	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-09 13:56:46.565739+05:30	\N	\N	\N	\N	\N
 384218d0-546a-4561-8c92-6a9738f0f796	Senior Account Assistant	sraa@gmail.com	5497336478	8	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-09 13:57:57.279107+05:30	\N	\N	\N	\N	\N
 c613e2e4-84bc-4ccb-95e6-f7a8ca624a25	Registrar Judicial	rg_judicial@gmail.com	1234567895	11	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-09 14:05:23.704717+05:30	\N	\N	\N	\N	\N
-aa02b8ca-6da7-4088-b8c4-75d5c4cb09f9	Khangembam Thoibi	thoibi@gmail.com	9856732169	9	f565df210b29157d76cf761e29f4909ad7a8704949b071fe12e98576ca76e48f	f	2019-12-09 15:37:14.82123+05:30	\N	\N	\N	\N	\N
 030c2683-8ff2-47f8-81fa-f05dd8657f58	Judicial 1	judicial1@gmail.com	9876541236	4	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-10 07:02:14.553172+05:30	\N	\N	\N	\N	\N
 514d2016-34ff-4a20-8277-d61af58a171a	Khangembam Alex	alex@gmail.com	9856732169	14	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-12 11:21:37.511122+05:30	2019-12-12 13:06:09+05:30	\N	\N	526425502565	514d2016-34ff-4a20-8277-d61af58a171a
 2b62c813-5631-4ae8-856a-300146a29121	Judicial 3	judicial3@gmail.com	9874123598	6	a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5	f	2019-12-10 07:04:50.591067+05:30	\N	\N	\N	\N	\N
@@ -1470,7 +1506,7 @@ COPY public.written_application (written_application_id, application_id, body) F
 
 
 --
--- TOC entry 2322 (class 0 OID 0)
+-- TOC entry 2323 (class 0 OID 0)
 -- Dependencies: 186
 -- Name: Document_document_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1479,7 +1515,7 @@ SELECT pg_catalog.setval('public."Document_document_id_seq"', 1, false);
 
 
 --
--- TOC entry 2323 (class 0 OID 0)
+-- TOC entry 2324 (class 0 OID 0)
 -- Dependencies: 202
 -- Name: menu_menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1488,16 +1524,16 @@ SELECT pg_catalog.setval('public.menu_menu_id_seq', 1, false);
 
 
 --
--- TOC entry 2324 (class 0 OID 0)
+-- TOC entry 2325 (class 0 OID 0)
 -- Dependencies: 207
 -- Name: menu_role_mapping_menu_role_mapping_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.menu_role_mapping_menu_role_mapping_id_seq', 88, true);
+SELECT pg_catalog.setval('public.menu_role_mapping_menu_role_mapping_id_seq', 94, true);
 
 
 --
--- TOC entry 2325 (class 0 OID 0)
+-- TOC entry 2326 (class 0 OID 0)
 -- Dependencies: 193
 -- Name: process_process_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1506,7 +1542,7 @@ SELECT pg_catalog.setval('public.process_process_id_seq', 1, true);
 
 
 --
--- TOC entry 2326 (class 0 OID 0)
+-- TOC entry 2327 (class 0 OID 0)
 -- Dependencies: 195
 -- Name: process_role_map_process_role_map_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1515,7 +1551,7 @@ SELECT pg_catalog.setval('public.process_role_map_process_role_map_id_seq', 1, t
 
 
 --
--- TOC entry 2327 (class 0 OID 0)
+-- TOC entry 2328 (class 0 OID 0)
 -- Dependencies: 196
 -- Name: process_role_map_process_role_map_id_seq1; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1524,7 +1560,7 @@ SELECT pg_catalog.setval('public.process_role_map_process_role_map_id_seq1', 65,
 
 
 --
--- TOC entry 2328 (class 0 OID 0)
+-- TOC entry 2329 (class 0 OID 0)
 -- Dependencies: 199
 -- Name: roles_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1533,7 +1569,7 @@ SELECT pg_catalog.setval('public.roles_role_id_seq', 2, true);
 
 
 --
--- TOC entry 2329 (class 0 OID 0)
+-- TOC entry 2330 (class 0 OID 0)
 -- Dependencies: 201
 -- Name: written_application_written_application_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1684,7 +1720,7 @@ ALTER TABLE ONLY public.menu
     ADD CONSTRAINT menu_self_reference FOREIGN KEY (parent_menu_id) REFERENCES public.menu(menu_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
--- Completed on 2019-12-24 13:26:27
+-- Completed on 2019-12-25 22:20:33
 
 --
 -- PostgreSQL database dump complete
