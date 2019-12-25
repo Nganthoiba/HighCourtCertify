@@ -1,3 +1,5 @@
+<link href="<?=Config::get('host')?>/root/jquery_ui/jquery-ui.css" rel="stylesheet">
+    <link href="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.css" rel="stylesheet" type="text/css"/>
 <div class="container-fluid">
 <?php 
 $response = $data['response'];
@@ -7,16 +9,19 @@ $parent_menu = $data['parent_menu'];
         <?php 
         if($parent_menu!=null)
         { 
-            echo "<span style='font-style:italics; font-weight: bold; font-size:14pt'>Parent Menu Name: </span> <span>".$parent_menu->menu_name."</span>";
+        ?>
+        <button type="button" onclick="setFormAction('create');" class="btn btn-blue" data-toggle="modal" 
+                data-target="#subMenuModal">Add Sub Menu</button>
+        <span style='font-style:italics; font-weight: bold; font-size:14pt'>Parent Menu Name: </span> <span><?= $parent_menu->menu_name ?></span>
+        
+        <?php
         }
         ?>
     </span>
-    <div style="float:right">
-        <button type="button" onclick="setFormAction('create');" class="btn btn-blue" data-toggle="modal" 
-                data-target="#subMenuModal">Add Sub Menu</button>
+    <div class="alert alert-light">
+        You can drag and drop any row of this menu table to rearrange the sequence for 
+        displaying menu.Then click <a href="javascript:saveMenuSequence();">Save</a> to save the sequence.
     </div>
-    
-
     <!-- The Add Sub Menu Modal -->
     <div class="modal fade" id="subMenuModal">
         <div class="modal-dialog">
@@ -60,21 +65,24 @@ $parent_menu = $data['parent_menu'];
     </div>
     <!-- END OF Add Menu Modal -->
     
-    <table class="table_style yellow_header">
+    <table class="row_sortable_table table_style yellow_header">
         
         <thead>
             <tr>
+                <th>Sl. No.</th>
                 <th>Sub Menu Name</th>
                 <th>Link</th>
                 <th colspan="3">Actions</th>
             </tr>
         </thead>
-        <tbody id="menu_data">
+        <tbody id="menu_data" class="connectedSortable">
             <?php 
             if($response->status){
                 $sub_menus = $response->data;
+                $i=0;
                 foreach ($sub_menus as $menu){
-                    echo "<tr>"
+                    echo "<tr data-value='".$menu->menu_id."'>"
+                    . "<td><span>".(++$i)."</span></td>"
                     . "<td>".$menu->menu_name."</td>"
                     . "<td>".$menu->link."</td>"
                     . "<td><a href='javascript:void(0);' onclick='setMenuData(".json_encode($menu).");' data-toggle='modal' data-target='#subMenuModal' >Edit</a></td>"
@@ -92,7 +100,9 @@ $parent_menu = $data['parent_menu'];
         </tbody>
     </table>
     <a href="javascript: window.history.back();">Back to parent menu</a>
-    <script>
+    <script type="text/javascript" src="<?=Config::get('host')?>/root/jquery_ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.js"></script>
+    <script type="text/javascript">
         var sub_menu_form = document.forms['sub_menu_form'];
         
         function setFormAction(actionValue){
@@ -171,6 +181,7 @@ $parent_menu = $data['parent_menu'];
             if(resp.status){
                 var menu_data = resp.data;
                 displayMenu(menu_data);
+                setSortable();//set the menu table sortable
             }
             else{
                 layout = "<tr><td colspan='5' align='center'>"+resp.msg+"</td></tr>";
@@ -181,7 +192,8 @@ $parent_menu = $data['parent_menu'];
             var layout = "";
             for(var i=0;i<menus.length; i++){
                 var menu = menus[i];
-                layout += "<tr>"+
+                layout += "<tr data-value='"+menu.menu_id+"'>"+
+                    "<td><span>"+(i+1)+"</span></td>"+    
                     "<td>"+menu.menu_name+"</td>"+    
                     "<td>"+menu.link+"</td>"+    
                     "<td><a href='javascript:void(0)' onclick='setMenuData("+JSON.stringify(menu)+");' data-toggle='modal' data-target='#subMenuModal'>Edit</a></td>"+    
@@ -243,6 +255,44 @@ $parent_menu = $data['parent_menu'];
                     });
                 }
             });
+        }
+        //function to save sequence/order of displaying menu
+        function saveMenuSequence(){
+            var menuSequence = [];//array for storing menu id and its sequence in json format
+            $('.row_sortable_table tbody tr').each(function(i)
+            {
+                var menu_id = $(this).attr('data-value');
+                var sequence = (i+1);
+                menuSequence.push( {menu_id:menu_id, sequence: sequence } );
+            });
+            //console.log(JSON.stringify(menuSequence));
+            var result = ajax_request({
+                url: "<?= Config::get('host') ?>/Menu/saveMenuSequence",
+                param: JSON.stringify(menuSequence),
+                method: "PUT",
+                ContentType: "application/json"
+            });
+            if(result.status){
+                swal.fire({
+                    title: 'Success',
+                    text: result.msg,
+                    type: 'success',
+                    confirmButtonText: 'OK'
+                }).then(function(isConfirm){
+                    getSubMenu();//refreshing sub menu
+                });
+            }
+            else{
+                swal.fire({
+                    title: 'Error',
+                    text: result.msg,
+                    type: 'error',
+                    confirmButtonText: 'OK'
+                }).then(function(isConfirm){
+
+                });
+            }
+            
         }
     </script>
 </div>

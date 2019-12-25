@@ -27,14 +27,14 @@ class MenuReader {
                 "     from menu_role_mapping MRM ".
                 "     where MRM.role_id=? ".
                 ") and M.parent_menu_id is NULL ".      
-                "Order by M.menu_name ";
+                "Order by M.sequence ";
         $stmt = $this->conn->prepare($qry);
         $stmt->execute([$role_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     private function getChildMenus($parent_menu_id){
         $child_menus = array();//child menu
-        $qry = "select * from menu M where M.parent_menu_id = ? ";
+        $qry = "select * from menu M where M.parent_menu_id = ? Order by M.sequence ";
         $stmt = $this->conn->prepare($qry);
         $stmt->execute([$parent_menu_id]);
         if($stmt->rowCount()){

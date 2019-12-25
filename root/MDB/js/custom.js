@@ -24,6 +24,7 @@ function ajax_request(args)
     
     var method = (args.method === undefined)?"GET":args.method;
     
+    var ContentType = (args.ContentType === undefined)?"application/x-www-form-urlencoded":args.ContentType;
 
     var result;
     $.ajax({
@@ -32,6 +33,7 @@ function ajax_request(args)
         type: method,
         data: param,
         dataType: type,
+        contentType: ContentType,
         beforeSend: function(xhr){
             //var csrf_token = document.getElementById("csrf_token").value;//getCookie("csrf_token");
             //alert(csrf_token);

@@ -14,7 +14,7 @@
         padding: 5px;
         font-size: 1 rem;
         min-width: 250px;
-        cursor:pointer
+        cursor:grab
     }
     .highlights{
         background-color: GREEN;
@@ -85,7 +85,6 @@
 
                 </div>
                 <div class="card"  style="margin-right:10px;">
-
                     <h5 class="card-header default-color white-text text-center py-3">
                       <strong>ROLES INCLUDED IN THE SELECTED PROCESS</strong>
                     </h5>
@@ -105,7 +104,7 @@
           $.ajax({
               async: false,
               url: url,
-              method: "post",
+              type: "post",
               data: param,
               success: function(datalist){
                   result =  datalist;
@@ -130,7 +129,7 @@
           $(sortableId+'1').html('');
           $(sortableId+'2').html('');
           var resp = ajax_send('<?= Config::get('host') ?>/role/processRoleMapping',{action: 'getprocessrolemap', pid: pid});
-          console.log(JSON.stringify(resp));
+          //console.log(JSON.stringify(resp));
          
           if(resp.status == 1){
                 var included = resp.data.included;

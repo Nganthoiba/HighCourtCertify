@@ -268,6 +268,16 @@ class model {
         return $updates;
     }
 
+    //find maximum value of a column, the column should be of integer data type preferrably
+    protected function findMaxColumnValue($column/*Column name*/){
+        $stmt = self::$conn->prepare("select max(".$column.") as max_val from ".$this->getTable());
+        $stmt->execute();
+        if($stmt->rowCount() == 0){
+            return 0;
+        }
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['max_val'] == NULL?0:(int)$row['max_val'];
+    }
 
     /*** closing database connection ***/
     public function close(){

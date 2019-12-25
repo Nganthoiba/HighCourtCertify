@@ -54,7 +54,7 @@ class MenuController extends Controller{
             $cond = [
                 "parent_menu_id"=>$parent_menu_id
             ];
-            $this->response = $this->menu->read([], $cond);
+            $this->response = $this->menu->read([], $cond,"sequence");
             $this->data['parent_menu_id'] = $parent_menu_id;
             $this->data['parent_menu'] = $this->menu->find($parent_menu_id);
         }
@@ -64,7 +64,7 @@ class MenuController extends Controller{
     }
     //get all parent menu
     public function getMenu(){
-        $this->response = $this->menu->read(array(),"parent_menu_id is NULL");
+        $this->response = $this->menu->read(array(),"parent_menu_id is NULL","sequence");
         return $this->send_data($this->response,$this->response->status_code);
     }
     //get all child menu
@@ -81,9 +81,41 @@ class MenuController extends Controller{
             $cond = [
                 "parent_menu_id"=>$parent_menu_id
             ];
-            $this->response = $this->menu->read([], $cond);
+            $this->response = $this->menu->read([], $cond,"sequence");
         }
         return $this->send_data($this->response,$this->response->status_code);
+    }
+    
+    public function saveMenuSequence(){
+        $this->response = new Response();
+        $input_data = $this->_cleanInputs(json_decode(file_get_contents("php://input"),true));
+        if($input_data == null || sizeof($input_data)==0){
+            $this->response->set(['status_code'=>403,'msg'=>"Invalid Request, no input parameters."]);
+            return $this->sendResponse($this->response);
+        }
+        //Validation
+        foreach ($input_data as $seq_data){
+            if(!isset($seq_data['menu_id']) || !isset($seq_data['sequence']) || $seq_data['menu_id']==="" || $seq_data['sequence']===""){
+                $this->response->set(['status_code'=>403,'msg'=>"Invalid Request, wrong parameters."]);
+                return $this->sendResponse($this->response);
+            }
+        }
+        $this->menu::$conn->beginTransaction();
+        foreach ($input_data as $seq_data){
+            $menu_id = $seq_data['menu_id'];
+            $sequence = $seq_data['sequence'];
+            $this->menu = $this->menu->find($menu_id);
+            $this->menu->sequence = $sequence;
+            $this->response = $this->menu->save();
+            if($this->response->status == false){
+                $this->menu::$conn->rollback();
+                break;
+            }
+        }
+        if($this->response->status){
+            $this->menu::$conn->commit();
+        }
+        return $this->sendResponse($this->response);
     }
     
     //method to create a menu

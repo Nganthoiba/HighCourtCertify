@@ -1,9 +1,7 @@
 <div class="container-fluid">
-    <div>
-        <button type="button" class="btn btn-blue" data-toggle="modal" data-target="#addMenuModal">Add Menu</button>
-    </div>
-    
-
+    <link href="<?=Config::get('host')?>/root/jquery_ui/jquery-ui.css" rel="stylesheet">
+    <link href="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.css" rel="stylesheet" type="text/css"/>
+      
     <!-- The Add Menu Modal -->
     <div class="modal fade" id="addMenuModal">
         <div class="modal-dialog">
@@ -83,21 +81,31 @@
         </div>
     </div>
     <!-- END OF EDIT MENU MODAL -->
-    
+    <div class="row">
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-blue" data-toggle="modal" data-target="#addMenuModal">Add Menu</button>
+        </div>
+        <div class="col-sm-10 alert alert-light" style="font-size: 11pt; font-style: italic">
+            You can drag and drop any row of this menu table to rearrange the sequence for 
+            displaying menu.Then click <a href="javascript:saveMenuSequence();">Save</a> to save the sequence.
+        </div>
+    </div>
     <!-- MENU DISPLAY TABLE -->
-    <table class="table_style yellow_header">
+    <table class="table_style yellow_header row_sortable_table">
         <thead>
             <tr>
+                <th>Sl. No.</th>
                 <th>Menu Name</th>
                 <th>Link</th>
                 <th colspan="4">Actions</th>
             </tr>
         </thead>
-        <tbody id="menu_data">
+        <tbody id="menu_data" class="connectedSortable">
             
         </tbody>
     </table>
-    
+    <script type="text/javascript" src="<?=Config::get('host')?>/root/jquery_ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.js"></script>
     <script type="text/javascript">
         getMenu();
         var add_menu_form = document.forms["add_menu_form"];
@@ -201,6 +209,7 @@
             if(resp.status){
                 var menu_data = resp.data;
                 displayMenu(menu_data);
+                setSortable();//set the menu table sortable
             }
             else{
                 layout = "<tr><td colspan='5' align='center'>"+resp.msg+"</td></tr>";
@@ -212,7 +221,8 @@
             var layout = "";
             for(var i=0;i<menus.length; i++){
                 var menu = menus[i];
-                layout += "<tr>"+
+                layout += "<tr data-value='"+menu.menu_id+"'>"+
+                    "<td><span>"+(i+1)+"</span></td>"+    
                     "<td>"+menu.menu_name+"</td>"+    
                     "<td>"+menu.link+"</td>"+    
                     "<td><a href='<?= Config::get('host') ?>/Menu/AssociateRoles/"+menu.menu_id+"'>Associate User Roles</a></td>"+ 
@@ -282,6 +292,45 @@
                     });
                 }
             });
+        }
+        
+        //function to save sequence/order of displaying menu
+        function saveMenuSequence(){
+            var menuSequence = [];//array for storing menu id and its sequence in json format
+            $('.row_sortable_table tbody tr').each(function(i)
+            {
+                var menu_id = $(this).attr('data-value');
+                var sequence = (i+1);
+                menuSequence.push( {menu_id:menu_id, sequence: sequence } );
+            });
+            //console.log(JSON.stringify(menuSequence));
+            var result = ajax_request({
+                url: "<?= Config::get('host') ?>/Menu/saveMenuSequence",
+                param: JSON.stringify(menuSequence),
+                method: "PUT",
+                ContentType: "application/json"
+            });
+            if(result.status){
+                swal.fire({
+                    title: 'Success',
+                    text: result.msg,
+                    type: 'success',
+                    confirmButtonText: 'OK'
+                }).then(function(isConfirm){
+                    getMenu();//refreshing menu
+                });
+            }
+            else{
+                swal.fire({
+                    title: 'Error',
+                    text: result.msg,
+                    type: 'error',
+                    confirmButtonText: 'OK'
+                }).then(function(isConfirm){
+
+                });
+            }
+            
         }
     </script>
 </div>

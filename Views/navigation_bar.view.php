@@ -1,4 +1,10 @@
 <!--Navbar-->
+<?php 
+$isAuthenticated = Logins::isAuthenticated();
+if($isAuthenticated){
+    $user_info = $_SESSION['user_info'];
+}
+?>
         <nav class="navbar navbar-expand-lg navbar-dark custom-nav-grey fixed-top">
             
             <div class="container-fluid">
@@ -6,7 +12,7 @@
                 <!-- Navbar brand -->
                 <a class="navbar-brand" href="javascript:void(0);">
                     <?php 
-                    if(Logins::isAuthenticated()){
+                    if($isAuthenticated){
                     ?>
                         <span class="navbar-toggler-icon" id="sidebarCollapse"></span>
                     <?php 
@@ -16,19 +22,14 @@
                 </a>
             
             <?php 
-                if(Logins::isAuthenticated()){
+                if($isAuthenticated){
             ?>
                 <ul class="navbar-nav"  style="padding:1px">
                     <!-- Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown" style="text-align: right">
                             <span class="user_full_name">
-                                <?php 
-                                if(Logins::isAuthenticated()){
-                                    $user_info = $_SESSION['user_info'];
-                                    echo $user_info['full_name'];
-                                } 
-                                ?>
+                                <?= $user_info['full_name'] ?>
                             </span>
                             <span class="fa fa-angle-down"></span>
                         </a>

@@ -34,16 +34,15 @@ function writeSidebarMenus(){
 }
 
 function getMenuHtml($menus=array()){
-    $str="";
+    $str = "";
     foreach ($menus as $menu){
         if(sizeof($menu['child_menu'])){
-            $str .=   "<li>"
+            $str .=   "<li class='".isChildMenuActive($menu['child_menu'])."'>"
                     . "<a href='#Submenu".$menu['menu_id']."' data-toggle='collapse' aria-expanded='false' class='dropdown-toggle'>".$menu['menu_name']."</a>"
                     . "<ul class='collapse list-unstyled' id='Submenu".$menu['menu_id']."'>"
                     . getMenuHtml($menu['child_menu'])
                     . "</ul>"
                     . "</li>";
-            
         }
         else{
             $str .= "<li class='".isLinkActive($menu['link'])."'><a href='".$menu['link']."'>".$menu['menu_name']."</a></li>";
@@ -51,4 +50,22 @@ function getMenuHtml($menus=array()){
     }
     return $str;
 }
+
+//This function checks whether any of the link of the child menus is active or not, if found active
+//then it returns string 'active' otherwise empty string
+function isChildMenuActive($childMenus = array()){
+    $status = "";
+    foreach ($childMenus as $menu){
+        if(sizeof($menu['child_menu'])){
+            $status = isMenuActive($menu['child_menu']);
+        }
+        else{
+            if(isLinkActive($menu['link']) === "active"){
+                return "active";
+            }
+        }
+    }
+    return $status;
+}
+
 ?>

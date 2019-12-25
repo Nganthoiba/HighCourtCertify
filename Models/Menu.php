@@ -16,6 +16,7 @@ class Menu extends model{
     public $menu_name; //name of the menu
     public $link;//link or url of the menu
     public $parent_menu_id;//for sub menu
+    public $sequence;//for sequence of displaying menu
     //Overriding Constructor for menu
     public function __construct() {
         parent::__construct();
@@ -25,16 +26,19 @@ class Menu extends model{
         $this->menu_name = "";
         $this->link = "";
         $this->parent_menu_id = NULL;
+        $this->sequence = NULL;
         
     }
     //Add new menu
     public function add(){
-        $this->menu_id = $this->findMaxMenuId()+1;
+        $this->menu_id = $this->findMaxColumnValue('menu_id')+1;
+        $this->sequence = $this->findMaxColumnValue('sequence')+1;
         $data = [
             "menu_id"=>$this->menu_id,
             "menu_name"=>$this->menu_name,
             "link"=>$this->link,
-            "parent_menu_id"=>$this->parent_menu_id
+            "parent_menu_id"=>$this->parent_menu_id,
+            "sequence"=>$this->sequence
         ];
         return parent::create($data);
     }
@@ -47,7 +51,8 @@ class Menu extends model{
         $params = [
             "menu_name"=>$this->menu_name,
             "link"=>$this->link,
-            "parent_menu_id"=>$this->parent_menu_id
+            "parent_menu_id"=>$this->parent_menu_id,
+            "sequence"=>$this->sequence
         ];
         $cond = [
             $this->getKey() => $this->menu_id
@@ -60,16 +65,5 @@ class Menu extends model{
             $this->getKey() => $this->menu_id
         ];
         return parent::delete($cond);
-    }
-    
-    //find maximum menu id
-    private function findMaxMenuId(){
-        $stmt = self::$conn->prepare("select max(menu_id) as max_val from ".$this->getTable());
-        $stmt->execute();
-        if($stmt->rowCount() == 0){
-            return 0;
-        }
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['max_val'] == NULL?0:(int)$row['max_val'];
-    }
+    }    
 }

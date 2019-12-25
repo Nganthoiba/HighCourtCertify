@@ -44,6 +44,9 @@ class Controller {
         header("HTTP/1.1 " . $response_code . " " . $this->_requestStatus($response_code));
         return json_encode($data);
     }
+    public function sendResponse(Response $response){
+        return $this->send_data($response,$response->status_code);
+    }
     
     public function redirect($controller, $action){
         header("Location: ".Config::get('host')."/".$controller."/".$action);

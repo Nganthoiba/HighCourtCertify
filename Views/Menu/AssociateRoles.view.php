@@ -50,7 +50,8 @@
     </div>
     <?php 
         }
-    }else
+    }
+    else
     { 
         echo "<div class='alert alert-warning' style='text-align:center'>Menu not found!</div>";
     }
@@ -68,7 +69,7 @@
         var resp = ajax_request({
             url: associate_role_with_menu.action,
             method: "POST",
-            param: json_data;//$("#associate_role_with_menu").serialize()
+            param: json_data//$("#associate_role_with_menu").serialize()
         });
         
         if(resp.status){
@@ -78,7 +79,7 @@
                 type: 'success',
                 confirmButtonText: 'OK'
             }).then(function(isConfirm){
-                document.reload();
+                window.document.location.reload(true);
             });
         }
         else{
