@@ -1,5 +1,7 @@
 <link href="<?=Config::get('host')?>/root/jquery_ui/jquery-ui.css" rel="stylesheet">
-    <link href="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.css" rel="stylesheet" type="text/css"/>
+<link href="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.css" rel="stylesheet" type="text/css"/>
+<link href="<?= Config::get('host') ?>/root/MDB/css/dataTable.css" rel="stylesheet" 
+          type="text/css"/>
 <div class="container-fluid">
 <?php 
 $response = $data['response'];
@@ -102,7 +104,17 @@ $parent_menu = $data['parent_menu'];
     <a href="javascript: window.history.back();">Back to parent menu</a>
     <script type="text/javascript" src="<?=Config::get('host')?>/root/jquery_ui/jquery-ui.js"></script>
     <script type="text/javascript" src="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.js"></script>
+    <script src="<?=Config::get('host')?>/root/MDB/js/dataTable.js" type="text/javascript"></script>
+    <script src="<?=Config::get('host')?>/root/MDB/js/dataTables.bootstrap4.js" type="text/javascript"></script>
+
     <script type="text/javascript">
+        $(document).ready(function () {
+            $('#display_menu_table').DataTable({
+                "language":{
+                    "emptyTable":"No record available."
+                }
+            });
+        });
         var sub_menu_form = document.forms['sub_menu_form'];
         
         function setFormAction(actionValue){

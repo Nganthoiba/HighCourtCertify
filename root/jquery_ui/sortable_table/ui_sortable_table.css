@@ -22,6 +22,6 @@ table.row_sortable_table{
     */
 }
 .row_sortable_table tbody tr {
-    cursor:grab
+    cursor:grab;
 }
 

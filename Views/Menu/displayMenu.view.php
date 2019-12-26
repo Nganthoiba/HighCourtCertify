@@ -1,7 +1,8 @@
 <div class="container-fluid">
     <link href="<?=Config::get('host')?>/root/jquery_ui/jquery-ui.css" rel="stylesheet">
     <link href="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.css" rel="stylesheet" type="text/css"/>
-      
+    <link href="<?= Config::get('host') ?>/root/MDB/css/dataTable.css" rel="stylesheet" 
+          type="text/css"/>  
     <!-- The Add Menu Modal -->
     <div class="modal fade" id="addMenuModal">
         <div class="modal-dialog">
@@ -82,16 +83,14 @@
     </div>
     <!-- END OF EDIT MENU MODAL -->
     <div class="row">
-        <div class="col-sm-2">
+        <div class="">
             <button type="button" class="btn btn-blue" data-toggle="modal" data-target="#addMenuModal">Add Menu</button>
-        </div>
-        <div class="col-sm-10 alert alert-light" style="font-size: 11pt; font-style: italic">
-            You can drag and drop any row of this menu table to rearrange the sequence for 
-            displaying menu.Then click <a href="javascript:saveMenuSequence();">Save</a> to save the sequence.
+            <button type="button" class="btn btn-blue" onclick="saveMenuSequence()"
+                    title='You can drag and drop any row of this menu table to rearrange the sequence for displaying menu.Then click Save to save the sequence.'>Save Sequence</button>
         </div>
     </div>
     <!-- MENU DISPLAY TABLE -->
-    <table class="table_style yellow_header row_sortable_table">
+    <table id="display_menu_table" class="table_style yellow_header row_sortable_table">
         <thead>
             <tr>
                 <th>Sl. No.</th>
@@ -106,8 +105,19 @@
     </table>
     <script type="text/javascript" src="<?=Config::get('host')?>/root/jquery_ui/jquery-ui.js"></script>
     <script type="text/javascript" src="<?=Config::get('host')?>/root/jquery_ui/sortable_table/ui_sortable_table.js"></script>
+    <script src="<?=Config::get('host')?>/root/MDB/js/dataTable.js" type="text/javascript"></script>
+    <script src="<?=Config::get('host')?>/root/MDB/js/dataTables.bootstrap4.js" type="text/javascript"></script>
+    
     <script type="text/javascript">
-        getMenu();
+        $(document).ready(function () {
+            getMenu();
+            $('#display_menu_table').DataTable({
+                "language":{
+                    "emptyTable":"No record available."
+                }
+            });
+        });
+        
         var add_menu_form = document.forms["add_menu_form"];
         var edit_menu_form = document.forms["edit_menu_form"];
         
@@ -221,7 +231,7 @@
             var layout = "";
             for(var i=0;i<menus.length; i++){
                 var menu = menus[i];
-                layout += "<tr data-value='"+menu.menu_id+"'>"+
+                layout += "<tr data-value='"+menu.menu_id+"' title='You can drag and drop any row of this menu table to rearrange the sequence for displaying menu.Then click Save to save the sequence.'>"+
                     "<td><span>"+(i+1)+"</span></td>"+    
                     "<td>"+menu.menu_name+"</td>"+    
                     "<td>"+menu.link+"</td>"+    
