@@ -442,12 +442,11 @@
                         text: resp.msg+"\n Redirecting to view page ...",
                         type: 'success',
                         confirmButtonText: 'OK'
-                    }).then(function(isConfirm){
-                        if(isConfirm){
+                    }).then((result) => {
+                        if (result.value) {
                             window.location.assign("viewApplications");
                         }
                     });
-                    
                 }
                 else{
                     $("#submission_result").attr("class","alert alert-warning");

@@ -15,7 +15,10 @@ class ApplicationController extends Controller{
     public $applications;
     public function __construct($data = array()) {
         parent::__construct($data);
-        $applications = new Application();
+        if(!Logins::isAuthenticated()){
+            $this->redirect("Account", "Login");
+        }
+        $this->applications = new Application();
         $this->response = new Response();
     }
     public function index(){
@@ -34,8 +37,9 @@ class ApplicationController extends Controller{
         }
         
         $application = new Application();
-        $process_id = 8; // from user input 
-        $list = $application->readAppLog($user_id,$process_id);
+        //$process_id = 8; // from user input 
+        //$list = $application->readAppLog($user_id,$process_id);
+        $list = $application->readAppTasksLog($user_id);
         
         $this->data['applications'] = $list->data;
         $this->data['user_id'] = $user_id;
@@ -52,6 +56,7 @@ class ApplicationController extends Controller{
     /*** validation function for application */
     public function apply(){
         $user_id = "";
+        $tasks_id = 6;// fixed 6 is task id for applying a new copy
         /* Check user is authenticated */
         if(Logins::isAuthenticated()){
             $info = $_SESSION['user_info'];
@@ -66,7 +71,7 @@ class ApplicationController extends Controller{
         if(sizeof($data)){
             $response = verifyCSRFToken();
             if($response->status == false){
-                return $this->send_data($response, $response->status_code);
+                return $this->sendResponse($response);
             }
             $this->response->status_code = 403;//Bad Request
             
@@ -176,8 +181,8 @@ class ApplicationController extends Controller{
             $user = new Users();
             $user = $user->find($application->user_id);
             $application->applicant_name = $user->full_name;
-            $pending = isTaskPending(Database::connect(), $application_id, $process_id, $role_id);
-            $application->isTaskPending = $pending['status'];
+            //$pending = isTaskPending(Database::connect(), $application_id, $process_id, $role_id);
+            //$application->isTaskPending = $pending['status'];
             
             if($application == null){
                 $this->data['status'] = false;
@@ -190,104 +195,231 @@ class ApplicationController extends Controller{
         }
         return $this->view();
     }
+
+    public function status(){
+        return $this->view();
+    }
     
     
     public function application_list(){
         $params = $this->getParams();
-        
-        $process_id = $params[0]??""; 
+        $tasks_id = $params[0]??"";
         $task_type = $params[1]??"";
         $approve_reject = $params[2]??"";
+        
+        $_SESSION['tasks_id'] = $this->data['tasks_id'] = $tasks_id;
         $user_info = $_SESSION['user_info'];
         $role_id = $user_info['role_id'];
-        $app = new application;
-        $resp = $app->application_history($role_id,$task_type,$process_id,true);
-
-        $this->data['resp'] = $resp;
         
-        $this->data['process_id'] = $process_id;
-        if(!$resp->status){
-                $this->data['status'] =  false;
-                $this->data['msg'] =  $resp->msg;
+        $task = new Tasks();
+        $task = $task->find($tasks_id);
+        $this->data['tasks_name'] = "";
+        if($task === null){
+            $this->response->set([
+                "msg"=>"Invalid request.",
+                "status_code"=>404,
+                "error"=>"Task not found."
+            ]);
+            $this->data['tasks_name'] = "Task Not Exists.";
+        }
+        else if($task->isRoleAllowed($role_id) === false){
+            $this->response->set([
+                "msg"=>"You don't have right to access.",
+                "status_code"=>403
+            ]);
         }
         else{
-            $all = $approve = $reject = array();
-            foreach($resp->data as $item){
-                $applicant = new Users();
-                $applicant = $applicant->find($item['user_id']);
-                $item['applicant_name'] = $applicant->full_name;
-                if($item['action_name']=='approve'){
-                    $approve[] = $item;
+            $this->data['tasks_name'] = $task->tasks_name;
+            
+            $this->response = getApplicationTasksHistory($task::$conn,$tasks_id,$task_type);
+            if($this->response->status){
+                $all = $approve = $reject = array();
+                foreach($this->response->data as $item){
+                    if($item->action_name=='approve' || $item->action_name=='forward'){
+                        $approve[] = $item;
+                    }
+                    else if($item->action_name === 'reject'){
+                        $reject[] = $item;
+                    }
+                    $all[] = $item;
                 }
-                else if($item['action_name']=='reject'){
-                    $reject[] = $item;
+                if($task_type == 'out'){
+                    $this->response->data = (strtolower($approve_reject) == 'approve')?$approve:$reject;
                 }
-                $all[] = $item;
-            }
-            if($task_type == 'out'){
-                if(strtolower($approve_reject) == 'approve'){
-                    $resp->data = $approve;
+                else if($task_type === 'in'){
+                    $this->response->data = $all;
                 }
-                else{
-                    $resp->data = $reject;
-                }
-            }
-            else if($task_type == 'in'){
-                $resp->data = $all;
-            }
-            $this->data['status'] =  true;
-            $this->data['data'] = $resp->data;
-            if($task_type == "in"){
-                $this->data['active_tab'] = "incomming";
-            }
-            else{
-                $this->data['active_tab'] = $approve_reject;
+                $this->data['active_tab'] = ($task_type == "in" || $task_type == "")?"incoming":$approve_reject;
+
             }
         }
+        $this->data['response'] = $this->response;
         return $this->view();
     }
     
-    public function approve(){
-        $response = new Response(); //;
+    //view application for receipt and display details
+    public function applicationDetails(){
+        $this->response = new Response();
         $params = $this->getParams();
-        if(sizeof($params)==0){
-            $response->set(array(
-                'msg'=>'Provide a valid application Id.', 
-                'status'=>false,
-                'status_code'=>403
-                ));
-            return $this->send_data($response, $response->status_code);
-        }
-        $application_id = $params[0];
-        $process_id = $params[1]??'';
-        $app = new application;
-        $user_info = $_SESSION['user_info'];
-        //$m = new model();
-        $resp = insertApplicationLog(Database::connect(), 'approve', $application_id, $process_id , 'The application has been approved.');
-        return $this->send_data($resp, $resp['status_code']);
-    }
-    
-    public function reject(){
-        $response = new Response();
-        $params = $this->getParams();
-        if(sizeof($params)==0){
-            $response->set(array(
-                'msg'=>'Provide a valid application Id.',
-                'status'=>false,
-                'status_code'=>403
-                ));
-            return $this->send_data($response, $response->status_code);
-        }
-        $application_id = $params[0];
-        $process_id = $params[1]??'';
-        $app = new application;
-        $user_info = $_SESSION['user_info'];
-        $resp = insertApplicationLog(Database::connect(), 'reject', $application_id, $process_id , 'The application has been rejected.');
         
-        return $this->send_data($resp, $resp['status_code']);
-    }
-    
-    public function status(){
+        $user_info = $_SESSION['user_info'];
+        $this->data['role_id'] = $role_id = $user_info['role_id'];
+        $this->data['tasks_id'] = $tasks_id = $_SESSION['tasks_id'];
+        
+        $task = new Tasks();
+        $task = $task->find($tasks_id);
+        $app = new Application();
+        if(sizeof($params)==0){
+            $this->response->set([
+                "msg"=>"Invalid request.",
+                "error"=>"Application id is not passed."
+            ]);
+        }
+        else if($task === null){
+            $this->response->set([
+                "msg"=>"Invalid request.",
+                "error"=>"Invalid task id."
+            ]);
+        }
+        else if(!$task->isRoleAllowed($role_id)){
+            $this->response->set([
+                "msg"=>"You have no access right.",
+                "error"=>"User role is not allowed to access this task."
+            ]);
+        }
+        else if($app->find($params[0]) === null){
+            $this->response->set([
+                "msg"=>"Invalid application ID",
+                "error"=>"User role is not allowed to access this task."
+            ]);
+        }
+        else{
+            $this->data['application_id'] = $application_id = $params[0];
+            $this->data['process_id'] = $app->getProcessId();
+            $this->response = getLatestApplicationDetails($task::$conn, $application_id);
+            if($this->response->status){
+                $app = $this->response->data;
+            }
+        }
+        
+        $this->data['response'] = $this->response;
         return $this->view();
     }
+    
+    public function applicationTasksLog(){
+        $this->applications = new Application();
+        //defining action values
+        $action_values = ["create","approve","forward","reject"];
+        
+        $input_data = $this->_cleanInputs($_POST);
+        
+        $response = verifyCSRFToken();
+        if($response->status == false){
+            return $this->sendResponse($response);
+        }
+        $this->response->status_code = 403;//Bad Request
+        if(sizeof($input_data) == 0){
+            $this->response->set([
+                "msg"=>"No input perameters."
+            ]);
+        }
+        else if(!isset($input_data['application_id']) || $input_data['application_id']===""){
+            $this->response->set([
+                "msg"=>"Missing application ID"
+            ]);
+        }
+        else if($this->applications->find($input_data['application_id']) === null){
+            $this->response->set([
+                "msg"=>"Application id is invalid"
+            ]);
+        }
+        else if(!isset($input_data['tasks_id']) || $input_data['tasks_id']===""){
+            $this->response->set([
+                "msg"=>"Missing Tasks Id"
+            ]);
+        }
+        else if(!isset($input_data['action_name']) || $input_data['action_name']===""){
+            $this->response->set([
+                "msg"=>"Missing Action name"
+            ]);
+        }
+        else if(!in_array($input_data['action_name'],$action_values)){
+            $this->response->set([
+                "msg"=>"Invalid action name"
+            ]);
+        }
+        else{
+            $user_info = $_SESSION['user_info'];
+            $user_id = $user_info['user_id'];
+            $application_id = $input_data['application_id'];
+            $tasks_id = $input_data['tasks_id'];
+            $this->applications = $this->applications->find($application_id);
+            //process id = 1 is for application for non order copy whereas 2 for order copy
+            $process_id = $this->applications->getProcessId();//getProcessId
+            $action_name = $input_data['action_name'];
+            $remark = isset($input_data['remark'])??"";
+            $this->response = insertApplicationTasksLog(Database::connect(), $application_id, $user_id, $action_name, $tasks_id, $process_id,$remark);
+        }
+        return $this->sendResponse($this->response);
+    }
+    
+    public function uploadDocument(){
+        $this->response = new Response();
+        if(!Logins::isAuthenticated()){
+            return $this->response->set([
+                "msg"=>"Session expired, please login",
+                "status_code"=>400
+            ]);
+        }
+        
+        $input_data = $this->_cleanInputs($_POST);
+        
+        if(!isset($input_data['application_id'])){
+            return $this->response->set([
+                "msg"=>'Invalid request.',
+                "status_code"=>403
+            ]);
+        }
+        
+        /**** File Upload part ****/
+        $application_id = $input_data['application_id'];
+        $tasks_id = $input_data['tasks_id'];
+        $upload_directory = UPLOAD_PATH."/documents/certificate/".$application_id."/";
+        $file_upload = new Upload();
+        $file_upload->setFileUploadKeyName("file-to-upload");
+        $this->response = $file_upload->uploadSingleFile($upload_directory);
+        //if upload is not successful
+        if(!$this->response->status){
+            return $this->sendResponse($this->response);
+        }
+        
+        
+        $user_info = $_SESSION['user_info'];
+        $user_id = $user_info['user_id'];
+        $file_path = $this->response->data['file_paths'][0];
+        $document = new Document();
+        $document->application_id = $application_id;
+        $document->document_path = $file_path;
+        $document->created_by = $user_id;
+        $document::$conn->beginTransaction();
+        $this->response = $document->add();
+        $application = new Application();
+        $application = $application->find($application_id);
+        $process_id = $application->getProcessId();
+        $remark = "Certificate upload.";
+        if(!$this->response->status){
+            return $this->sendResponse($this->response);
+        }
+        
+        $this->response = insertApplicationTasksLog($document::$conn, $application_id, $user_id, "forward", $tasks_id, $process_id, $remark);
+        if(!$this->response->status)
+        {
+            $document::$conn->rollback();
+        }
+        else{
+            $document::$conn->commit();
+        }
+        return $this->sendResponse($this->response);
+    }
+    
 }

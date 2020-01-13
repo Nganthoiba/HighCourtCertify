@@ -4,16 +4,13 @@ if($applications!=null && sizeof($applications)){
 ?>
 <link href="<?= Config::get('host') ?>/root/MDB/css/dataTable.css" rel="stylesheet" type="text/css"/>
 
-<a href="#">Pending</a> |
-<a href="#">Completed</a> |
-<a href="#">Rejected</a>
 <div class="container-fluid">
     <table class="table_style yellow_header" id="application_table">
 
         <thead>
             <tr>
-                <th>Application For</th>
                 <th>Application Date</th>
+                <th>Application For</th>
                 <th>Case Type</th>
                 <th>Case No.</th>
                 <th>Case Year</th>
@@ -28,12 +25,12 @@ if($applications!=null && sizeof($applications)){
         foreach ($applications as $app) {
     ?>
             <tr>
-                <td><?= $app->application_for ?></td>
                 <?php 
                     $create_at_timestamp = strtotime($app->create_at);
                     $order_date_timestamp = strtotime($app->order_date);
                 ?>
                 <td><?= date('d-m-Y',$create_at_timestamp) ?></td>
+                <td><?= $app->application_for ?></td>
                 <td><?= $app->case_type ?></td>
                 <td><?= $app->case_no ?></td>
                 <td><?= $app->case_year ?></td>
@@ -51,11 +48,17 @@ if($applications!=null && sizeof($applications)){
 <script src="<?=Config::get('host')?>/root/MDB/js/dataTables.bootstrap4.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#application_table').DataTable();
+        $('#application_table').DataTable({
+            "columnDefs": [
+                    { "orderable": false, "targets": [7] },
+                    { "searchable": false, "targets": [7] },
+                    { "className": "align-center", "targets": [7] }
+                ]
+        });
     } );
     
-    function viewApplicationDetails(id){
-        location.assign("viewDetails/"+id);
+    function viewApplicationDetails(application_id){
+        location.assign("viewDetails/"+application_id);
     }
 </script>
 <?php
