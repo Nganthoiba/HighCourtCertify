@@ -13,8 +13,12 @@
                         <div style="color:#000000;padding: 5px;">
                             Welcome, <br/>
                             <span style="color: #49a75f; font-weight: bold"><?= $user_info['full_name'] ?></span><br/>
-                            <span style="color: #491217; font-style: italic; font-weight: bold"><?= Logins::getRoleName() ?></span>
+                            <span style="color: #491217; font-weight: bold; font-size: 10pt">
+                                (<?= Logins::getRoleName() ?>)
+                            </span>
+                            <hr/>
                         </div>
+                        
                     </li>
                 </ul>
                 <ul class="list-unstyled components">

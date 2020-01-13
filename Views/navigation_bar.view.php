@@ -34,9 +34,19 @@ if($isAuthenticated){
                             <span class="fa fa-angle-down"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="<?= Config::get('host')?>/account/manageAccount">Manage Profile</a>
-                            <a class="dropdown-item" href="<?= Config::get('host')?>/account/changePassword">Change Password</a>
-                            <a class="dropdown-item" href="<?= Config::get('host')?>/account/logout">Log out</a>
+                            <a class="dropdown-item" href="<?= Config::get('host')?>/account/manageAccount">
+                                <span class="fa fa-cog"></span>
+                                Manage Profile
+                            </a>
+                            <a class="dropdown-item" href="<?= Config::get('host')?>/account/changePassword">
+                                <span class="fa fa-lock"></span>
+                                Change Password
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="<?= Config::get('host')?>/account/logout">
+                                <span class="fa fa-sign-out"></span>
+                                Log out
+                            </a>
                         </div>
                     </li>
                 </ul>
