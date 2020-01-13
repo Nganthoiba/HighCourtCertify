@@ -31,6 +31,7 @@ class AccountController extends Controller{
             //redirecting to the proper page if already logded in
             redirectTo();
         }
+        
         $data = $this->_cleanInputs($_POST);
         if(sizeof($data)){
             //verify csrf token
@@ -63,6 +64,7 @@ class AccountController extends Controller{
                 $this->data['login_response'] = $res->msg;
             }  
         }
+        
         return $this->view();
     }
     
