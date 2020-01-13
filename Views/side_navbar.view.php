@@ -4,24 +4,23 @@
                 <div class="sidebar-header">
                     <h2>Sidebar</h2>
                 </div>
-                <ul class="list-unstyled">
+                <ul class="list-unstyled" style="margin-bottom: 0px;padding-bottom: 0px">
                     <li>
                         <div class="text-center">
                             <img class="rounded-circle" 
                                  src="<?= Config::get('host')?>/root/MDB/img/avatars/9.jpg" alt=""/>                            
                         </div>
-                        <div style="color:#000000;padding: 5px;">
+                        <div style="color:#000000;padding:0px 5px 0px 5px;">
                             Welcome, <br/>
                             <span style="color: #49a75f; font-weight: bold"><?= $user_info['full_name'] ?></span><br/>
                             <span style="color: #491217; font-weight: bold; font-size: 10pt">
                                 (<?= Logins::getRoleName() ?>)
                             </span>
-                            <hr/>
+                            <div class="dropdown-divider"></div>
                         </div>
-                        
                     </li>
                 </ul>
-                <ul class="list-unstyled components">
+                <ul class="list-unstyled components" style="margin-top: 0px;padding-top: 0px">
                     <?= writeSidebarMenus() ?>
                 </ul>
             </nav>
