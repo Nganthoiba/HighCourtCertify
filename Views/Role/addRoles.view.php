@@ -54,11 +54,11 @@
         $(".table-scroll thead").mCustomScrollbar({
             theme: "minimal"
         });
-        /*
+        
         $(".table-scroll tbody").mCustomScrollbar({
             theme: "minimal"
         });
-        */
+        
     });
     
 </script>

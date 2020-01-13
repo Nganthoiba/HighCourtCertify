@@ -1,11 +1,22 @@
         <link href="<?= Config::get('host')?>/root/MDB/css/side_navbar.css" rel="stylesheet" type="text/css"/>
             <!-- Sidebar  -->
             <nav id="sidebar" class="sidebar">
-                
                 <div class="sidebar-header">
-                    <p style="color:#000">Welcome</p>
+                    <h2>Sidebar</h2>
                 </div>
-                
+                <ul class="list-unstyled">
+                    <li>
+                        <div class="text-center">
+                            <img class="rounded-circle" 
+                                 src="<?= Config::get('host')?>/root/MDB/img/avatars/9.jpg" alt=""/>                            
+                        </div>
+                        <div style="color:#000000;padding: 5px;">
+                            Welcome, <br/>
+                            <span style="color: #49a75f; font-weight: bold"><?= $user_info['full_name'] ?></span><br/>
+                            <span style="color: #491217; font-style: italic; font-weight: bold"><?= Logins::getRoleName() ?></span>
+                        </div>
+                    </li>
+                </ul>
                 <ul class="list-unstyled components">
                     <?= writeSidebarMenus() ?>
                 </ul>
@@ -59,10 +70,9 @@ function isChildMenuActive($childMenus = array()){
         if(sizeof($menu['child_menu'])){
             $status = isMenuActive($menu['child_menu']);
         }
-        else{
-            if(isLinkActive($menu['link']) === "active"){
-                return "active";
-            }
+        else if(isLinkActive($menu['link']) === "active"){
+            return "active";
+            
         }
     }
     return $status;

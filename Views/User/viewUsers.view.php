@@ -81,7 +81,12 @@ if($response->status_code == 200){
             $('#user_list_table').DataTable({
                 "language":{
                     "emptyTable":"No record available."
-                }
+                },
+                "columnDefs": [
+                    { "orderable": false, "targets": [6,7] },
+                    { "searchable": false, "targets": [6,7] },
+                    { "className": "align-center", "targets": [6,7] }
+                ]
             });
         });
 

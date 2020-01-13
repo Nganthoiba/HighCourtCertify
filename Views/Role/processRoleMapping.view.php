@@ -135,15 +135,15 @@
                 var included = resp.data.included;
                 for(var i=0; i< included.length; i++){
                     var item = included[i];
-                    var x =  "<li class='ui-state-highlight' data-value='"+item.role_id+"' ><span>"+(i+1)+". </span>"+item.role_name+
-                            "<input class='form-control' placeholder='Please specify what this user will do.' type='text' name='descrip_"+item.role_id+"' value='"+item.description+"' ></li>";
+                    var x =  "<li class='ui-state-highlight' data-value='"+item.id+"' ><span>"+(i+1)+". </span>"+item.name+
+                            "<input class='form-control' placeholder='Please specify what this user will do.' type='text' name='descrip_"+item.id+"' value='"+item.description+"' ></li>";
                     $(sortableId+'2').append(x);
                 }
                 var excluded = resp.data.excluded;
                 for(var i=0; i< excluded.length; i++){
                     var item = excluded[i];
-                    var x =  "<li class='ui-state-default' data-value='"+item.role_id+"' ><span>"+(i+1)+". </span>"+item.role_name+
-                            "<input class='form-control'  placeholder='Please provide what task to be performed' type='text' style='display: none' name='descrip_"+item.role_id+"' ></li>";
+                    var x =  "<li class='ui-state-default' data-value='"+item.id+"' ><span>"+(i+1)+". </span>"+item.name+
+                            "<input class='form-control'  placeholder='Please provide what task to be performed' type='text' style='display: none' name='descrip_"+item.id+"' ></li>";
                     $(sortableId+'1').append(x);
                 }
           }
@@ -218,8 +218,10 @@
 	   
 	});
 	
-	var data = {included: included, excluded: excluded};
+	//var data = {included: included, excluded: excluded};
+	var data = {included: included};
 	console.log(JSON.stringify(data)); 
+        
 	var resp = ajax_send('<?= Config::get('host') ?>/role/processRoleMapping',{action: 'setprocess', data: data, pid: $('#process').val()});
 	
         if(resp.status){

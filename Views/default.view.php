@@ -10,9 +10,13 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
+        
+        <img link rel="shortcut icon" href="<?=Config::get('host')?>/root/MDB/img/court.png" alt=""/>
         <!--<link rel="shortcut icon" href="https://mdbootstrap.com/wp-content/themes/mdbootstrap4/favicon.ico" />-->
-        <!-- Font Awesome 
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">-->
+        
+        <link href="<?=Config::get('host')?>/root/MDB/css/font_awesome_4.7.0/css/all.css" 
+              rel="stylesheet" type="text/css"/>
+        
         <link href="<?=Config::get('host')?>/root/MDB/css/font_awesome_4.7.0/css/font-awesome.css" 
               rel="stylesheet" type="text/css"/>
         
@@ -27,6 +31,7 @@ and open the template in the editor.
         
         <!-- JQuery -->
         <script type="text/javascript" src="<?=Config::get('host')?>/root/MDB/js/jquery.min.js"></script>
+        <script type="text/javascript" src="<?=Config::get('host')?>/root/MDB/js/jquery.form.js"></script>
         <script type="text/javascript" src="<?=Config::get('host')?>/root/MDB/js/custom.js"></script>
         <script type="text/javascript" src="<?=Config::get('host')?>/root/MDB/js/bootstrap-datepicker.js"></script>
         <script type="text/javascript" src="<?=Config::get('host')?>/root/MDB/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
