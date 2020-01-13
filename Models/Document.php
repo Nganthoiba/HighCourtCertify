@@ -3,6 +3,18 @@
  * Description of Document
  *
  * @author Nganthoiba
+ * CREATE TABLE public.document (
+  document_id     serial NOT NULL,
+  application_id  varchar(40),
+  document_path   varchar(200),
+  create_at       timestamp with time zone,
+  delete_at       timestamp with time zone,
+  created_by      varchar(40) NOT NULL,
+  update_at       timestamp with time zone,
+  
+  CONSTRAINT "Document_pkey"
+    PRIMARY KEY (document_id)
+)
  */
 class Document extends model{
     public  $document_id,
@@ -11,9 +23,7 @@ class Document extends model{
             $create_at,
             $delete_at,
             $created_by,
-            $document_title,
-            $update_at,
-            $purpose;
+            $update_at;
     public function __construct($doc = array()) {
         parent::__construct();
         $this->setTable('document');
@@ -23,31 +33,17 @@ class Document extends model{
         $this->document_path = isset($doc['document_path'])?$doc['document_path']:"";
         $this->create_at = date('Y-m-d H:i:s');
         $this->created_by = isset($doc['created_by'])?$doc['created_by']:"";
-        $this->document_title = isset($doc['document_title'])?$doc['document_title']:"";
-        $this->purpose = isset($doc['purpose'])?$doc['purpose']:"";
     }
     //add a new document for an application
     public function add(){
-        /*** getting new document id ***/
-        $qry = "select max(document_id)+1 as new_document_id from ".$this->getTable();
-        $stmt = self::$conn->prepare($qry);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if($row['new_document_id'] == NULL){
-            $this->document_id = 1;
-        }
-        else{
-            $this->document_id = (int)$row['new_document_id'];
-        } 
-        /********************************/
+        
+        $this->document_id = $this->findMaxColumnValue("document_id")+1;
         $rec = array(
             "document_id"=>$this->document_id,
             "application_id"=>$this->application_id,
             "document_path"=>$this->document_path,
             "create_at"=>$this->create_at,
-            "created_by"=>$this->created_by,
-            "document_title"=>$this->document_title,
-            "purpose"=>$this->purpose
+            "created_by"=>$this->created_by
         );
         $response = parent::create($rec);
         return $response;
