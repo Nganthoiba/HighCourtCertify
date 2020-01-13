@@ -14,9 +14,14 @@ class model {
     protected $response;//output
     
     public function __construct(){
-        self::$conn = Database::connect();
-        $this->key = "";
-        $this->response = new Response();
+        try{
+            self::$conn = (self::$conn == null)?Database::connect():self::$conn;
+            $this->key = "";
+            $this->response = new Response();
+        }
+        catch (Exception $e){
+            throw new Exception($e->getMessage(),503);
+        }
     }
     
     public function setKey($key){
@@ -33,7 +38,7 @@ class model {
     }
     
     //function to populate a new record in a table
-    public function create($rec=array()){
+    protected function create($rec=array()){
         /* $rec is record data to be inserted, its format is an array of column name and corresponding value pairs */
         if(sizeof($rec)==0){
             $this->response->status = false;
@@ -116,7 +121,7 @@ class model {
         return $this->response;
     }
     //Update
-    public function update($params = array(),$cond = array()){
+    protected function update($params = array(),$cond = array()){
         if($params==null ||(!is_array($params) || sizeof($params)==0)){
             //update perameters must not be empty and must be array of key value pairs which means column name and its corresponding value
             $this->response->status = false;
@@ -160,7 +165,7 @@ class model {
         return $this->response;
     }
     //Delete record from table
-    public function delete($cond = array()){
+    protected function delete($cond = array()){
         $this->response = new Response();
         if(is_array($cond) && sizeof($cond)==0){
             $this->response->status = false;
@@ -198,7 +203,7 @@ class model {
         $stmt = self::$conn->prepare($qry);
         $stmt->bindParam(":val",$value);
         $stmt->execute();
-        if($stmt->rowCount() == 1){
+        if($stmt->rowCount()){
             $res = $stmt->fetch(PDO::FETCH_ASSOC);
             foreach ($res as $col_name=>$val){
                 $this->$col_name = $val;
@@ -276,7 +281,7 @@ class model {
             return 0;
         }
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['max_val'] == NULL?0:(int)$row['max_val'];
+        return $row['max_val'] == NULL?0:is_numeric($row['max_val'])?(int)$row['max_val']:$row['max_val'];
     }
 
     /*** closing database connection ***/

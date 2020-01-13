@@ -99,6 +99,13 @@ class csrf
         session_regenerate_id();
         return $token;
     }
+    
+    public static function getToken($key){
+        if(isset($_SESSION[ 'csrf_' . $key ]) && $_SESSION[ 'csrf_' . $key ] !== null){
+            return $_SESSION[ 'csrf_' . $key ];
+        }
+        return null;
+    }
 
     /**
      * Generates a random string of given $length.

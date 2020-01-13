@@ -29,7 +29,8 @@ class App {
             echo $view;
         }
         else {
-            throw new Exception("Method '".$method."' of controller class '".$controller."' does not exist.");
+            throw new Exception("Method '".$method."' of controller class '"
+                    .$controller."' does not exist.",404);
         }
    
     }

@@ -17,12 +17,9 @@ try{
         if(file_exists($model_path)){
             require_once ($model_path);
         }
-        /*
-        else{
-            throw new Exception("Failed to include model class : ".$classname.". or the class does not exist.");
+        if(!file_exists($lib_path) && !file_exists($controller_path) && !file_exists($model_path)){
+            throw new Exception("Class : ".$classname." does not exist.",404);
         }
-         * 
-         */
     });
 }catch(Exception $e){
     echo $e->getMessage();

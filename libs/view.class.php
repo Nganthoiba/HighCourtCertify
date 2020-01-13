@@ -34,7 +34,7 @@ class View {
             $this->path = $path;
         }
         if(!file_exists($this->path)){
-            throw new Exception("View file is not found in the path: ".$path);
+            throw new Exception("View file is not found in the path: ".$path,404);
         }
         $this->data = $data;
     }

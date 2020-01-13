@@ -106,14 +106,17 @@ function writeCSRFToken($csrf_token=""){
     }
     return "<input type='hidden' name='csrf_token' id='csrf_token' value='".$csrf_token."' />";
 }
-
+//function to get existing(already generated) csrf token
+function getCSRFToken(){
+    return csrf::getToken('token');
+}
 //function to verify csrf token
 function verifyCSRFToken(){
     $response = new Response();
     try{
         $origin = $_REQUEST;
         // Run CSRF check, on REQUEST(whether POST or GET) data, in exception mode, for 10 minutes, in one-time mode.
-        if(csrf::check('token', $origin, true,60*10, false)){
+        if(csrf::check('token', $origin, true,60*10, true)){
             $response->set(array(
                 "msg"=>"token matched",
                 "status"=>true,
@@ -122,11 +125,34 @@ function verifyCSRFToken(){
         }
     } catch (Exception $e){
         $response->set(array(
-            "msg"=>"An error occurs, please consult with an expert. Try again after reloading the page.",
+            "msg"=>"An error occurs, CSRF token is expired or invalid. Try again after reloading the page.",
             "status"=>false,
             "status_code"=>403,
             "error"=>$e->getMessage()
         ));
     }
     return $response;
+}
+
+//file reading and writing functions
+function downloadFile($file_path,$flag=false){
+    if(file_exists($file_path)) {
+        header('Content-Description: File Transfer');
+        //header('Content-Type: application/octet-stream');
+        if($flag == true)
+        {
+            //download popup will display
+            header('Content-Disposition: attachment; filename="'.basename($file_path).'"');
+        }
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file_path));
+        flush(); // Flush system output buffer
+        readfile($file_path);
+        die();
+    } else {
+        http_response_code(404);
+        die();
+    }
 }
