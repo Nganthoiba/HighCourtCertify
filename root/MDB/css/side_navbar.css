@@ -1,3 +1,32 @@
+
+Skip to content
+Pull requests
+Issues
+Marketplace
+Explore
+@Nganthoiba
+Learn Git and GitHub without any code!
+
+Using the Hello World guide, you’ll start a branch, write comments, and open a pull request.
+
+1
+0
+
+    0
+
+Nganthoiba/HighCourtCertify
+Code
+Issues 0
+Pull requests 0
+Actions
+Projects 0
+Wiki
+Security
+Insights
+Settings
+HighCourtCertify/root/MDB/css/side_navbar.css
+Nganthoiba Sidebar Menu display completed and other menu corrections 2376159 4 days ago
+208 lines (180 sloc) 3.53 KB
 /*
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 */
@@ -101,9 +130,14 @@ p {
     color: #eeeeee;
     background: #4aa5b0;
 }
-
+/*
 .sidebar ul li.active>a,
 a[aria-expanded="true"] {
+    color: #fff;
+    background: #2c838e;
+}
+*/
+.sidebar ul li.active>a{
     color: #fff;
     background: #2c838e;
 }

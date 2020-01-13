@@ -1,15 +1,11 @@
 <?php
-/*** Path Configurations ***/
-define('DS', '/');
-define('ROOT', '../');
-define('VIEWS_PATH', ROOT.DS.'Views');
+//Loading path configuration
+require_once '../Config/path_config.php';
 
 /*******************************/
-require_once ROOT.DS.'libs/init.php';
+require_once LIBS_PATH.'/init.php';
+require_once INCLUDES_PATH.'/include_files.php';
 /********************************/
-//custom functions for the highcourt project
-require_once ROOT.DS.'copying_functions/application_logs.php';
-require_once ROOT.DS.'copying_functions/redirection.php';
 
 //starting session securely
 startSecureSession();
@@ -21,8 +17,9 @@ $uri = filter('uri', "GET");
 try{
     App::run($uri);
 }catch(Exception $e){
-    //echo $e->getMessage();
-    $error = array("content"=>"404 Error: The resource you have requested is not found.","detail"=>$e->getMessage());
+    $error_code = $e->getCode();
+    $detail = ($error_code==404)?"The requested resource is not found.":$e->getMessage();
+    $error = array("content"=>"Error: ".$error_code,"detail"=>$detail);
     $controller = new Controller($error);
     $controller->setRouter(new Router($uri));
     echo $controller->view('error');

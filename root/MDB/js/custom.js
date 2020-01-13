@@ -8,6 +8,7 @@
  *      "param" :   "param1=1&param2=2",
  *      "type"  :   "JSON",
  *      "method":   "GET/POST/PUT/DELETE"
+ *      "token":   "authorization token id, e.g. login_id"
  * }
  */
 function ajax_request(args)
@@ -24,6 +25,8 @@ function ajax_request(args)
     
     var method = (args.method === undefined)?"GET":args.method;
     
+    var token = (args.token === undefined)?"":args.token;
+    
     var ContentType = (args.ContentType === undefined)?"application/x-www-form-urlencoded":args.ContentType;
 
     var result;
@@ -37,7 +40,7 @@ function ajax_request(args)
         beforeSend: function(xhr){
             //var csrf_token = document.getElementById("csrf_token").value;//getCookie("csrf_token");
             //alert(csrf_token);
-            //xhr.setRequestHeader('Authorization', csrf_token);
+            xhr.setRequestHeader('Authorization', "Bearer "+token);
         },
         success: function(response){
             result =  response;
@@ -86,64 +89,6 @@ function isValidEmail(email)
 {
     var re = /^(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/;
     return re.test(email);
-}
-
-//function to convert form data to json
-function getFormDataToJson(form){
-    var obj = {};//json object
-    var curr_element; //current element
-    var curr_key = "";//current key
-    var curr_val = "";//current value
-    var prev_key = [];//previous keys
-    var array_val = {};//Object of array of values of same key name
-    
-    for(var i=0;i<form.elements.length;i++){
-        //check for every element in the form 
-        curr_element = form.elements[i];
-        if((curr_element.type).toLowerCase()!=="submit" && (curr_element.type).toLowerCase()!=="button"){
-            
-            curr_key = curr_element.name.trim().replace("[]","");
-            curr_val = curr_element.value.trim();
-
-            if(array_val[curr_key] === undefined){
-                array_val[curr_key] = [];
-            }    
-            //For checkbox with same key name
-            if((curr_element.type).toLowerCase()==="checkbox"){
-                if(curr_element.checked === true){
-                    array_val[curr_key].push(curr_val);
-                }
-                obj[curr_key]=array_val[curr_key];
-            }
-            else if((curr_element.type).toLowerCase() === "radio"){
-                if(curr_element.checked === true){
-                    obj[curr_key]= curr_val;
-                }
-            }
-            else{
-                //If current key already encountered in the prevoius key list, then
-                if(prev_key.includes(curr_key)){
-                    
-                    if(!Array.isArray(obj[curr_key])){
-                        if(!array_val[curr_key].includes(obj[curr_key]) && obj[curr_key]!==""){
-                            array_val[curr_key].push(obj[curr_key]);
-                        }
-                    }
-                    if(curr_val!==""){
-                        array_val[curr_key].push(curr_val);
-                    }
-                    obj[curr_key]=array_val[curr_key];
-                }
-                else{
-                    obj[curr_key] = curr_val;
-                    prev_key.push(curr_key);//adding the current key in the previous key list
-                }
-            }
-        }
-    }
-    console.log(JSON.stringify(array_val));
-    console.log(JSON.stringify(obj));
-    return obj;
 }
 //function to convert form data to json
 function getFormDataAsJson(form){
@@ -205,6 +150,35 @@ function getFormDataAsJson(form){
         }
     }
     return obj;
+}
+class JsFunctions{
+    constructor(function_name,params="") {
+        this.function_name = function_name;
+        this.params = params;
+    }
+}
+//sweet alert confirmation
+function sweeetConfirm(title, message, type,yes=null, no=null){
+    swal.fire({
+        title: title,
+        text: message,
+        type: type,
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: "No, I am not sure!"
+        
+    }).then((result) => {
+        if (result.value) {
+            if(yes!==null){
+                yes.function_name(yes.params);
+            }
+        }
+        else{
+            if(no!==null){
+                no.function_name(no.params);
+            }
+        }
+    });
 }
 
 // client side validation module
