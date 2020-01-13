@@ -132,16 +132,17 @@
                 url: add_menu_form.action,
                 data: getFormDataAsJson(add_menu_form),
                 type: "POST",
-                success: function(resp){
+                success: function(result){
                     swal.fire({
                         title: 'Success',
-                        text: resp.msg,
+                        text: result.msg,
                         type: 'success',
                         confirmButtonText: 'OK'
-                    }).then(function(isConfirm){
-                        //window.location.reload();
-                        add_menu_form.reset();
-                        getMenu();
+                    }).then((result) => {
+                        if (result.value) {
+                            add_menu_form.reset();
+                            getMenu();
+                        }
                     });
                 },
                 error: function (jqXHR, exception, errorThrown) {
@@ -158,8 +159,6 @@
                         text: result.msg,
                         type: 'error',
                         confirmButtonText: 'OK'
-                    }).then(function(isConfirm){
-
                     });
                 }
             });
@@ -182,10 +181,13 @@
                         text: resp.msg,
                         type: 'success',
                         confirmButtonText: 'OK'
-                    }).then(function(isConfirm){
-                        //window.location.reload();
-                        edit_menu_form.reset();
-                        getMenu();
+                    }).then((result) => {
+                        if(result.value){
+                            //window.location.reload();
+                            edit_menu_form.reset();
+                            $("#editMenuModal").modal('hide');
+                            getMenu();
+                        }
                     });
                 },
                 error: function (jqXHR, exception, errorThrown) {
@@ -202,8 +204,6 @@
                         text: result.msg,
                         type: 'error',
                         confirmButtonText: 'OK'
-                    }).then(function(isConfirm){
-
                     });
                 }
             });

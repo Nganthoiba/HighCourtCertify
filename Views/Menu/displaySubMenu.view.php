@@ -87,9 +87,9 @@ $parent_menu = $data['parent_menu'];
                     . "<td><span>".(++$i)."</span></td>"
                     . "<td>".$menu->menu_name."</td>"
                     . "<td>".$menu->link."</td>"
+                    . "<td><a href='".Config::get('host')."/Menu/displaySubMenu/".$menu->menu_id."'>Sub Menus</a></td>"
                     . "<td><a href='javascript:void(0);' onclick='setMenuData(".json_encode($menu).");' data-toggle='modal' data-target='#subMenuModal' >Edit</a></td>"
                     . "<td><a href='javascript:removeMenu(\"".$menu->menu_id."\")'>Remove</a></td>"
-                    . "<td><a href='".Config::get('host')."/Menu/displaySubMenu/".$menu->menu_id."'>Sub Menus</a></td>"
                     . "</tr>";
                 }
             }
