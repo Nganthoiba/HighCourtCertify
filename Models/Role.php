@@ -22,16 +22,7 @@ class Role extends model{
     }
     
     public function add(){
-        $qry = "select max(role_id)+1 as new_role from role";
-        $stmt = self::$conn->prepare($qry);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if($row['new_role'] == NULL){
-            $this->role_id = 1;
-        }
-        else{
-            $this->role_id = (int)$row['new_role'];
-        }
+        $this->role_id = $this->findMaxColumnValue("role_id")+1;
         if($this->isRoleNameExist($this->role_name)){
             $resp = new Response();
             return $resp->set(array("status"=>false,
