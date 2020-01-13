@@ -13,7 +13,12 @@
  */
 class Response {
     //put your code here
-    public $data,$error,$status,$status_code,$msg;
+    public  $data, //actual data
+            $error,
+            $status, //status either true or false to indicate whether an operation has been performed successfully 
+            //or not. True means successfull, false means there was an error during operation 
+            $status_code, //http status code
+            $msg; //message
     public function __construct() {
         //By default
         $this->data = null;
