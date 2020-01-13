@@ -11,10 +11,14 @@ class Database {
         self::$conn_error = "";
         try{
             $conn = new PDO(Config::get('DB_DRIVER').':host='.Config::get('DB_HOST').';dbname='.Config::get('DBNAME'), Config::get('DB_USERNAME'), Config::get('DB_PASSWORD'));
+            if(!$conn){
+                throw new Exception("Database connection failed, make sure that your database server is up.",503);
+            }
             return $conn;
         }catch(Exception $e){
             self::$conn_error = $e->getMessage();
-            return null;
+            throw $e;
+            //return null;
         }
     }
 }
