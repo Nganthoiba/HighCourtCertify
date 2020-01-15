@@ -39,7 +39,7 @@ class CasebodyController extends Controller{
             return $this->sendResponse($this->response);
         }
         
-        $upload_directory = UPLOAD_PATH."/documents/case_body/";
+        $upload_directory = UPLOAD_PATH."/documents/case_body/".$input_data['case_number']."_".$input_data['case_year']."_".$input_data['case_type']."/";
         $file_upload = new Upload();
         $file_upload->setFileUploadKeyName("case_body_file");
         $this->response = $file_upload->uploadSingleFile($upload_directory);

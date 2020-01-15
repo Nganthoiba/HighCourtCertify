@@ -422,4 +422,41 @@ class ApplicationController extends Controller{
         return $this->sendResponse($this->response);
     }
     
+    //load file for viewing
+    public function displayFile(){
+        $params = $this->getParams();
+        if(sizeof($params)){
+            $document_id = $params[0];
+            $document = new Document();
+            $document = $document->find($document_id);
+            if($document!==null){
+                //$casebody->loadFile();
+                downloadFile($document->document_path,false);
+            }
+        }
+    }
+    
+    public function downloadDocument(){
+        $params = $this->getParams();
+        if(sizeof($params)){
+            $document_id = $params[0];
+            $document = new Document();
+            $document = $document->find($document_id);
+            if($document !== null){
+                downloadFile($document->document_path,true);
+            }
+        }
+    }
+    public function previewDocument(){
+        $params = $this->getParams();
+        if(sizeof($params)){
+            $document_id = $params[0];
+            $document = new Document();
+            $document = $document->find($document_id);
+            if($document !== null){
+                downloadFile($document->document_path,false);
+            }
+        }
+    }
+    
 }

@@ -164,7 +164,7 @@
     zoominbutton.onclick = function() {
        pdfScale = pdfScale + interval;
        showPage(__CURRENT_PAGE, pdfScale);
-    }
+    };
 
     var zoomoutbutton = document.getElementById("zoomoutbutton");
     zoomoutbutton.onclick = function() {
@@ -174,7 +174,7 @@
        pdfScale = pdfScale - interval;
        //displayPage(shownPdf, pageNum);
        showPage(__CURRENT_PAGE, pdfScale);
-    }
+    };
     function showPDF(pdf_url) {
         $("#pdf-loader").show();
         PDFJS.getDocument({ url: pdf_url }).then(function(pdf_doc) {

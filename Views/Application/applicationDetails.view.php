@@ -13,6 +13,7 @@ else{
     $user_info = $_SESSION['user_info'];
     $app = new Application();
     $app->find($application->application_id);
+    $caseBody = $application->getCaseBody();
     //print_r($user_info);
 ?>
     <style type="text/css">
@@ -69,6 +70,45 @@ else{
             <td><strong>Application Submitted on:</strong></td>
             <td><?= date('D, d M, Y',$create_at_timestamp) ?></td>
         </tr>
+        <tr>
+            <td><strong>Case Body:</strong></td>
+            <td>
+            <?php 
+                if($caseBody !== null){
+            ?>
+                <a href="<?= Config::get('host') ?>/Casebody/downloadFile/<?= $caseBody->casebody_id ?>" 
+                    target="_blank">
+                    Download <span class="fa fa-download"></span>
+                </a>
+            <?php
+                }
+                else{
+                    echo "Not available.";
+                }
+            ?>
+            </td>
+        </tr>
+       
+        <tr>
+            <td><strong>Certificate:</strong></td>
+            <td>
+                <?php
+                $document = $application->getDocument();
+                if($document !== null){
+                ?>
+                <a href="<?= Config::get('host') ?>/Application/downloadDocument/<?= $document->document_id ?>" 
+                    target="_blank">
+                    Download <span class="fa fa-download"></span>
+                </a>
+                <?php
+                }
+                else{
+                    echo "Not available";
+                }
+                ?>
+            </td>
+        </tr>
+        
         <?php 
         if($application->certificate_type_id !="1"){
            //if the application is not for order copy
@@ -110,12 +150,19 @@ else{
     //if user has already commited the task then dont load any further approval or rejected layout
     if(!isApplicationRecordAlreadyExist($application_id, $process_id, $tasks_id)){
         switch($tasks_id){
+            //Certificate preparation with relevent document
             case 5:
                 include_once 'tasks_files/certificate_preparation.php';
                 break;
+            //Submission of case body if not found, otherwise the application will be forwarded
             case 8:
                 include_once ("tasks_files/submit_case_body.php");
                 break;
+            //Read the prepared certificate and compare with the case body
+            case 9:
+                include_once ("tasks_files/read_n_compare.php");
+                break;
+            //Receive application
             case 10:
             case 11:
             case 12:

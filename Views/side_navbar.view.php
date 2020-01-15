@@ -12,7 +12,7 @@
                         </div>
                         <div style="color:#000000;padding:0px 5px 0px 5px;">
                             Welcome, <br/>
-                            <span style="color: #49a75f; font-weight: bold"><?= $user_info['full_name'] ?></span><br/>
+                            <span style="color: #49a75f; font-weight: normal"><?= $user_info['full_name'] ?></span><br/>
                             <span style="color: #491217; font-weight: bold; font-size: 10pt">
                                 (<?= Logins::getRoleName() ?>)
                             </span>

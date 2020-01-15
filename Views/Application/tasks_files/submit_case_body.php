@@ -98,12 +98,11 @@
 <script src="<?= Config::get('host') ?>/root/MDB/js/pdf.worker.js" type="text/javascript"></script>
 
 <?php
-$caseBody = $application->getCaseBody();
 if($caseBody === null){
 ?>
-<h3>Add Case Body Form</h3>
+<h3>Add New Case Body:</h3>
 <form name="case_body_form" id="case_body_form" action="<?= Config::get('host') ?>/Casebody/uploadCaseBody">
-    <?= writeCSRFToken() ?>
+    
     <div class="row">
         <div class="col-sm-3">Case Number:</div>
         <div class="col-sm-4">
@@ -188,6 +187,7 @@ if($caseBody === null){
         $("#progress_div").show();
         var case_body_form = document.forms['case_body_form'];
         var formData = new FormData(case_body_form);
+        formData.append("csrf_token",$("#csrf_token").val());
         $.ajax({
             url:case_body_form.action,
             data: formData,
@@ -209,7 +209,10 @@ if($caseBody === null){
                 return xhr;
             },
             success: function(resp){
-                document.getElementById("output").innerHTML = resp.msg;
+                document.getElementById("output").innerHTML = resp.msg+
+                        " Scroll down and you can forward or reject the application.";
+                document.getElementById("approve_n_reject_layout").style.display = "block";
+                //$("#approve_n_reject_layout").show();
             },
             error: function(jqXHR, exception, errorThrown){
                 result = {};
@@ -232,6 +235,7 @@ if($caseBody === null){
 ?>
 <div>
     <div id="pdf-meta" style="width: 80%;display:none;margin: 20px auto;">
+        <div>Case body preview:</div>
         <div id="pdf-buttons">
             <button class="btn btn-default" type="button" id="pdf-prev">Previous</button>
             <button class="btn btn-default" type="button" id="pdf-next">Next</button>
@@ -267,7 +271,7 @@ if($caseBody === null){
     zoominbutton.onclick = function() {
        pdfScale = pdfScale + interval;
        showPage(__CURRENT_PAGE, pdfScale);
-    }
+    };
 
     var zoomoutbutton = document.getElementById("zoomoutbutton");
     zoomoutbutton.onclick = function() {
@@ -277,7 +281,7 @@ if($caseBody === null){
        pdfScale = pdfScale - interval;
        //displayPage(shownPdf, pageNum);
        showPage(__CURRENT_PAGE, pdfScale);
-    }
+    };
     function showPDF(pdf_url) {
         $("#pdf-loader").show();
         PDFJS.getDocument({ url: pdf_url }).then(function(pdf_doc) {
@@ -384,23 +388,23 @@ if($caseBody === null){
             showPage(++__CURRENT_PAGE);
         }
     });
-    
-    
 </script>
+
+<div id='approve_n_reject_layout' style="display: none">
+<?php include_once ("approve_n_reject.php"); ?>
+</div>
 <?php
 if($caseBody!== null){
     
 ?>
-<div style="width: 80%;margin: 20px auto;">
-    <a href="<?= Config::get('host') ?>/Casebody/downloadFile/<?= $caseBody->casebody_id ?>" 
-       target="_blank"
-       class="btn btn-blue">
-        Download Case Body <span class="fa fa-download"></span></a>
-</div>
 <script type="text/javascript">
+    //displaying case body if found
     showPDF("<?= Config::get('host') ?>/Casebody/displayFile/<?= $caseBody->casebody_id ?>");
+    //$("#approve_n_reject_layout").show();
+    document.getElementById("approve_n_reject_layout").style.display = "block";
+    
 </script>
+
 <?php
-    include_once ("approve_n_reject.php");
 }
 ?>

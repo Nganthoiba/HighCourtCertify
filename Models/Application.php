@@ -223,6 +223,18 @@ class Application extends model{
         return $caseBody->getCaseBody($this->case_type, $this->case_no, $this->case_year);
     }
     
+    //method to get certificate (document) if already prepared
+    public function getDocument(){
+        $doc = new Document();
+        $cond = [
+            "application_id" => $this->application_id
+        ];
+        $res = $doc->read([], $cond);
+        if($res->status){
+            return $res->data[0];
+        }
+        return null;
+    }
     public function application_history($id , $task_type='in',$process_id="" ,$role_flag = true){
         //$response = array('status'=>false , 'msg' => 'Internal Server Error');
         $response = new Response();

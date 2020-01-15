@@ -74,22 +74,4 @@ class Casebody extends model{
         }
         return null;
     }
-    //file reading and writing functions
-    public function loadFile(){
-        if(file_exists($this->document_path)) {
-            header('Content-Description: File Transfer');
-            //header('Content-Type: application/octet-stream');
-            header('Content-Type: application/pdf');
-            //header('Content-Disposition: attachment; filename="'.basename($this->document_path).'"');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($this->document_path));
-            flush(); // Flush system output buffer
-            readfile($this->document_path);
-        } else {
-            http_response_code(404);            
-        }
-        die();
-    }
 }
