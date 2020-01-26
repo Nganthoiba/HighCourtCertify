@@ -231,6 +231,15 @@ class EasyQueryBuilder {
         return $this;
     }
     
+    public function not($cond = array()):EasyQueryBuilder{
+        $cond_str = trim($this->getConditionString($cond));
+        if($cond_str !== ""){
+            $this->qry .= " not (".$cond_str.") ";
+            $this->values = array_merge($this->values,
+                    $this->getConditionValues($cond));
+        }
+        return $this;
+    }
     public function or($cond = array()):EasyQueryBuilder{
         $cond_str = trim($this->getConditionString($cond));
         if($cond_str !== ""){
@@ -291,6 +300,33 @@ class EasyQueryBuilder {
         }
         return $this;
     }
+    
+    //Inner join statement
+    public function innerJoin(string $table){
+        $this->qry .= " inner join ".$table." ";
+        return $this;
+    }
+    //Left join statement
+    public function leftJoin(string $table){
+        $this->qry .= " left join ".$table." ";
+        return $this;
+    }
+    //Right join statement
+    public function rightJoin(string $table){
+        $this->qry .= " right join ".$table." ";
+        return $this;
+    }
+    
+    public function on(string $cond_str){
+        if(!is_string($cond_str)){
+            throw new Exception("JION Condition must be string",500);
+        }
+        if($cond_str !== ""){
+            $this->qry .= " on (".$cond_str.") ";
+        }
+        return $this;
+    }
+    /***** END OF QUERY BUILDING METHODS *******/
     
     public function limit($no_of_rows):EasyQueryBuilder{
         $this->limit_rows = $no_of_rows;
