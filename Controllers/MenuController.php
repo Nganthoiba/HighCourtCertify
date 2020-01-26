@@ -329,6 +329,12 @@ class MenuController extends Controller{
                 "status_code"=>403
             ));
         }
+        if(!filter_var($data['link'], FILTER_VALIDATE_URL)){
+            return $response->set(array(
+                "msg"=>"Not a valid url",
+                "status_code"=>403
+            ));
+        }
         return $response->set(array(
                 "msg"=>"Valid",
                 "status_code"=>200,

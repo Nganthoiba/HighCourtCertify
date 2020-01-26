@@ -11,7 +11,7 @@
  *
  * @author Nganthoiba
  */
-class Menu extends model{
+class Menu extends Model{
     public $menu_id; //menu id
     public $menu_name; //name of the menu
     public $link;//link or url of the menu
@@ -33,6 +33,7 @@ class Menu extends model{
     public function add(){
         $this->menu_id = $this->findMaxColumnValue('menu_id')+1;
         $this->sequence = $this->findMaxColumnValue('sequence')+1;
+        $this->link = str_replace(Config::get('host'),"",$this->link);
         $data = [
             "menu_id"=>$this->menu_id,
             "menu_name"=>$this->menu_name,
@@ -44,10 +45,24 @@ class Menu extends model{
     }
     //read menu
     public function read($columns = array (), $cond = array (), $order_by = "") {
-        return parent::read($columns, $cond, $order_by);
+        
+        $res = parent::read($columns, $cond, $order_by);
+        if($res->status && sizeof($res->data)){
+            $menus = $res->data;
+            $temp_menus = array();
+            foreach ($menus as $menu){
+                if(!filter_var($menu->link, FILTER_VALIDATE_URL)){
+                    $menu->link = Config::get('host').DS.ltrim($menu->link,'/');
+                }
+                array_push($temp_menus,$menu);
+            }
+            $res->data = $temp_menus;
+        }
+        return $res;
     }
     //save menu
     public function save(){
+        $this->link = str_replace(Config::get('host'),"",$this->link);
         $params = [
             "menu_name"=>$this->menu_name,
             "link"=>$this->link,
