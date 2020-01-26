@@ -95,9 +95,7 @@ class EasyEntity {
         }
         return $this->queryBuilder->select($columns)->from($this->table_name);
     }
-    
-    
-    
+    /*** find an Entity ***/
     public function find($id){
         //If Entity is not valid
         if(!$this->isValidEntity()) {
