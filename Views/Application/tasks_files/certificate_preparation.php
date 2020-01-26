@@ -100,7 +100,7 @@
 <form name="cert_preparation_form" id="cert_preparation_form" action="<?= Config::get('host') ?>/Application/uploadDocument">
     <div class="row">
         <div class="col-sm-3">
-            <label>Upload Prepared Document:</label>
+            <label>Upload Prepared Certificate:</label>
             <input type="hidden" value="<?= $application->application_id ?>" name="application_id" />
             <input type="hidden" value="<?= $tasks_id ?>" name="tasks_id" />
         </div>

@@ -43,8 +43,8 @@ else
                 <tr>
                     <th>Sl. No.</th>
                     <th>Applicant</th>
-                    <th>Application For</th>
-                    <th>Date</th>
+                    <th>Application for</th>
+                    <th>Applied on</th>
                     <th>Case Type</th>
                     <th>Case No.</th>
                     <th>Case Year</th>
@@ -62,7 +62,7 @@ else
                     echo '<td>'.$i++.'</td>';
                     echo '<td>'.$item['applicant_name'].'</td>';
                     echo '<td>'.$item['application_for'].'</td>';
-                    echo '<td>'.date('d-m-Y',strtotime($item['action_date'])).'</td>';
+                    echo '<td>'.date('d-m-Y',strtotime($item['create_at'])).'</td>';
                     echo '<td>'.$item['case_type'].'</td>';
                     echo '<td>'.$item['case_no'].'</td>';
                     echo '<td>'.$item['case_year'].'</td>';

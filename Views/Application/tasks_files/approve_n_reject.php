@@ -1,6 +1,6 @@
 <div style="text-align: center">
-    <button onclick="forward();" class="btn btn-success">Forward</button>
-    <button onclick="reject()" class="btn btn-danger">Reject</button>
+    <button onclick="approve();" id="approve_btn" class="btn btn-success">Approve</button>
+    <button onclick="reject()" id="reject_btn" class="btn btn-danger">Reject</button>
 </div>
 <div class="modal fade" id="rejectApplicationModal">
     <div class="modal-dialog">
@@ -35,17 +35,17 @@
     var tasks_id = "<?= $tasks_id ?>";
     var application_id = "<?= $application->application_id ?>";
     
-    function forward(){
+    function approve(){
         swal.fire({
-            title: 'Forward!',
-            text: "Are you sure to forward?",
+            title: 'Approve!',
+            text: "Are you sure to approve?",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'YES',
             cancelButtonText: "No, I am not sure!"
         }).then((result) => {
             if (result.value) {
-                var resp = insertIntoApplicationTasksLog(application_id,tasks_id,"forward");
+                var resp = insertIntoApplicationTasksLog(application_id,tasks_id,"approve");
                 if(resp.status){
                     swal.fire('Forwarded.',resp.msg,'success');
                     window.history.back();
@@ -57,6 +57,7 @@
         });
         
     }
+    
     function reject(){
         swal.fire({
             title: 'Reject!',

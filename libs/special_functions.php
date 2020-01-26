@@ -134,6 +134,11 @@ function verifyCSRFToken(){
     return $response;
 }
 
+//function to get link
+function getHtmlLink($controller,$action=""){
+    return Config::get('host')."/".$controller."/".$action;
+}
+
 //file reading and writing functions
 function downloadFile($file_path,$flag=false){
     if(file_exists($file_path)) {

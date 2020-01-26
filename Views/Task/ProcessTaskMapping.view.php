@@ -139,7 +139,7 @@
                 var item = included[i];
                 //var x =  "<li class='ui-state-highlight' data-value='"+item.tasks_id+"' ><span>"+(i+1)+". </span>"+item.tasks_id+"-"+item.tasks_name+"</li>";
                 var x = "<li class='ui-state-default' data-value='"+item.tasks_id+"' >"+
-                        "<span>"+(i+1)+". </span>"+item.tasks_name+
+                        "<span>"+(i+1)+". </span>"+item.tasks_name+" (task_id="+item.tasks_id+")"+
                         "</li>";
                 $(sortableId+'2').append(x);
             }
@@ -147,7 +147,7 @@
             for(var i=0; i< excluded.length; i++){
                 var item = excluded[i];
                 var x = "<li class='ui-state-default' data-value='"+item.tasks_id+"' >"+
-                        "<span>"+(i+1)+". </span>"+item.tasks_name+
+                        "<span>"+(i+1)+". </span>"+item.tasks_name+" (task_id="+item.tasks_id+")"+
                         "</li>";
                 $(sortableId+'1').append(x);
             }

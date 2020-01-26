@@ -391,7 +391,7 @@ if($caseBody === null){
 </script>
 
 <div id='approve_n_reject_layout' style="display: none">
-<?php include_once ("approve_n_reject.php"); ?>
+<?php include_once ("forward_n_reject.php"); ?>
 </div>
 <?php
 if($caseBody!== null){

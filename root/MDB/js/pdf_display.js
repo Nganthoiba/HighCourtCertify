@@ -1,6 +1,5 @@
 class PdfDisplay{
-    constructor(PDFJS,canvas_id,pdf_contents,next_button,prev_button){
-        this.PDFJS = PDFJS;
+    constructor(canvas_id,pdf_contents,next_button,prev_button){
         this.pdfScale = -1;
         this.interval = 0.05;
         this.__PDF_DOC = null;
@@ -16,10 +15,11 @@ class PdfDisplay{
     }
 }
 
-function showPDFDocument(PdfDisplayObj){
-    PdfDisplayObj.PDFJS.getDocument({ url: PdfDisplayObj.pdf_url }).then(function(pdf_doc){
+function showPDFDocument(PdfDisplayObj,total_page){
+    var doc = PDFJS.getDocument({ url: PdfDisplayObj.pdf_url }).then(function(pdf_doc){
         PdfDisplayObj.__PDF_DOC = pdf_doc;
         PdfDisplayObj.__TOTAL_PAGES = pdf_doc.numPages;
+        $("#"+total_page).text(PdfDisplayObj.__TOTAL_PAGES);
         PdfDisplayObj.pdf_contents.show();
         // Show the first page
         showPDFPage(PdfDisplayObj,1);

@@ -198,19 +198,7 @@
                     <div class="invalid-feedback">Please fill out name of the Respondent/Opposite Party.</div>
                 </div>
             </div>
-
-            <div class="row" >
-                <div class="col-sm-4">
-                    <label for="certificate_type_id" class="control-label">Certificate type  (*):</label>
-                </div>
-                <div class="col-sm-6">
-                    <select class="custom-select small_font" name="certificate_type_id" id="certificate_type_id" onchange="changeType(this.value)" required>
-
-                    </select>
-                    <div class="valid-feedback"></div>
-                    <div class="invalid-feedback">Please select Certificate type.</div>
-                </div>
-            </div>
+            
             <div class="row" id="order_date_layout">
                 <div class="col-sm-4">
                     <label for="order_date" class="control-label">Date of Order/Disposal (*):</label>
@@ -227,9 +215,22 @@
                 </div>
             </div>
             
+            <div class="row" >
+                <div class="col-sm-4">
+                    <label for="certificate_type_id" class="control-label">Certificate type  (*):</label>
+                </div>
+                <div class="col-sm-6">
+                    <select class="custom-select small_font" name="certificate_type_id" id="certificate_type_id" onchange="changeType(this.value)" required>
+
+                    </select>
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback">Please select Certificate type.</div>
+                </div>
+            </div>
+            
             <div style="display:none" id="write_application_area">
                 <div>
-                    <p> Write your application below (*):</p>
+                    <label for="textData"><strong>Write your application below (*):</strong></label>
                     <div style="width:100%; height:90%">
                         <textarea class="tinymce" id="textData" name="textData" class="form-control" required></textarea>
                         <div class="valid-feedback" id="aadhar_valid"></div>

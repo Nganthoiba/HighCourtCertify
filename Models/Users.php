@@ -4,7 +4,7 @@
  *
  * @author Nganthoiba
  */
-class Users extends model{
+class Users extends Model{
     /*** data structures for user***/
     public  $user_id , 
             $full_name ,     
@@ -100,9 +100,22 @@ class Users extends model{
     //For updating user data
     public function save(){
         $this->verify = ($this->verify == false)?0:1;
-        $params = $this->toArray();
-        unset($params['user_id']);
+        //$params = $this->toArray();
+        //unset($params['user_id']);
         //return $params;
+        $params = array(
+            "full_name" => $this->full_name,
+            "email" => $this->email,
+            "user_password" => $this->user_password,
+            "phone_number" => $this->phone_number,
+            "role_id" => $this->role_id,
+            "verify" => $this->verify,
+            "create_at" => $this->create_at,
+            "update_at" => $this->update_at,
+            "delete_at" => $this->delete_at,
+            "aadhaar" => $this->aadhaar,
+            "update_by" => $this->update_by
+        );
         $cond = array("user_id"=> $this->user_id);
         return parent::update($params, $cond);
     }
@@ -122,7 +135,7 @@ class Users extends model{
         }
         //unset($user->table_name);
         $user_data = $resp->data[0];
-        unset($user_data->user_password);
+        //unset($user_data->user_password);
         foreach ($user_data as $col_name=>$val){
             $this->$col_name = $val;
         }
