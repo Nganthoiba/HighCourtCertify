@@ -4,7 +4,7 @@
  *
  * @author Nganthoiba
  */
-class Casebody extends model{
+class Casebody extends Model{
     /*
     casebody_id   serial NOT NULL,
     case_type      integer,

@@ -52,7 +52,7 @@ class Menu extends Model{
             $temp_menus = array();
             foreach ($menus as $menu){
                 if(!filter_var($menu->link, FILTER_VALIDATE_URL)){
-                    $menu->link = Config::get('host').DS.ltrim($menu->link,'/');
+                    $menu->link = Config::get('host')."/".ltrim($menu->link,'/');
                 }
                 array_push($temp_menus,$menu);
             }
@@ -60,6 +60,7 @@ class Menu extends Model{
         }
         return $res;
     }
+    
     //save menu
     public function save(){
         $this->link = str_replace(Config::get('host'),"",$this->link);
@@ -74,6 +75,7 @@ class Menu extends Model{
         ];
         return parent::update($params, $cond);
     }
+    
     //remove menu
     public function remove(){
         $cond = [
