@@ -68,12 +68,33 @@ class Users extends EasyEntity{
     //For updating user data
     public function save(): Response{
         $this->verify = ($this->verify == false)?0:1;
+        if(isset($this->role_name)){
+            unset($this->role_name);
+        }
         return parent::save();
     }
     
     //For removing data
     public function remove(): Response{
         return parent::remove();
+    }
+    /*** find a user ***/
+    //overidding find method for user 
+    public function find($id){
+        $cond = [
+            $this->getKey() => ['=',$id]
+        ];
+        $stmt = $this->read([], $cond)->execute();
+        if($stmt->rowCount() == 1){
+            $res = $stmt->fetch(PDO::FETCH_ASSOC);
+            foreach ($res as $col_name=>$val){
+                $this->{$col_name} = $val;
+            }
+        }
+        else{
+            return null;
+        }
+        return $this;        
     }
     
     /*** START PRIVATE METHODS ***/
