@@ -4,7 +4,7 @@
  *
  * @author Nganthoiba
  */
-class Users extends Model{
+class Users extends EasyEntity{
     /*** data structures for user***/
     public  $user_id , 
             $full_name ,     
@@ -18,16 +18,17 @@ class Users extends Model{
             $delete_at,      
             $profile_image,  
             $aadhaar,        
-            $update_by;    
+            $update_by;
+    private $response;
     
     /***********************/
     public function __construct($data = array()) {
         parent::__construct();
         $this->setTable("users");
         $this->setKey("user_id");
-        
+        $this->response = new Response();
         /** setting default values **/
-        
+        $this->user_id = UUID::v4();
         if(sizeof($data)){
             $this->full_name = isset($data['full_name'])?$data['full_name']:"";
             $this->email = isset($data['email'])?$data['email']:"";
@@ -45,109 +46,43 @@ class Users extends Model{
     }
     
     //populating data in user table
-    public function add() {
-        $this->user_id = UUID::v4();
+    public function add(): Response{
         if(!$this->isValidated()){
             return $this->response;
         }
-        //$rec = $this->toArray();
-        $rec = json_decode(json_encode(new UserAddModel($this)),true);
-        return parent::create($rec);
+        //$rec = json_decode(json_encode(new UserAddModel($this)),true);
+        return parent::add();
+        //return parent::create($rec);
     }
     
     //For reading user data from users table
-    public function read($columns = array(), $cond = array(), $order_by = "") {
-        $cols = $this->getColumnStatement($columns);
-        $where = $this->getWhereStatement($cond);
-        if($order_by!=""){
-            $order_by = " order by ".$order_by;
-        }
-        $qry = "select ".$cols." from "
-                . " (select U.*,R.role_name "
+    public function read($columns = array(), $cond = array(), $order_by = array()):EasyQueryBuilder {
+        $qryBuilder = new EasyQueryBuilder();
+        return $qryBuilder->select($columns)->from(
+                " (select U.*,R.role_name "
                 . " from users U left join role R "
                 . " on U.role_id = R.role_id) as USER_TABLE "
-                . " ".$where." ".$order_by;
-        $stmt = self::$conn->prepare($qry);
-        $res = is_array($cond)?$stmt->execute(array_values($cond)):$stmt->execute();
-        if($res){
-            if($stmt->rowCount()==0){
-                return $this->response->set(array(
-                            "status"=>false,
-                            "status_code"=>404,
-                            "msg"=>"No record found."
-                        ));
-            }
-            $data = array();
-            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-                $data[] = (object)$row;
-            }
-            $this->response->set(array(
-                            "status"=>true,
-                            "status_code"=>200,
-                            "msg"=>"List of users",
-                            "data"=>$data
-                        ));
-        }
-        else{
-            $this->response->set(array(
-                            "error"=>$stmt->errorInfo()
-                        ));
-        }
-        return $this->response;
-        //return parent::read($columns, $cond, $order_by);
+                )->where($cond)->orderBy($order_by);        
     }
     
     //For updating user data
-    public function save(){
+    public function save(): Response{
         $this->verify = ($this->verify == false)?0:1;
-        //$params = $this->toArray();
-        //unset($params['user_id']);
-        //return $params;
-        $params = array(
-            "full_name" => $this->full_name,
-            "email" => $this->email,
-            "user_password" => $this->user_password,
-            "phone_number" => $this->phone_number,
-            "role_id" => $this->role_id,
-            "verify" => $this->verify,
-            "create_at" => $this->create_at,
-            "update_at" => $this->update_at,
-            "delete_at" => $this->delete_at,
-            "aadhaar" => $this->aadhaar,
-            "update_by" => $this->update_by
-        );
-        $cond = array("user_id"=> $this->user_id);
-        return parent::update($params, $cond);
+        return parent::save();
     }
     
     //For removing data
-    public function remove(){
-        $cond = array("user_id"=> $this->user_id);
-        return parent::delete($cond);
-    }
-    //finding a user 
-    public function find($id) {
-        //$user = parent::find($id);
-        $resp = $this->read(array(), array("user_id"=>$id));
-        
-        if($resp->status == false){
-            return null;
-        }
-        //unset($user->table_name);
-        $user_data = $resp->data[0];
-        //unset($user_data->user_password);
-        foreach ($user_data as $col_name=>$val){
-            $this->$col_name = $val;
-        }
-        return $this;
+    public function remove(): Response{
+        return parent::remove();
     }
     
-    /*** PRIVATE METHODS ***/
+    /*** START PRIVATE METHODS ***/
     
     /*** function to check whether an email already exist ***/
     private function isEmailExist($email){
         $qry = "select * from users where email = :email";
-        $stmt = self::$conn->prepare($qry);
+        $conn = Database::connect();
+        $stmt = $conn->prepare($qry);
         $stmt->bindParam(":email",$email);
         $stmt->execute();
         return ($stmt->rowCount()>0);
@@ -186,24 +121,6 @@ class Users extends Model{
         }
         return true;
     } 
-    
-    //convert to associative array
-    private function toArray(){
-        $arr = array(
-            "user_id" => $this->user_id,
-            "full_name" => $this->full_name,
-            "email" => $this->email,
-            "phone_number" => $this->phone_number,
-            "role_id" => $this->role_id,
-            "verify" => $this->verify,
-            "create_at" => $this->create_at,
-            "update_at" => $this->update_at,
-            "delete_at" => $this->delete_at,
-            "aadhaar" => $this->aadhaar,
-            "update_by" => $this->update_by
-        );
-        return $arr;
-    }
     
     public static function isAdminUser($user_id){
         $user = new Users();

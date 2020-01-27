@@ -35,11 +35,13 @@ class AccountController extends Controller{
         $data = $this->_cleanInputs($_POST);
         if(sizeof($data)){
             //verify csrf token
+            /*
             $res = verifyCSRFToken();
             if($res->status == false){
                 $this->data['login_response'] = $res->msg;
                 return $this->view();
             }
+            */
             //end token verification
             $res = $this->isLoginDataValid($data);
             $this->data['email']=$data['email'];
@@ -57,7 +59,7 @@ class AccountController extends Controller{
                     
                 }
                 else{
-                    $this->data['login_response'] = "Login failed, please try with proper credentials.";
+                    $this->data['login_response'] = "Login failed, please try with proper credentials.".json_encode($resLogin);
                 }
             }
             else{

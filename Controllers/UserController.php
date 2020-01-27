@@ -40,7 +40,7 @@ class UserController extends Controller{
                 );
             $cond = array();
             $this->resp = $users->read($columns,$cond, "full_name");
-            return $this->send_data($this->resp, $this->resp->status_code);
+            return $this->sendResponse($this->resp);
         }
         else{
             $users = $users->find($user_id);
@@ -60,14 +60,13 @@ class UserController extends Controller{
                     "data"=>$users
                 ));
             }
-            return $this->send_data($this->resp, $this->resp->status_code);
+            return $this->sendResponse($this->resp);
         }
     }
     public function viewUsers(){
         if(Logins::getRoleName()!="Admin"){
             redirectTo();
         }
-        
         $users = new Users();//creating user model
         $columns = array(
                 'user_id' , 
@@ -85,8 +84,35 @@ class UserController extends Controller{
                 'aadhaar',        
                 'update_by');
         $cond = "role_name != 'Admin' ";//array();
-        $resp = $users->read($columns,$cond, "full_name");
-        $this->data['response'] = $resp;
+        $res = $users->read($columns,$cond, ["full_name"]);
+        $response = new Response();
+        try{
+            $user_list = $res->toList();
+            if($user_list == null){
+                $response->set([
+                    "msg" => "No user found.",
+                    "status"=>false,
+                    "status_code"=>404
+                ]);
+            }
+            else{
+                $response->set([
+                    "msg" => "List of users.",
+                    "status"=>true,
+                    "status_code"=>200,
+                    "data"=>$user_list
+                ]);
+            }
+        }
+        catch(Exception $e){
+            $response->set([
+                    "msg" => "An error occurs.",
+                    "status"=>false,
+                    "status_code"=>500,
+                    "error"=>$res->getErrorInfo()
+                ]);
+        }
+        $this->data['response'] = $response;
         
         return $this->view();
     }

@@ -25,12 +25,18 @@ class EasyEntity {
     private $response;
     public function __construct() {
         /* Entity name should be same as the table name that exists in database */
-        $this->table_name = get_class($this);
+        $this->table_name = get_class($this);//by default
         $this->queryBuilder = new EasyQueryBuilder();
-        $this->queryBuilder->setEntityClassName($this->table_name);
+        $this->queryBuilder->setEntityClassName($this->table_name);//by default
         $this->response = new Response();
     }
-    
+    public function setTable($table_name){
+        $this->table_name = $table_name;
+        $this->queryBuilder->setEntityClassName($this->table_name);
+    }
+    public function getTable(){
+        return $this->table_name;
+    }
     //method to set key of the enity
     public function setKey($key){
         $this->key = $key;
@@ -82,6 +88,7 @@ class EasyEntity {
         else{
             try{
                 $data = ($this->toArray());
+                unset($data[$this->key]);//key will not be updated
                 $cond = [
                     //primary key attribute = value
                     $this->key => ['=',$this->{$this->key}]
@@ -91,11 +98,16 @@ class EasyEntity {
                         ->setValues($data)
                         ->where($cond)
                         ->execute();
+                
                 $this->response->set([
                         "msg" => "Record updated successfully.",
                         "status"=>true,
                         "status_code"=>200,
-                        "data"=>$this
+                        "data"=>$data,
+                        "error"=>[
+                            "qry"=>$this->queryBuilder->getQuery(),
+                            "values"=>$this->queryBuilder->getValues()
+                        ]
                     ]);
             }catch(Exception $e){
                 $this->response->set([

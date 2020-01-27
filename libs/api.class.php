@@ -4,7 +4,7 @@
  *
  * @author Nganthoiba
  */
-abstract class Api extends Controller
+abstract class Api
 {
     public $request;
         /**
@@ -12,24 +12,7 @@ abstract class Api extends Controller
      * The HTTP method this request was made in, either GET, POST, PUT or DELETE
      */
     protected $method = '';
-    /**
-     * Property: endpoint
-     * The Model requested in the URI. eg: /files
-     */
-    protected $endpoint = '';
-    /**
-     * Property: verb
-     * An optional additional descriptor about the endpoint, used for things that can
-     * not be handled by the basic methods. eg: /files/process
-     */
-    protected $verb = '';
-    /**
-     * Property: args
-     * Any additional URI components after the endpoint and verb have been removed, in our
-     * case, an integer ID for the resource. eg: /<endpoint>/<verb>/<arg0>/<arg1>
-     * or /<endpoint>/<arg0>
-     */
-    protected $args = Array();
+    
     /**
      * Property: file
      * Stores the input of the PUT request
@@ -37,17 +20,40 @@ abstract class Api extends Controller
      protected $file = Null;
 
     /**
+     * Property: params
+     * These are any additional URI components after the controller and method have been removed.
+     * eg: http://something.com/<controller>/<method>/<arg0>/<arg1>
+     * <arg0> and <arg1> are params (parameters)
+     */
+    protected $params;
+    protected $data;
+    public $response;
+    private $router;
+
+    public function setRouter($router){
+        $this->router = $router;
+    }
+    public function getData(){
+        return $this->data;
+    }
+    
+    //these are the parameters appended in urls
+    public function getParams(){
+        return $this->params;
+    }
+    /**
      * Constructor: __construct
      * Allow for CORS, assemble and pre-process the data
      */
-    public function __construct($request="") {
-        parent::__construct();
+    public function __construct() {
+        //parent::__construct();
+        $this->params = App::getRouter()->getParams();
+        $this->response = new Response();
         App::getRouter()->getRoute();
         header("Access-Control-Allow-Orgin: *");
         header("Access-Control-Allow-Methods: *");
         header("Content-Type: application/json");
         
-        $this->args = $this->getParams();
         $this->method = $_SERVER['REQUEST_METHOD'];
         if ($this->method == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER)) {
             if ($_SERVER['HTTP_X_HTTP_METHOD'] == 'DELETE') {
@@ -84,13 +90,18 @@ abstract class Api extends Controller
         }
     }
     
-    public function _response($data = array(), $status = 200) {
+    public function _response($data = array(), int $status = 200) {
         header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
         return json_encode($data);
     }
     
+    /** For sending response to client **/
+    public function sendResponse(Response $resp){
+        return $this->_response($resp,$resp->status_code);
+    }
+    
     //the following functions is also defined in Controller class
-    /*Overriding */
+    
     protected function _cleanInputs($data) {
         $clean_input = Array();
         if (is_array($data)) {
@@ -102,7 +113,6 @@ abstract class Api extends Controller
         }
         return $clean_input;
     }
-    /*
     protected function _requestStatus($code) {
         $status = array(  
             200 => 'OK',
@@ -116,7 +126,5 @@ abstract class Api extends Controller
             500 => 'Internal Server Error'
         ); 
         return ($status[$code])?$status[$code]:$status[500]; 
-    }
-    */
-    
+    }    
 }

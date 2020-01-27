@@ -15,35 +15,51 @@ class UserLoginModel{
     }
     
     public function isLoginSuccessfull(){
-        $model = new model();
-        $model->setTable("users");
-        $model->setKey("user_id");
+        $res = new Response();
+        $user = new Users();
+        $queryBuilder;
         $cond = array(
             'email' => $this->email,
             'user_password' => $this->user_password
         );
-        $res = $model->read(array(
-            'user_id',
-            'full_name',
-            'email',
-            'phone_number',
-            'role_id',
-            'verify',
-            'aadhaar'), $cond);
-        if($res->status_code == 200){
-            $user = $res->data[0];
-            //$users_id = $user['users_id'];
-            $login = new Logins($user->user_id);
-            $loginRes = $login->add();//adding login details
-            if($loginRes->status_code==200){
-                $loginRes->msg = "You have successfully logged in.";
-                $user = json_decode(json_encode($user),true);
-                $loginRes->data = array_merge($user,$loginRes->data);
+        try{
+            $queryBuilder = $user->read(array(
+                'user_id',
+                'full_name',
+                'email',
+                'phone_number',
+                'role_id',
+                'verify',
+                'aadhaar'), $cond);
+            $user = $queryBuilder->getFirst();
+            if($user !== null){
+                $login = new Logins($user->user_id);
+                $loginRes = $login->add();//adding login details
+                if($loginRes->status_code==200){
+                    $loginRes->msg = "You have successfully logged in.";
+                    $user = json_decode(json_encode($user),true);
+                    $loginRes->data = array_merge($user,$loginRes->data);
+                }
+                return $loginRes;                
             }
-            return $loginRes;
+            else{
+                $res->set([
+                    "status"=>false,
+                    "status_code"=>404,
+                    "msg"=>"User not found! Make sure you that you enter correct credentials."                    
+                ]);
+            }
         }
-        else{
-            return $res;
+        catch(Exception $e){
+            $res->set([
+                    "status"=>false,
+                    "status_code"=>500,
+                    "msg"=>"Sorry, an error occurs.",
+                    "error"=>$e->getMessage(),
+                ]);
+            $res->qry = $queryBuilder->getQuery();
+            $res->values = $queryBuilder->getValues();
         }
+        return $res;
     }
 }

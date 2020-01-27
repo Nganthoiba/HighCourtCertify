@@ -17,44 +17,97 @@ class User_apiController extends Api{
         parent::__construct($request);
         $this->response = new Response();
     }
-    public function index(){
+    public function findUser(){
         $params = $this->getParams();
         $user_id = isset($params[0])?$params[0]:"";
         $users = new Users();//creating user model
-        $resp = new Response();
-        if($user_id == ""){
-            $columns = array(
-                'user_id' , 
-                'full_name' ,     
-                'email'  ,        
-                'phone_number'  ,     
-                'role_id',       
-                'verify',         
-                'create_at',     
-                'update_at',      
-                'delete_at',      
-                'profile_image',  
-                'aadhaar',        
-                'update_by',
-                'role_name'
-                );
-            $cond = array("role_id !"=>1);
-            
-            $resp = $users->read($columns,$cond, "full_name");
-        }
-        else{
+        if($user_id != ""){
             $users = $users->find($user_id);
             if($users == null){
-                $resp->status_code = 404;
-                $resp->msg = "User not found";
+                $this->response->status_code = 404;
+                $this->response->msg = "User not found";
             }
             else{
-                $resp->status_code = 200;
-                $resp->msg = "User found";
-                $resp->data = $users;
+                $this->response->status_code = 200;
+                $this->response->msg = "User found";
+                $this->response->data = $users;
             }
         }
-        return $this->_response($resp, $resp->status_code);
+        else{
+            $this->response->set([
+                "msg"=>"User id is not send."
+            ]);
+        }
+        return $this->sendResponse($this->response);
+    }
+    public function index(){
+        $params = $this->getParams();
+        $user_type = (sizeof($params)>0)?$params[0]:"all";//classified into tw type of users
+        $users = new Users();//creating user model
+        
+        $columns = array(
+            'user_id' , 
+            'full_name' ,     
+            'email'  ,        
+            'phone_number'  ,     
+            'role_id',       
+            'verify',         
+            'create_at',     
+            'update_at',      
+            'delete_at',      
+            'profile_image',  
+            'aadhaar',        
+            'update_by',
+            'role_name'
+            );
+        
+        switch ($user_type){
+            case "court_users":
+                $cond = [
+                    "role_id"=>[
+                        "NOT IN",[1,14]
+                        ]                  
+                ];
+                break;
+            case "applicants":
+                $cond = [
+                    "role_id"=>["=",14]
+                ];
+                break;
+            default :
+                $cond = [
+                    "role_id"=>["!=",1]
+                ];
+        }
+        
+
+        $qryBuilder = $users->read([],$cond, "full_name");
+        try{
+            $user_lists = $qryBuilder->toList();
+            if($user_lists == null){
+                $this->response->set([
+                    "msg"=>"No record found.",
+                    "status"=>false,
+                    "status_code"=>404
+                ]);
+            }
+            else{
+                $this->response->set([
+                    "msg"=>"User Lists.",
+                    "data"=>$user_lists,
+                    "status"=>true,
+                    "status_code"=>200
+                ]);
+            }
+        }catch(Exception $e){
+            $this->response->set([
+                "msg"=>"An error occurs.",
+                "error"=>$qryBuilder->getErrorInfo(),
+                "status"=>false,
+                "status_code"=>500
+            ]);
+        }
+        return $this->sendResponse($this->response);
     }
     
     //put your code here
@@ -99,7 +152,7 @@ class User_apiController extends Api{
                 }
             }
         }
-        return $this->_response($this->response,$this->response->status_code);
+        return $this->sendResponse($this->response);
     }
     
     public function updateUser(){
@@ -149,8 +202,7 @@ class User_apiController extends Api{
                 }
             }
         }
-        
-        return $this->_response($this->response,$this->response->status_code);
+        return $this->sendResponse($this->response);
     }
     
 }

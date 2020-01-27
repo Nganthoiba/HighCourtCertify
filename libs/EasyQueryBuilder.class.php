@@ -22,7 +22,7 @@ class EasyQueryBuilder {
     private $errorCode;
     
     private $db_config;//db configuration
-    private $conn;//database connection
+    public static $conn;//database connection
     
     private $limit_rows; //limit to how many rows will be selected 
     
@@ -35,7 +35,7 @@ class EasyQueryBuilder {
         $this->qry = "";
         $this->values = [];
         $this->db_config = Config::get('DB_CONFIG');
-        $this->conn = Database::connect();//connecting database
+        self::$conn = (self::$conn==null)?Database::connect():self::$conn;//connecting database
         $this->limit_rows = -1;
         $this->data_list = [];
         $this->entiy_class_name = "";
@@ -54,15 +54,12 @@ class EasyQueryBuilder {
     
     /*Method to execute query statement*/
     public function execute(): PDOStatement{
-        if($this->conn === null){
-            return null;
-        }
         if($this->qry === ""){
             return null;
         }
-        $stmt = $this->conn->prepare($this->qry);
+        $stmt = self::$conn->prepare($this->qry);
         $res = $stmt->execute($this->values);
-        
+
         if(!$res){
             //Throw an exception when error occurs while executing query
             $this->errorInfo = $stmt->errorInfo();
@@ -70,9 +67,9 @@ class EasyQueryBuilder {
             throw new Exception("An error occurs while executing the query. ".$this->errorInfo[2], 
                     $this->errorCode);
         }
-        //otherwise return query execution PDO Statement
         return $stmt;
     }
+    
     /*** Set query and get query ***/
     public function getQuery():string{
         return $this->qry;
@@ -161,6 +158,7 @@ class EasyQueryBuilder {
         }catch(Exception $e){
             throw $e;
         }
+        return null;
     }
     
     //limit function
@@ -182,12 +180,14 @@ class EasyQueryBuilder {
     
     //method for delete clause
     public function delete():EasyQueryBuilder{
+        $this->values = [];//clearing existing values, because new values will be set by where() method
         $this->qry = "delete ";
         return $this;
     }
     
     /** method for update clause **/
     public function update($table_name):EasyQueryBuilder{
+        $this->values = [];//reset values, because new values will be set by setValues() method
         $this->qry = "update ".$table_name;
         return $this;
     }
@@ -225,7 +225,7 @@ class EasyQueryBuilder {
     
     //method for from clause
     public function from($table_names = array()/*array of table names*/):EasyQueryBuilder{
-        $this->qry .= " from ".$this->getStringifiedTables($tables); 
+        $this->qry .= " from ".$this->getStringifiedTables($table_names); 
         return $this;
     }
     //where clause
@@ -360,7 +360,7 @@ class EasyQueryBuilder {
                     if(strtolower(trim($values[0])) === "between"){
                         $cond_string .= $key." ".$values[0]." ? and ?";
                     }
-                    else if(strtolower(trim($values[0])) === "in"){
+                    else if(strtolower(trim($values[0])) === "in" || strtolower(trim($values[0])) === "not in"){
                         $range = $values[1];//certain range of values
                         $str_range="";
                         foreach ($range as $val){
@@ -390,7 +390,7 @@ class EasyQueryBuilder {
         
         foreach($cond as $key=>$val){
             if(is_array($val) && sizeof($val)>=2){
-                if(strtolower(trim($val[0])) === "in"){
+                if(strtolower(trim($val[0])) === "in" || strtolower(trim($val[0])) === "not in"){
                     $values = array_merge($values,$val[1]);
                 }
                 else{
@@ -435,7 +435,7 @@ class EasyQueryBuilder {
                     return false;
                     
                 }
-                if(is_array($val) && (strtolower(trim($val[0])) === "in" || strtolower(trim($val[0])) === "any" || strtolower(trim($val[0])) === "all")){
+                if(is_array($val) && (strtolower(trim($val[0])) === "in" || strtolower(trim($val[0])) === "not in")){
                     if(!isset($val[1]) || !is_array($val[1]) || (is_array($val[1]) && sizeof($val[1])===0)){
                         $this->errorInfo = [
                             "Detail"=>"Error SQL Operator $val[0], missing perameters, \n"
@@ -476,8 +476,21 @@ class EasyQueryBuilder {
         return rtrim($tables_string,', ');
     }
     /**************** END OF QUERY BUILDING METHODS *****************/    
+    
+    /**** TRANSACTIONS METHODS ****/
+    public function beginTransaction(){
+        self::$conn->beginTransaction();
+    }
+    public function rollback(){
+        self::$conn->rollBack();
+    }
+    public function commit(){
+        self::$conn->commit();
+    }
+    
+    
     /**** Destructor****/
     public function __destruct() {
-        $this->conn = null;
+        self::$conn = null;
     }
 }
