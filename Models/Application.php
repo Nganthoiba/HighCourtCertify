@@ -5,7 +5,7 @@
  * @author Nganthoiba
  */
 
-class Application extends model{
+class Application extends Model{
     public $response;
     /* Fields in the table applications */
     public  $application_id,
