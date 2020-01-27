@@ -22,16 +22,12 @@ class EasyEntity {
     private $table_name;
     private $key;
     private $queryBuilder;
-    private $error_msg;
-    private $error_info;//Error Information for any error in executing SQL Queries
     private $response;
     public function __construct() {
         /* Entity name should be same as the table name that exists in database */
         $this->table_name = get_class($this);
         $this->queryBuilder = new EasyQueryBuilder();
         $this->queryBuilder->setEntityClassName($this->table_name);
-        $this->error_msg = "";
-        $this->error_info = [];
         $this->response = new Response();
     }
     

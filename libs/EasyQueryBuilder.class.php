@@ -70,7 +70,7 @@ class EasyQueryBuilder {
             throw new Exception("An error occurs while executing the query. ".$this->errorInfo[2], 
                     $this->errorCode);
         }
-        //otherwise return query execution statement
+        //otherwise return query execution PDO Statement
         return $stmt;
     }
     /*** Set query and get query ***/
