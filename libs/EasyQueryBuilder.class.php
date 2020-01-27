@@ -1,5 +1,9 @@
 <?php
 /**
+ * Other files used:- 
+ * Database.class.php
+ * EmptyClass.class.php
+ * 
  * Description of EasyQueryBuilder
  *  This class generates SQL (DML). The query is purely based on PDO.
  * #Note: this query builder generates query which can only be executed successfully 
@@ -31,7 +35,7 @@ class EasyQueryBuilder {
         $this->qry = "";
         $this->values = [];
         $this->db_config = Config::get('DB_CONFIG');
-        $this->conn = Database::connect();
+        $this->conn = Database::connect();//connecting database
         $this->limit_rows = -1;
         $this->data_list = [];
         $this->entiy_class_name = "";
@@ -186,6 +190,10 @@ class EasyQueryBuilder {
     public function update($table_name):EasyQueryBuilder{
         $this->qry = "update ".$table_name;
         return $this;
+    }
+    /*** Set parameter values and get those values ***/
+    public function getValues():array{
+        return $this->values;
     }
     //this will be called just after update method
     public function setValues($params = array()):EasyQueryBuilder{
