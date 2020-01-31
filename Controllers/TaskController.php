@@ -21,7 +21,7 @@ class TaskController extends Controller{
 
     public function getTasks(){
         $task = new Tasks();
-        $resp = $task->read();
+        $resp = $task->read([],[],'tasks_id');
         if($resp->status){
             $tasks = $resp->data;
             $temp = array();

@@ -30,22 +30,45 @@ class EasyEntity {
         $this->queryBuilder->setEntityClassName($this->table_name);//by default
         $this->response = new Response();
     }
-    public function setTable($table_name){
+    protected function setTable($table_name){
         $this->table_name = $table_name;
         $this->queryBuilder->setEntityClassName($this->table_name);
+        return $this;
     }
-    public function getTable(){
+    protected function getTable(){
         return $this->table_name;
     }
     //method to set key of the enity
-    public function setKey($key){
+    protected function setKey($key){
         $this->key = $key;
+        return $this;
     }
     //method to get key of the enity
-    public function getKey(){
+    protected function getKey(){
         return $this->key;
     }
-    //Adding a new record in the table
+    
+    //method to get query builder
+    protected function getQueryBuilder():EasyQueryBuilder{
+        return $this->queryBuilder;
+    }
+    
+    /*Convert self object to array*/
+    private function toArray(){
+        return json_decode(json_encode($this),true);
+    }
+    
+    /*** Check for valid Entity ***/
+    private function isValidEntity():bool{
+        //If table name and key is not set, then entity is invalid
+        if(trim($this->table_name) == "" || trim($this->key) == "" || $this->table_name == "EasyEntity"){
+            return false;//entity is invalid
+        }
+        return true;//entity is valid
+    }
+    
+    /********* START CRUD OPERATIONS ********/
+    //Creat or add a new record in the table
     public function add(): Response{   
         if(!$this->isValidEntity()) {
             $this->response->set([
@@ -75,7 +98,10 @@ class EasyEntity {
         }
         return $this->response;
     }
-    
+    //to read record
+    public function read($columns = array()): EasyQueryBuilder{
+        return $this->queryBuilder->select($columns)->from($this->table_name);
+    }
     //to update and save record
     public function save(): Response{
         if(!$this->isValidEntity()) {
@@ -158,10 +184,7 @@ class EasyEntity {
         return $this->response;
     }
     
-    //to read record
-    public function read($columns = array()): EasyQueryBuilder{
-        return $this->queryBuilder->select($columns)->from($this->table_name);
-    }
+    
     /*** find an Entity ***/
     public function find($id){
         //If Entity is not valid
@@ -171,7 +194,7 @@ class EasyEntity {
         $stmt = $this->queryBuilder->select()->from($this->table_name)->where([
             $this->key => ['=',$id]
         ])->execute();
-        if($stmt->rowCount() == 1){
+        if($stmt->rowCount()){
             $res = $stmt->fetch(PDO::FETCH_ASSOC);
             foreach ($res as $col_name=>$val){
                 $this->{$col_name} = $val;
@@ -182,6 +205,8 @@ class EasyEntity {
         }
         return $this;        
     }
+    /********** END CRUD OPERATIONS *********/
+    
     //find maximum value of a column, the column should be of integer data type preferrably
     protected function findMaxColumnValue($column/*Column/Attribute name*/){
         $stmt = $this->read("max(".$column.") as max_val")->execute();
@@ -190,19 +215,5 @@ class EasyEntity {
         }
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['max_val'] == NULL?0:is_numeric($row['max_val'])?(int)$row['max_val']:$row['max_val'];
-    }
-
-    /*Convert self object to array*/
-    private function toArray(){
-        return json_decode(json_encode($this),true);
-    }
-    
-    /*** Check for valid Entity ***/
-    private function isValidEntity():bool{
-        //If table name and key is not set, then entity is invalid
-        if(trim($this->table_name) == "" || trim($this->key) == "" || $this->table_name == "EasyEntity"){
-            return false;//entity is invalid
-        }
-        return true;//entity is valid
     }
 }

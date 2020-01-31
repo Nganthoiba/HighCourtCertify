@@ -482,16 +482,10 @@ class EasyQueryBuilder {
     public function beginTransaction(){
         self::$conn->beginTransaction();
     }
-    public function rollback(){
+    public function rollbackTransaction(){
         self::$conn->rollBack();
     }
-    public function commit(){
+    public function commitTransaction(){
         self::$conn->commit();
-    }
-    
-    
-    /**** Destructor****/
-    public function __destruct() {
-        self::$conn = null;
     }
 }

@@ -69,21 +69,7 @@ else{
             <td><strong>Application Submitted on:</strong></td>
             <td><?= date('D, d M, Y',$create_at_timestamp) ?></td>
         </tr>
-        <?php 
-        if($application->certificate_type_id !="1"){
-           //if the application is not for order copy
-        ?>
-        <tr>
-            <td colspan="2">
-                <strong>Application body:</strong>
-                <div class="alert alert-light">
-                    <?= str_replace("&nbsp;"," ",htmlspecialchars_decode($application->body)) ?>
-                </div>
-            </td>
-        </tr>
-        <?php
-        } 
-        ?>
+        
     </table>
 <?php
 //if($data['process_id'] !=8 && $data['process_id'] !="" && $application->isTaskPending){

@@ -57,8 +57,8 @@ function startSecureSession() {
         ini_set("session.cookie_httponly", 1);//(No xxs)This will prevent from javascript to display session cookies over browser
         ini_set('session.httponly',true);/* securing cookies and session*/
         session_start(); // Start the php session
-        session_regenerate_id(true); // regenerated the session, delete the old one.   
     }
+    session_regenerate_id(true); // regenerated the session, delete the old one.
 }
 
 /*function to get client ip*/

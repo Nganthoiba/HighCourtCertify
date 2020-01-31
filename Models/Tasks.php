@@ -33,7 +33,7 @@ class Tasks extends model{
     
     public function __construct() {
         parent::__construct();
-        $this->setTable("Tasks");
+        $this->setTable("tasks");
         $this->setKey("tasks_id");
     }
     //adding a new task record

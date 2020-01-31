@@ -24,6 +24,27 @@ class ApplicationController extends Controller{
     public function index(){
         return $this->view();
     }
+    public function application_for(){
+        //to read certificate type whether certify, uncertify, certify urgent or uncertify urgent
+        $application_for = new application_for();
+        $list = $application_for->read()->orderBy("application_for_id")->toList();
+        if($list == null){
+            $this->response->set([
+                "msg"=>"No record found.",
+                "status_code"=>404
+            ]);
+        }
+        else{
+            $this->response->set([
+                "msg"=>"list of certificate types",
+                "status"=>true,
+                "status_code"=>200,
+                "data"=>$list
+            ]);
+        }
+        return $this->sendResponse($this->response);
+    }
+    
     public function viewApplications(){
         $user_id = "";
         /* Check user is authenticated */
@@ -40,7 +61,7 @@ class ApplicationController extends Controller{
         //$process_id = 8; // from user input 
         //$list = $application->readAppLog($user_id,$process_id);
         $list = $application->readAppTasksLog($user_id);
-        
+        //$list = $application->read()->where(['user_id'=>$user_id])->orderByDesc("create_at")->toList();
         $this->data['applications'] = $list->data;
         $this->data['user_id'] = $user_id;
         return $this->view();
@@ -69,10 +90,12 @@ class ApplicationController extends Controller{
         $data = $this->_cleanInputs($_POST);
         
         if(sizeof($data)){
+            
             $response = verifyCSRFToken();
             if($response->status == false){
                 return $this->sendResponse($response);
             }
+            
             $this->response->status_code = 403;//Bad Request
             
             //$aadhaar = isset($data['aadhaar'])?str_replace(" ","",$data['aadhaar']):""; //Aadhaar 
@@ -88,18 +111,10 @@ class ApplicationController extends Controller{
             $case_type_reference = isset($data['case_type_reference']) && ($data['case_type_reference']!="")?$data['case_type_reference']:-1;
             $case_no_reference = isset($data['case_no_reference']) && ($data['case_no_reference']!="")?$data['case_no_reference']:-1;
             $case_year_reference = isset($data['case_year_reference']) && ($data['case_year_reference']!="")?$data['case_year_reference']:-1;
-            
-            // application written by client if certificate type is not for order copy
-            $written_application = htmlspecialchars(preg_replace('#<script(.*?)>(.*?)</script>#is', '', $_POST['textData']));
+            $is_third_party = $data['is_third_party'];
             
             $submit_date = date('Y-m-d H:i:s');
-            /*** input validations *****/
-            /*if(strlen($aadhaar) != 12)
-            {
-                $this->response->msg = 'Invalid aadhaar number: '.trim($aadhaar,"\t ");
-                $this->response->status = false;
-            }
-            */
+            
             if(trim($case_type) == "")
             {
                 $this->response->msg = 'Please select case type ';
@@ -135,6 +150,7 @@ class ApplicationController extends Controller{
                 
                 $applicationModel = new Application();
                 //$applicationModel->aadhaar = $aadhaar;
+                $applicationModel->application_id = UUID::v4();
                 $applicationModel->application_for = $appli_for;
                 $applicationModel->case_no = $case_no;
                 $applicationModel->case_type = $case_type;
@@ -150,7 +166,7 @@ class ApplicationController extends Controller{
                 $applicationModel->petitioner = $appel_petitioner;
                 $applicationModel->respondent = $respondant_opp;
                 $applicationModel->user_id = $user_id;
-                $applicationModel->written_application = $written_application;
+                $applicationModel->is_third_party = $is_third_party;
                 
                 $this->response = $applicationModel->add();
                 
@@ -159,9 +175,16 @@ class ApplicationController extends Controller{
                 }
                 
             }
-            return $this->send_data($this->response, $this->response->status_code);
-            //return $this->sendResponse($this->response->status,$this->response->msg,$status_code,$this->response['error']);
+            return $this->sendResponse($this->response);
         }
+        //to read certificate type whether certify, uncertify, certify urgent or uncertify urgent
+        $application_for = new application_for();
+        $application_for_list = $application_for->read()->orderBy("application_for_id")->toList();
+        $this->data['application_for_list'] = $application_for_list;
+        
+        $caseType = new case_type();
+        $this->data['case_type_list'] = $caseType->read(['case_type_id','type_name','full_form'])->orderBy('type_name')->toList();
+        
         return $this->view();
     }
     

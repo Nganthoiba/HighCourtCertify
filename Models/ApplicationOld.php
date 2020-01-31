@@ -23,6 +23,7 @@ class Application extends Model{
             $create_at,
             $user_id,
             $is_order,
+            $is_third_party,
             $written_application;
     
     public function __construct() {
@@ -32,7 +33,7 @@ class Application extends Model{
         $this->response = new Response();
     }
     public function getProcessId(){
-        return ($this->is_order=="y")?2:1;
+        return ($this->is_order=="y")?2:($this->is_third_party=="y")?3:1;
     }
     //insert a new application
     public function add() {
@@ -56,53 +57,16 @@ class Application extends Model{
             "order_date"=>$this->order_date ,
             "create_at"=>$this->create_at, 
             "user_id"=>$this->user_id,
-            "is_order"=>$this->is_order
+            "is_order"=>$this->is_order,
+            "is_third_party"=> $this->is_third_party
         );
         $resp = parent::create($rec);
         
         if($resp->status_code!=200){
             return $resp;
         }
-        //if the application is not for order copy
-        if($this->is_order === "n"){
-            if($this->written_application == ""){
-                $conn->rollback();
-                return $this->response->set(array(
-                    "status"=>false,
-                    "msg"=>"You must write an application letter.",
-                    "status_code"=>403,
-                    "error"=>null,
-                    "data"=>null
-                ));
-            }
-            $qry = "insert into written_application(application_id,body) values(?,?);";
-            $stmt = $conn->prepare($qry);
-            $res = $stmt->execute(array($this->application_id,$this->written_application));
-            if(!$res){
-                $conn->rollback();
-                return $this->response->set(array(
-                    "status"=>false,
-                    "msg"=>"Failed to submit your application.",
-                    "status_code"=>500,
-                    "error"=>$stmt->errorInfo(),
-                    "data"=>null
-                ));
-            }
-        }
-        /*
-        // inserting a record about application submission in application log
-        $action_name = "create";
-        $process_id = 8;//8 means first process
-        $remark = "Application is submitted";
         
-        $app_log_res = insertApplicationLog($conn, $action_name,  $this->application_id, $process_id, $remark,$is_order);
-        if(!$app_log_res['status']){
-            $conn->rollback();
-            return $this->response->set($app_log_res);
-        }
-        */
-        
-        $tasks_id = 6;//Task id for applying a new copy
+        $tasks_id = 1;//Task id for applying a new copy
         $process_id = $this->getProcessId();//process_id =2 for order copy whereas 1 for non order copy
         $remark = "Submit a new application.";
         $resp = insertApplicationTasksLog($conn, $this->application_id, $this->user_id, "create", $tasks_id, $process_id, $remark);
@@ -115,8 +79,6 @@ class Application extends Model{
         }
         return $resp;
     }
-    
-    
     
     public function read($columns = array(), $cond = array(), $order_by = "") {
         $order_by = $order_by==""?"create_at desc":$order_by;
@@ -282,17 +244,6 @@ class Application extends Model{
         $response->msg = "Record found";
         return $response;
     }
-    /*
-    public function application_approve_reject($application_id,$user_info,$flag){
-        $response = array('status'=>false , 'msg' => 'Internal Server Error');
-        $user_id = $user_info['user_id'];
-        $role_id = $user_info['role_id'];
-        switch($flag){
-            case 'approve' : $qry = 'update application set ';
-        }
-        
-    }
     
-    */
     
 }

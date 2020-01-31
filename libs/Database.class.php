@@ -19,7 +19,7 @@ class Database {
         $persistent = $db_config["PERSISTENT"]??false;
         
         /*Data Source Name, database connection string*/
-        $DSN = $db_driver.':host='.$db_host.';dbname='.$db_name;
+        $DSN = $db_driver.':host='.$db_host.';dbname='.$db_name.';port='.$db_port;
         
         try{
             $conn = new PDO(
@@ -38,5 +38,9 @@ class Database {
             throw $e;
         }
         return null;
+    }
+    //closing connection
+    public static function close(){
+        self::$conn = null;
     }
 }

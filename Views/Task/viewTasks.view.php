@@ -9,6 +9,7 @@
     <table class="table_style yellow_header" id="task_list_table">
         <thead>
             <tr>
+                <th>Task Id</th>
                 <th>Task Name</th>
                 <th>Description</th>
                 <!--<th>Created At</th>-->
@@ -23,6 +24,7 @@
             foreach ($tasks as $task){
                 $create_at_timestamp = strtotime($task->create_at);
                 echo "<tr>"
+                    . "<td>".$task->tasks_id."</td>"
                     . "<td>".$task->tasks_name."</td>"
                     . "<td>".$task->tasks_description."</td>"
                     //. "<td>".date('d/m/Y, h:i:s a',$create_at_timestamp)."</td>"
@@ -195,6 +197,7 @@
             for(var i=0;i<tasks.length;i++){
                 //var readable_date = displayDate(tasks[i].create_at);
                 layout +="<tr>"+
+                            "<td>"+tasks[i].tasks_id+"</td>"+
                             "<td>"+tasks[i].tasks_name+"</td>"+
                             "<td>"+tasks[i].tasks_description+"</td>"+
                             //"<td>"+readable_date+"</td>"+

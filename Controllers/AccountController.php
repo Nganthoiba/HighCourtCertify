@@ -77,15 +77,19 @@ class AccountController extends Controller{
             $login_id = $info['login_id'];
             if(Logins::isValidLogin($login_id)){
                 $logins = new Logins();
-                $resLogout=$logins->logout($login_id);
+                $logout_data = $logins->logout($login_id);
             }
         }
+        
         if (session_status() !== PHP_SESSION_NONE){
             // If there is session
             session_destroy();
         }
+        
         $this->data['content'] ="You have successfully logged out.";
-        return $this->view();
+        //return $this->view();
+        $this->redirect("account", "login");
+        
     }
     
     //signup action
@@ -190,6 +194,7 @@ class AccountController extends Controller{
                 }catch(Exception $e){
                     $this->data['update_response'] = $e->getMessage();
                 }
+                $user->find($user_id);//new updated record for user
             }
         }
         return $this->view();
