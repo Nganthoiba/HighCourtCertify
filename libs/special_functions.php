@@ -135,8 +135,17 @@ function verifyCSRFToken(){
 }
 
 //function to get link
-function getHtmlLink($controller,$action=""){
-    return Config::get('host')."/".$controller."/".$action;
+function getHtmlLink($controller,$action="",$params = ""){
+    $link = Config::get('host')."/".$controller."/".$action;
+    if(is_string($params) && trim($params) !== ""){
+        $link .= "/".$params;
+    }
+    else if(is_array($params)){
+        foreach ($params as $param){
+            $link .= "/".$param;
+        }
+    }
+    return $link;
 }
 
 //file reading and writing functions

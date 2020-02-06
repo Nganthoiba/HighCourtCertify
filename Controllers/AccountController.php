@@ -50,23 +50,20 @@ class AccountController extends Controller{
             if($res->status == true){
                 $loginModel = new UserLoginModel($data['email'], $data['password']);
                 $resLogin = $loginModel->isLoginSuccessfull();
-                //echo json_encode($resLogin); exit();
                 if($resLogin->status === true){
                     //storing user information in session
                     $_SESSION['user_info'] = $resLogin->data;
                     //redirecting to the proper page after login
-                    redirectTo();
-                    
+                    redirectTo();                    
                 }
                 else{
-                    $this->data['login_response'] = "Login failed, please try with proper credentials.".json_encode($resLogin);
+                    $this->data['login_response'] = "Login failed, please try with proper credentials.";
                 }
             }
             else{
                 $this->data['login_response'] = $res->msg;
             }  
         }
-        
         return $this->view();
     }
     

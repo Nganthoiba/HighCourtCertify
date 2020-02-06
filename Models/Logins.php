@@ -43,6 +43,11 @@ class Logins extends model{
         return parent::create($data);
     }
     
+    public static function getUserId(): string{
+        $user_info = $_SESSION['user_info'];
+        return $user_info['user_id'];
+    }
+    
     //getting role name
     public static function getRoleName(){
         if(self::isAuthenticated()){

@@ -28,6 +28,7 @@ function insertApplicationTasksLog(PDO $conn,$application_id,$user_id,$action_na
         ]);
         return $response;
     }
+    
     $application_tasks_log_id = UUID::v4();
     $source_ip = get_client_ip();
     $user = new Users();
@@ -36,8 +37,10 @@ function insertApplicationTasksLog(PDO $conn,$application_id,$user_id,$action_na
     $qry = "INSERT INTO application_tasks_log ("
             . " application_tasks_log_id,   application_id, user_id,    action_date,"
             . " action_name,                tasks_id,       process_id, remark, "
-            . " source_ip, role_id) "
-            . " VALUES(?,?,?,NOW(), ?,?,?,?,    ?,?)";
+            . " source_ip,                  role_id,        next_tasks_id) "
+            . " VALUES(?,?,?,NOW(),  ?,?,?,?,    ?,?,?)";
+    
+    $next_tasks_id = findNextTaskId($conn, $process_id, $tasks_id);//by default
     $params = [
         $application_tasks_log_id,
         $application_id,
@@ -47,7 +50,8 @@ function insertApplicationTasksLog(PDO $conn,$application_id,$user_id,$action_na
         $process_id,
         $remark,
         $source_ip,
-        $role_id
+        $role_id,
+        $next_tasks_id
     ];
     
     $stmt = $conn->prepare($qry);
@@ -205,4 +209,20 @@ function isApplicationRecordAlreadyExist($application_id, $process_id,$tasks_id)
     }
     return $stmt->rowCount();
 }
+
+//function to find next task id using current process id and current task id
+
+function findNextTaskId(PDO $conn,int $process_id, int $tasks_id):int{
+    
+    $qry = "select * from process_tasks_mapping_view "
+            . " where process_id = ? and tasks_id = ? ";
+    $stmt = $conn->prepare($qry);
+    $stmt->execute([$process_id,$tasks_id]);
+    if($stmt->rowCount() == 0){
+        return null;
+    }
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return (int)$row['next_tasks_id'];
+}
+
 

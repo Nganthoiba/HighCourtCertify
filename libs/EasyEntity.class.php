@@ -208,7 +208,7 @@ class EasyEntity {
     /********** END CRUD OPERATIONS *********/
     
     //find maximum value of a column, the column should be of integer data type preferrably
-    protected function findMaxColumnValue($column/*Column/Attribute name*/){
+    public function findMaxColumnValue($column/*Column/Attribute name*/){
         $stmt = $this->read("max(".$column.") as max_val")->execute();
         if($stmt->rowCount() == 0){
             return 0;

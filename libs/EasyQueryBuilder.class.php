@@ -120,7 +120,7 @@ class EasyQueryBuilder {
         $this->entiy_class_name = $this->entiy_class_name==""?"EmptyClass":$this->entiy_class_name;
         try{
             $stmt = $this->execute();
-            if($stmt !== null){
+            if($stmt !== null && $stmt->rowCount()>0){
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);//result
                 $temp_obj = new $this->entiy_class_name();
                 foreach($row as $col_name=>$value){
@@ -129,7 +129,7 @@ class EasyQueryBuilder {
                 return $temp_obj;
             }
         }catch(Exception $e){
-            throw $e;
+            //throw $e;
         }
         return null;
     }
@@ -230,6 +230,18 @@ class EasyQueryBuilder {
         return $this;
     }
     //where clause
+    
+    /**
+
+     * 
+     * @return string     
+     * the data structure or data format of the condition should be
+     * 
+     * [
+     *  "column_name" => ["sql_operators","values"]
+     * ]
+     * supported sql_operators: =,!=, <, >, NOT, IN, IS.
+     */
     public function where($cond = array()):EasyQueryBuilder{
         $cond_str = trim($this->getConditionString($cond));
         if($cond_str !== ""){
@@ -315,6 +327,12 @@ class EasyQueryBuilder {
         $this->qry .= " inner join ".$table." ";
         return $this;
     }
+    //Inner join statement
+    public function join(string $table){
+        $this->qry .= " join ".$table." ";
+        return $this;
+    }
+    
     //Left join statement
     public function leftJoin(string $table){
         $this->qry .= " left join ".$table." ";

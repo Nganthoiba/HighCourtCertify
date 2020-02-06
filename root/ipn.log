@@ -1,0 +1,186 @@
+[2020-02-06 11:32 Asia/Kolkata] HTTP request of validation request:POST /cgi-bin/webscr HTTP/1.1
+Host: www.sandbox.paypal.com
+Accept: */*
+Connection: Close
+Content-Length: 192
+Content-Type: application/x-www-form-urlencoded
+
+ for IPN payload: amt=20.00&cc=INR&item_name=1fcb7ec7-90d0-4c0f-a775-62a07ff0656b&item_number=1&st=Completed&tx=0JT58222F4646351H&cmd=_notify-synch&at=xyvzY6f0sSDiz5W1G9Z-kpTdQDka1JIxTFVKIcaCFdM31R0ZIXExkJoL7ly
+[2020-02-06 11:32 Asia/Kolkata] HTTP response of validation request: HTTP/1.1 200 OK
+Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+Content-Type: text/html; charset=UTF-8
+Date: Thu, 06 Feb 2020 06:02:09 GMT
+Paypal-Debug-Id: 8679824e24cbc
+Set-Cookie: c9MWDuvPtT9GIMyPc3jwol1VSlO=CBekMWHNUtU3qwI5fxnCMxv92FLu4oBWxdkNKULtzRMSPSUIw47M8Rj7yt-W2BUOGVGSZdkryFGeCrXQr2pllFt8tA5-ukkfjl1XiqW3mUwprh-jsOQTkdMYnGRq8-qznnvrJ0MjWhGJPFchRd_uU3ON7KP7Er84ZOxJppP-zBnyRGn6zoyBe63vp0bJZle1EFjYtmbrj72ZB7vaWnZ1LX2NKXpc6o85oxF603_kVEcxZOinj4dInuFKNPZxPIRAgjJODErQLp76ncXtQ-fPTegVj01o__KfmVRlc9P54vd9csrqbhEJLRwK6lAn_W9YMtLaOzYZm08IU8P_v77THLE61Z2QseLfqMaDuWdWa6INJEHd68K1ZH7u_OR50M25g-GNm6lFmRaoPDBPejCsgJfUZbwK9Qk6km1vqGdwpIPpxrSQ72ozmFCdA6u; Path=/; Domain=paypal.com; HttpOnly; Secure
+Set-Cookie: -1ILhdyICORs4hS4xTUr41S8iP0=xs1zzgpqDRdKXAUhMFLBbEnCgjSfJnCLOyOXisEdK7YGhpKSLey7RpGKhjxeAxes_V7Dy1ZUcXH-PBvF; Path=/; Domain=paypal.com; Expires=Wed, 31 Dec 1969 23:59:59 GMT; HttpOnly; Secure
+Set-Cookie: cookie_check=yes; Path=/; Domain=paypal.com; Expires=Sun, 03 Feb 2030 06:02:10 GMT; HttpOnly; Secure
+Set-Cookie: navcmd=_notify-synch; Path=/; Domain=paypal.com; HttpOnly; Secure
+Set-Cookie: navlns=0.0; Path=/; Domain=paypal.com; Expires=Sat, 05 Feb 2022 06:02:10 GMT; HttpOnly; Secure
+Set-Cookie: Apache=10.72.108.11.1580968929542043; Path=/
+Set-Cookie: X-PP-SILOVER=name%3DSANDBOX3.WEB.1%26silo_version%3D880%26app%3Dappdispatcher%26TIME%3D1580968930%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc; Path=/; Domain=paypal.com; Expires=Thu, 06 Feb 2020 06:32:10 GMT; HttpOnly; Secure
+Set-Cookie: X-PP-L7=1; Path=/; Domain=paypal.com; Secure
+Vary: Accept-Encoding,User-Agent
+X-Frame-Options: SAMEORIGIN
+Content-Length: 741
+Connection: close
+Strict-Transport-Security: max-age=63072000
+
+SUCCESS
+mc_gross=20.00
+protection_eligibility=Eligible
+payer_id=3HUYVUZ8VXHF6
+tax=0.00
+payment_date=22%3A01%3A58+Feb+05%2C+2020+PST
+payment_status=Completed
+charset=windows-1252
+first_name=Khangembam
+mc_fee=0.80
+custom=
+payer_status=verified
+business=khangembamc%40gmail.com
+quantity=1
+payer_email=meeraen_kha%40gmail.com
+txn_id=0JT58222F4646351H
+payment_type=instant
+last_name=Mathoungamba
+receiver_email=khangembamc%40gmail.com
+payment_fee=
+shipping_discount=0.00
+insurance_amount=0.00
+receiver_id=KUN3L4XB33UAU
+txn_type=web_accept
+item_name=1fcb7ec7-90d0-4c0f-a775-62a07ff0656b
+discount=0.00
+mc_currency=INR
+item_number=1
+residence_country=IN
+handling_amount=0.00
+shipping_method=Default
+transaction_subject=
+payment_gross=
+shipping=0.00
+
+[2020-02-06 12:03 Asia/Kolkata] HTTP request of validation request:POST /cgi-bin/webscr HTTP/1.1
+Host: www.sandbox.paypal.com
+Accept: */*
+Connection: Close
+Content-Length: 192
+Content-Type: application/x-www-form-urlencoded
+
+ for IPN payload: amt=20.00&cc=INR&item_name=1fcb7ec7-90d0-4c0f-a775-62a07ff0656b&item_number=1&st=Completed&tx=0JT58222F4646351H&cmd=_notify-synch&at=xyvzY6f0sSDiz5W1G9Z-kpTdQDka1JIxTFVKIcaCFdM31R0ZIXExkJoL7ly
+[2020-02-06 12:03 Asia/Kolkata] HTTP response of validation request: HTTP/1.1 200 OK
+Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+Content-Type: text/html; charset=UTF-8
+Date: Thu, 06 Feb 2020 06:33:57 GMT
+Paypal-Debug-Id: 505458c5c8b25
+Set-Cookie: c9MWDuvPtT9GIMyPc3jwol1VSlO=vQZx6Liiq-Qd2VR4avrF5-ksBivLTKzHDEVtlEKo6E4hdvoNmCeg7nz-2kIPFIVkObFAAJiGNTMd66OEIf3V1NF3z3DGzj3voHguxfXS46BviCZhgfN45gvnd132WGOcIpA8LmGFzTcbVRnE6NOFM1ocZIctaC_i3SwFgd7HRuSN5hNKEZNRSANeNOajvc1pWwl-Ve6Zk1ka6wxFa_se52iwYoFmPTH6Hy8BJYzQARlNYsq1TIFDK5QNjGwr25J7W03IvbWKaDuywdk5tVLK0GCbxPgEvEvf_XFfu-tK0kb_4xv_Hgpba9XX_J64Cb0m7mTUYeQwJDneY8PmNwn7Yoap0ZCMVsctec_1C57y9foDzCD5xQaHV2FW4anVianzPvtKccRPh27scutCr8kH77pLjKXz3qgXuk-FXhlHG8d0Ddq0TXLEyx8qKHS; Path=/; Domain=paypal.com; HttpOnly; Secure
+Set-Cookie: -1ILhdyICORs4hS4xTUr41S8iP0=7i2LhpJUR1f_0cVHtzxy5zbnVy961GXTFiuwQqpcD2tkDpp5_-MBrvuLUlK6hz0G0oYg30imQi9gciCy; Path=/; Domain=paypal.com; Expires=Wed, 31 Dec 1969 23:59:59 GMT; HttpOnly; Secure
+Set-Cookie: cookie_check=yes; Path=/; Domain=paypal.com; Expires=Sun, 03 Feb 2030 06:33:58 GMT; HttpOnly; Secure
+Set-Cookie: navcmd=_notify-synch; Path=/; Domain=paypal.com; HttpOnly; Secure
+Set-Cookie: navlns=0.0; Path=/; Domain=paypal.com; Expires=Sat, 05 Feb 2022 06:33:58 GMT; HttpOnly; Secure
+Set-Cookie: Apache=10.72.108.11.1580970837347863; Path=/
+Set-Cookie: X-PP-SILOVER=name%3DSANDBOX3.WEB.1%26silo_version%3D880%26app%3Dappdispatcher%26TIME%3D1580970838%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc; Path=/; Domain=paypal.com; Expires=Thu, 06 Feb 2020 07:03:58 GMT; HttpOnly; Secure
+Set-Cookie: X-PP-L7=1; Path=/; Domain=paypal.com; Secure
+Vary: Accept-Encoding,User-Agent
+X-Frame-Options: SAMEORIGIN
+Content-Length: 741
+Connection: close
+Strict-Transport-Security: max-age=63072000
+
+SUCCESS
+mc_gross=20.00
+protection_eligibility=Eligible
+payer_id=3HUYVUZ8VXHF6
+tax=0.00
+payment_date=22%3A01%3A58+Feb+05%2C+2020+PST
+payment_status=Completed
+charset=windows-1252
+first_name=Khangembam
+mc_fee=0.80
+custom=
+payer_status=verified
+business=khangembamc%40gmail.com
+quantity=1
+payer_email=meeraen_kha%40gmail.com
+txn_id=0JT58222F4646351H
+payment_type=instant
+last_name=Mathoungamba
+receiver_email=khangembamc%40gmail.com
+payment_fee=
+shipping_discount=0.00
+insurance_amount=0.00
+receiver_id=KUN3L4XB33UAU
+txn_type=web_accept
+item_name=1fcb7ec7-90d0-4c0f-a775-62a07ff0656b
+discount=0.00
+mc_currency=INR
+item_number=1
+residence_country=IN
+handling_amount=0.00
+shipping_method=Default
+transaction_subject=
+payment_gross=
+shipping=0.00
+
+[2020-02-06 12:11 Asia/Kolkata] HTTP request of validation request:POST /cgi-bin/webscr HTTP/1.1
+Host: www.sandbox.paypal.com
+Accept: */*
+Connection: Close
+Content-Length: 192
+Content-Type: application/x-www-form-urlencoded
+
+ for IPN payload: amt=20.00&cc=INR&item_name=1fcb7ec7-90d0-4c0f-a775-62a07ff0656b&item_number=1&st=Completed&tx=0JT58222F4646351H&cmd=_notify-synch&at=xyvzY6f0sSDiz5W1G9Z-kpTdQDka1JIxTFVKIcaCFdM31R0ZIXExkJoL7ly
+[2020-02-06 12:11 Asia/Kolkata] HTTP response of validation request: HTTP/1.1 200 OK
+Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+Content-Type: text/html; charset=UTF-8
+Date: Thu, 06 Feb 2020 06:41:12 GMT
+Paypal-Debug-Id: 5f38d6e67fef9
+Set-Cookie: c9MWDuvPtT9GIMyPc3jwol1VSlO=DZHT2DoQCEMKJ78S7RlNvneeSSssiwWijGRXV9vJ5xOwFEa7werfATK4HOz-B9_SNh7X9RyjxpXylUYZFNw9az5yku_Nlry7hPyC-_5xX-NncltnacNv77wl-FpR5AJ6Nfp3dCR1SYmdtfVWyLd559ImbsPJN3He2FjQXqJUpp43Sh-33iY0oLhQX29nN97Kar4WewLWuaVyx-nfHYqdgO9od35TtFsagNq2vitrLn7EhXTbK_UFqFYtospRQvcLQitn4aXAzgeGeRe0NixY9LbkNnHZJ5fmWkfyqypmA1Yw6kCC6EHVVsqQKzbgUzHVTxxHIjDTFW7KzNe7eFK9z1Fjns-01QcGujZhE98cfuW7aQEb9OUKHhvfGNgmnVZgYjb6H7siXlciNrmoASmpXWX5VX_1m_ppbPSX205dFKVNNO2SCfepxv6NbUy; Path=/; Domain=paypal.com; HttpOnly; Secure
+Set-Cookie: -1ILhdyICORs4hS4xTUr41S8iP0=0-BNmQifT2jM00tBZ3EQQ6oSC4HvFyKTfop107KaxhiB-cLYdOjwencZSsIAZ1o-SXdVdArT0h33eYOR; Path=/; Domain=paypal.com; Expires=Wed, 31 Dec 1969 23:59:59 GMT; HttpOnly; Secure
+Set-Cookie: cookie_check=yes; Path=/; Domain=paypal.com; Expires=Sun, 03 Feb 2030 06:41:13 GMT; HttpOnly; Secure
+Set-Cookie: navcmd=_notify-synch; Path=/; Domain=paypal.com; HttpOnly; Secure
+Set-Cookie: navlns=0.0; Path=/; Domain=paypal.com; Expires=Sat, 05 Feb 2022 06:41:13 GMT; HttpOnly; Secure
+Set-Cookie: Apache=10.72.108.11.1580971272334535; Path=/
+Set-Cookie: X-PP-SILOVER=name%3DSANDBOX3.WEB.1%26silo_version%3D880%26app%3Dappdispatcher%26TIME%3D1580971273%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc; Path=/; Domain=paypal.com; Expires=Thu, 06 Feb 2020 07:11:13 GMT; HttpOnly; Secure
+Set-Cookie: X-PP-L7=1; Path=/; Domain=paypal.com; Secure
+Vary: Accept-Encoding,User-Agent
+X-Frame-Options: SAMEORIGIN
+Content-Length: 741
+Connection: close
+Strict-Transport-Security: max-age=63072000
+
+SUCCESS
+mc_gross=20.00
+protection_eligibility=Eligible
+payer_id=3HUYVUZ8VXHF6
+tax=0.00
+payment_date=22%3A01%3A58+Feb+05%2C+2020+PST
+payment_status=Completed
+charset=windows-1252
+first_name=Khangembam
+mc_fee=0.80
+custom=
+payer_status=verified
+business=khangembamc%40gmail.com
+quantity=1
+payer_email=meeraen_kha%40gmail.com
+txn_id=0JT58222F4646351H
+payment_type=instant
+last_name=Mathoungamba
+receiver_email=khangembamc%40gmail.com
+payment_fee=
+shipping_discount=0.00
+insurance_amount=0.00
+receiver_id=KUN3L4XB33UAU
+txn_type=web_accept
+item_name=1fcb7ec7-90d0-4c0f-a775-62a07ff0656b
+discount=0.00
+mc_currency=INR
+item_number=1
+residence_country=IN
+handling_amount=0.00
+shipping_method=Default
+transaction_subject=
+payment_gross=
+shipping=0.00
+

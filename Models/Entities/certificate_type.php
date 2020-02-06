@@ -11,11 +11,11 @@
  *
  * @author Nganthoiba
  */
-class application_for extends EasyEntity{
-    public $application_for_id,$name;
+class certificate_type extends EasyEntity{
+    public $certificate_type_id,$name;
     public function __construct() {
         parent::__construct();
-        $this->setTable("application_for");
-        $this->setKey("application_for_id");
+        $this->setTable("certificate_type");
+        $this->setKey("certificate_type_id");
     }
 }

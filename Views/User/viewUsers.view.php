@@ -17,24 +17,23 @@ if($response->status_code == 200){
     <link href="<?= Config::get('host') ?>/root/MDB/css/dataTable.css" rel="stylesheet" 
           type="text/css"/>
     <div class="col-sm-12">
-        <strong>Select user type:</strong>
-
-        <div class="custom-control custom-radio">
-            <input type="radio" class="custom-control-input" name="users" id="all_users" value="all" checked />&nbsp;
-            <label class="custom-control-label" style="cursor:pointer" for="all_users">All Users</label>&nbsp;
+        <div class="row">
+            <div class="col-sm-2"><strong>Select user type:</strong></div>
+            <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" name="users" id="all_users" value="all" checked />&nbsp;
+                <label class="custom-control-label" style="cursor:pointer" for="all_users">All Users</label>&nbsp;
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" name="users" id="court_users" value="court_users" />&nbsp;
+                <label class="custom-control-label" style="cursor:pointer" for="court_users">Court Users</label>&nbsp;
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" name="users" id="applicant_users" value="applicant_users" />&nbsp;
+                <label class="custom-control-label" style="cursor:pointer" for="applicant_users">Applicants</label>&nbsp;
+            </div>
         </div>
-        <div class="custom-control custom-radio">
-            <input type="radio" class="custom-control-input" name="users" id="court_users" value="court_users" />&nbsp;
-            <label class="custom-control-label" style="cursor:pointer" for="court_users">Court Users</label>&nbsp;
-        </div>
-        <div class="custom-control custom-radio">
-            <input type="radio" class="custom-control-input" name="users" id="applicant_users" value="applicant_users" />&nbsp;
-            <label class="custom-control-label" style="cursor:pointer" for="applicant_users">Applicants</label>&nbsp;
-        </div>
-        
     </div>
     <div class="container-fluid">
-        
         <p>
             <div style="float:left">List of users: </div>
             <div style="float:right">Total Users:
@@ -219,10 +218,16 @@ if($response->status_code == 200){
                                 "<td>"+users[i].email+"</td>"+
                                 "<td>"+users[i].phone_number+"</td>"+
                                 "<td>"+aadhaar+"</td>"+
-                                "<td>"+users[i].role_name+"</td>"+
-                                "<td align=\"right\"><a href=\"editUser/"+users[i].user_id.trim()+"\">Edit</a></td>"+
-                                "<td align=\"right\"><a href=\"javascript: removeUser('"+users[i].user_id.trim()+"')\">Remove</a></td>"+
-                            "</tr>";
+                                "<td>"+users[i].role_name+"</td>";
+                if(parseInt(users[i].role_id) == 14){
+                    //if the user is applicant, then admin will not able to delete or edit user information
+                    layout +=   "<td></td><td></td>";
+                }
+                else{
+                    layout +=   "<td align=\"right\"><a href=\"editUser/"+users[i].user_id.trim()+"\">Edit</a></td>"+
+                                "<td align=\"right\"><a href=\"javascript: removeUser('"+users[i].user_id.trim()+"')\">Remove</a></td>";
+                }       
+                layout +=   "</tr>";
             }
             if(layout == ""){
                 layout = "<tr><td colspan='7' align='center'>No User Found!</td></tr>";

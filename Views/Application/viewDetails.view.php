@@ -1,9 +1,6 @@
 <div class="container">
 <?php
-
-/* This page is only for applicant role_id = 14
- 
- */
+/* This page is only for applicant role_id = 14*/
 if($data['status']==false){
     echo $data['msg'];
 }
@@ -23,6 +20,10 @@ else{
     </style>
     <h3>Application Details:</h3>
     <table class="table_style">
+        <tr>
+            <td style="width:20%;"><strong>Application ID:</strong></td>
+            <td style="width:80%;"><?= $application->application_id ?></td>
+        </tr>
         <?php
         if($user_info['role_id']!=14){//if not applicant
         ?>
@@ -35,11 +36,11 @@ else{
         ?>
         <tr>
             <td style="width:20%;"><strong>Application For:</strong></td>
-            <td style="width:80%;"><?= $application->application_for ?></td>
+            <td style="width:80%;"><?= $application->certificate_type_name ?></td>
         </tr>
         <tr>
             <td><strong>Case Type:</strong></td>
-            <td><?= $application->case_type ?></td>
+            <td><?= $application->case_type_name ?> - <?= $application->case_type_full_form ?></td>
         </tr>
         <tr>
             <td><strong>Case Number:</strong></td>
@@ -50,7 +51,7 @@ else{
             <td><?= $application->case_year ?></td>
         </tr>
         <tr>
-            <td><strong>Certificate Type:</strong></td>
+            <td><strong>Certificate Copy Type:</strong></td>
             <td><?= $application->copy_name ?></td>
         </tr>
         <tr>
@@ -69,104 +70,22 @@ else{
             <td><strong>Application Submitted on:</strong></td>
             <td><?= date('D, d M, Y',$create_at_timestamp) ?></td>
         </tr>
+        <tr>
+            <td><strong>Application Status:</strong></td>
+            <td>
+                <?php
+                if(!$application->isPaymentCompleted()){
+                    echo "First complete your payment, then your application will be processed.";
+                }
+                else{
+                    echo "Processing...";
+                }
+                ?>
+            </td>
+        </tr>
         
     </table>
 <?php
-//if($data['process_id'] !=8 && $data['process_id'] !="" && $application->isTaskPending){
-/*
-if($user_info['role_id'] !== 14 && $application->isTaskPending){
-    //If role is Computer Operator
-    if($user_info['role_id']===12){
-?>
-        <form name="upload_prepared_documents">
-            <div class="col-sm-4" style="margin: auto">
-                <div class="row">
-                    <label>Upload your relevant documents for certificate preparation:</label>
-                    <div class="input-group">
-                        <div class="custom-file">
-                            <input type="file" accept="application/pdf" class="custom-file-input" name="prepared_docs" id="prepared_docs" required/>
-                            <label class="custom-file-label" for="prepared_docs">Choose file</label>
-                        </div>
-                        <script>
-                        // Add the following code if you want the name of the file appear on select
-                        $(".custom-file-input").on("change", function() {
-                          var fileName = $(this).val().split("\\").pop();
-                          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-                        });
-                        </script>
-
-                    </div> 
-                </div>
-                <div class="row" style="text-align: center">
-                    <button type="button" onclick="confirmApprove();" class="btn btn-success">Approve</button>
-                    <button type="button" class="btn btn-danger">Reject</button>
-                </div>
-            </div>
-        </form>
-<?php
-    }
-    else{
-?>      <div style="text-align: center">
-            <button onclick="approve();" class="btn btn-success">Approve</button>
-            <button onclick="reject();" class="btn btn-danger">Reject</button>
-        </div>
-<?php
-    } 
-?>
-        <script type="text/javascript">
-            //function to approve an application
-            function approve(){
-                swal.fire({
-                    title: 'Approve!',
-                    text: "Are you sure to approve?",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'YES',
-                    cancelButtonText: "No, I am not sure!"
-                }).then((result) => {
-                    if (result.value) {
-                        var resp = ajax_request({
-                            url:"<?= Config::get('host') ?>/Application/approve/<?= $application->application_id ?>/<?= $data['process_id']  ?>"
-                        });
-                        if(resp.status){
-                            swal.fire({'Approved.',resp.msg,'success'});
-                            window.history.back();
-                        }
-                        else{
-                            swal.fire({'Approve Failed.',resp.msg,'error'});
-                        }
-                    }
-                });
-            }
-            //function to reject an application
-            function reject(){
-                swal.fire({
-                    title: 'Reject!!',
-                    text: "Are you sure to reject?",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'YES',
-                    cancelButtonText: "No, I am not sure!"
-                }).then((result) => {
-                    if (result.value) {
-                        var resp = ajax_request({
-                            url:"<?= Config::get('host') ?>/Application/reject/<?= $application->application_id ?>/<?= $data['process_id']  ?>"
-                        });
-                        if(resp.status){
-                            swal.fire({'Rejected.',resp.msg,'success'});
-                            window.history.back();
-                        }
-                        else{
-                            swal.fire({'Reject Failed.',resp.msg,'error'});
-                        }
-                    }
-                });
-            }
-        </script>
-<?php
-    }
-    */
 }
-
 ?>
 </div>

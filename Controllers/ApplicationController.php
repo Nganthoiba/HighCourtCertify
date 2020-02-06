@@ -1,11 +1,4 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of ApplicationController
  *  
@@ -24,26 +17,6 @@ class ApplicationController extends Controller{
     public function index(){
         return $this->view();
     }
-    public function application_for(){
-        //to read certificate type whether certify, uncertify, certify urgent or uncertify urgent
-        $application_for = new application_for();
-        $list = $application_for->read()->orderBy("application_for_id")->toList();
-        if($list == null){
-            $this->response->set([
-                "msg"=>"No record found.",
-                "status_code"=>404
-            ]);
-        }
-        else{
-            $this->response->set([
-                "msg"=>"list of certificate types",
-                "status"=>true,
-                "status_code"=>200,
-                "data"=>$list
-            ]);
-        }
-        return $this->sendResponse($this->response);
-    }
     
     public function viewApplications(){
         $user_id = "";
@@ -58,20 +31,41 @@ class ApplicationController extends Controller{
         }
         
         $application = new Application();
-        //$process_id = 8; // from user input 
-        //$list = $application->readAppLog($user_id,$process_id);
         $list = $application->readAppTasksLog($user_id);
-        //$list = $application->read()->where(['user_id'=>$user_id])->orderByDesc("create_at")->toList();
+        
         $this->data['applications'] = $list->data;
         $this->data['user_id'] = $user_id;
         return $this->view();
     }
     
-    public function getCertificateTypes(){
-        $certificateType = new certificate_type();
-        $res = $certificateType->read();
-        return $this->send_data($res, $res->status_code);
-        //return $this->sendResponse($res['status'], $res['msg'], $res['status_code'],$res['error'],$res['data']);
+    public function getCertificateCopyTypes(){
+        $copy_type = new copy_type();
+        try{
+            $copy_type_list = $copy_type->read()->orderBy("copy_type_id")->toList();
+            if($copy_type_list == null){
+                $this->response->set([
+                    "status"=>false,
+                    "status_code"=>404,
+                    "msg"=>"No data found."
+                ]);
+            }
+            else{
+                $this->response->set([
+                    "status"=>true,
+                    "status_code"=>200,
+                    "msg"=>"List of copy types.",
+                    "data"=>$copy_type_list
+                ]);
+            }
+        }
+        catch (Exception $e){
+            $this->response->set([
+                    "status"=>false,
+                    "status_code"=>500,
+                    "msg"=>"An error occurs: ".$e->getMessage()
+                ]);
+        }
+        return $this->sendResponse($this->response);
     }
     
     /*** validation function for application */
@@ -99,7 +93,7 @@ class ApplicationController extends Controller{
             $this->response->status_code = 403;//Bad Request
             
             //$aadhaar = isset($data['aadhaar'])?str_replace(" ","",$data['aadhaar']):""; //Aadhaar 
-            $appli_for = isset($data['urgent_ordinary'])?$data['urgent_ordinary']:""; //Application For
+            $copy_type_id = isset($data['copy_type_id'])?$data['copy_type_id']:""; //Copy Type
             $case_type = isset($data['case_type'])?$data['case_type']:""; //Case Type
             $case_no = isset($data['case_no'])?$data['case_no']:""; //Case No
             $case_year = isset($data['case_year'])?$data['case_year']:""; 
@@ -149,11 +143,10 @@ class ApplicationController extends Controller{
             else{
                 
                 $applicationModel = new Application();
-                //$applicationModel->aadhaar = $aadhaar;
                 $applicationModel->application_id = UUID::v4();
-                $applicationModel->application_for = $appli_for;
+                
                 $applicationModel->case_no = $case_no;
-                $applicationModel->case_type = $case_type;
+                $applicationModel->case_type_id = $case_type;
                 $applicationModel->case_year = $case_year;
                 
                 $applicationModel->case_no_reference = $case_no_reference;
@@ -161,16 +154,18 @@ class ApplicationController extends Controller{
                 $applicationModel->case_year_reference = $case_year_reference;
                 
                 $applicationModel->certificate_type_id = $certificate_type_id;
+                $applicationModel->copy_type_id = $copy_type_id;
                 $applicationModel->create_at = $submit_date;
                 $applicationModel->order_date = $order_date;
                 $applicationModel->petitioner = $appel_petitioner;
                 $applicationModel->respondent = $respondant_opp;
                 $applicationModel->user_id = $user_id;
                 $applicationModel->is_third_party = $is_third_party;
+                $applicationModel->is_order = $applicationModel->copy_type_id==1?"y":"n";
                 
                 $this->response = $applicationModel->add();
                 
-                if($this->response->status_code == 200){
+                if($this->response->status_code === 200){
                     $this->response->msg = "You have successfully submitted. Thank you.";
                 }
                 
@@ -178,9 +173,13 @@ class ApplicationController extends Controller{
             return $this->sendResponse($this->response);
         }
         //to read certificate type whether certify, uncertify, certify urgent or uncertify urgent
-        $application_for = new application_for();
-        $application_for_list = $application_for->read()->orderBy("application_for_id")->toList();
-        $this->data['application_for_list'] = $application_for_list;
+        $certificate_type = new certificate_type();
+        $certificate_list = $certificate_type->read()->orderBy("certificate_type_id")->toList();
+        $this->data['certificate_list'] = $certificate_list;
+        
+        $copy_type = new copy_type();
+        $this->data['copy_type_list'] = $copy_type->read()->orderBy("copy_type_id")->toList();
+        
         
         $caseType = new case_type();
         $this->data['case_type_list'] = $caseType->read(['case_type_id','type_name','full_form'])->orderBy('type_name')->toList();
@@ -222,7 +221,6 @@ class ApplicationController extends Controller{
     public function status(){
         return $this->view();
     }
-    
     
     public function application_list(){
         $params = $this->getParams();

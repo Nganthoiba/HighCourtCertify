@@ -1,13 +1,12 @@
 <?php
 /**
  * Description of Application
- *
  * @author Nganthoiba
  */
 class Application extends EasyEntity{
     public  $application_id,
-            $application_for,
-            $case_type,
+            $copy_type_id,
+            $case_type_id,
             $case_no,
             $case_year,
             $case_type_reference,
@@ -21,6 +20,7 @@ class Application extends EasyEntity{
             $user_id,
             $is_order,
             $is_third_party;
+    
     private $response;
     public function __construct() {
         parent::__construct();
@@ -28,8 +28,15 @@ class Application extends EasyEntity{
         $this->setKey("application_id");
         $this->response = new Response();
     }
+    
     public function getProcessId(){
-        return ($this->is_order=="y")?2:($this->is_third_party=="y")?3:1;
+        if($this->is_order=="y"){
+            return 2;
+        }
+        else if($this->is_third_party=="y"){
+            return 3;
+        }
+        return 1;
     }
     
     //Overriding parent method
@@ -91,44 +98,7 @@ class Application extends EasyEntity{
                 $rows = $stmt->fetchall(PDO::FETCH_ASSOC);
                 $data =array();
                 foreach ($rows as $row){
-                    $obj = new model();
-                    foreach ($row as $key=>$val){
-                        $obj->$key = $val;
-                    }
-                    $data[] = $obj;
-                }
-                $this->response->data = $data;
-            }
-        }
-        else{
-            $this->response->status = false;
-            $this->response->msg = "Oops! An internal error occurs.";
-            $this->response->status_code = 500;
-            $this->response->error = $stmt->errorInfo();
-        }
-        return $this->response;
-    }
-    
-    //reading application from application_log table
-    public function readAppLog($user_id, $process_id){
-        $conn = Database::connect();
-        $qry = "select * from application_log_view where action_user_id = ? and from_process_id=? order by create_at desc limit 100";
-        $stmt = $conn->prepare($qry);
-        $res = $stmt->execute(array($user_id, $process_id));
-        if($res){
-            if($stmt->rowCount()==0){
-                $this->response->status = false;
-                $this->response->msg = "No record found";
-                $this->response->status_code = 404;
-            }
-            else{
-                $this->response->status = true;
-                $this->response->msg = "Record found";
-                $this->response->status_code = 404;
-                $rows = $stmt->fetchall(PDO::FETCH_ASSOC);
-                $data =array();
-                foreach ($rows as $row){
-                    $obj = new model();
+                    $obj = new Application();
                     foreach ($row as $key=>$val){
                         $obj->$key = $val;
                     }
@@ -170,51 +140,17 @@ class Application extends EasyEntity{
         }
         return null;
     }
-    public function application_history($id , $task_type='in',$process_id="" ,$role_flag = true){
-        //$response = array('status'=>false , 'msg' => 'Internal Server Error');
-        $response = new Response();
-        if($process_id === ""){
-            $response->msg="Process ID?";
-            return $response;
+    
+    /** method to check if processing fee is completed for this application ***/
+    public function isPaymentCompleted(): bool{
+        $payment = new Payments();
+        $payment = $payment->read()->where([
+            "application_id"=> $this->application_id,
+            "status"=>"Completed"
+        ])->getFirst();
+        if($payment == null){
+            return false;
         }
-        $db = Database::connect();
-        
-        switch(trim($task_type)){
-            case 'out' :
-                if($role_flag){
-                    $qry = "select * from application_log_view where from_role_id = ? and from_process_id=?";
-                }
-                else{
-                    $qry = "select * from application_log_view where action_user_id = ? and from_process_id=?";
-                }
-                break;
-            case 'in' :
-                if($role_flag){
-                    $qry = "select * from latest_application_log_view where to_role_id = ? and to_process_id=?";
-                }
-                else{
-                    return $response;
-                }
-                break;
-            default : return $response;
-                break;
-        }
-
-
-        $stmt = $db->prepare($qry);
-        $resp = $stmt->execute(array($id,(int)$process_id));
-        if(!$resp){			
-            $response->error = $stmt->errorInfo();
-            $response->msg = "Internal Server Error";
-            $response->status_code = 500;
-            return $response;
-        }
-        
-        $rows = $stmt->fetchall(PDO::FETCH_ASSOC);
-        $response->status = true;
-        $response->status_code = 200;
-        $response->data = $rows;
-        $response->msg = "Record found";
-        return $response;
+        return true;
     }
 }

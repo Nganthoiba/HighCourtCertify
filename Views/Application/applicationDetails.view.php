@@ -150,32 +150,19 @@ else{
     //if user has already commited the task then dont load any further approval or rejected layout
     if(!isApplicationRecordAlreadyExist($application_id, $process_id, $tasks_id)){
         switch($tasks_id){
-            
+            case 2:
+                include_once ("tasks_files/forward_n_reject.php");
+                break;
+            case 3:
+                include_once ("tasks_files/submit_case_body.php");
+                break;
+            case 4:
+                include_once ("tasks_files/forward_n_reject.php");
+                break;
             case 5: //Certificate preparation with relevent document
                 include_once 'tasks_files/certificate_preparation.php';
                 break;
-            
-            case 8: //Submission of case body if not found, otherwise the application will be forwarded
-                include_once ("tasks_files/submit_case_body.php");
-                break;
-            
-            case 9: //Read the prepared certificate and compare with the case body
-                include_once ("tasks_files/read_n_compare.php");
-                break;
-            
-            case 7: //Notesheet Preparation and forward
-            
-            case 10: //Receive application
-            case 11: //Receipt and Dispatched
-            case 12: //Check case body
-            case 13: //notesheet verification
-            case 14: // AR to DRJ
-            case 15: // DRJ to RJ
-            case 16: // Order for certificate preparation
-            case 17: //SP  forwards to AR
-                include_once ("tasks_files/forward_n_reject.php");
-                break;
-            case 18:
+            case 6:/*Complete the whole process in tasks id 6 */
                 include_once ("tasks_files/approve_n_reject.php");
                 break;
             default:
