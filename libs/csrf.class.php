@@ -23,7 +23,7 @@ class csrf
     */
     public static function check( $key, $origin, $throwException=false, $timespan=null, $multiple=false )
     {
-        session_regenerate_id();
+        //session_regenerate_id();
         if ( !isset( $_SESSION[ 'csrf_' . $key ] ) ){
             if($throwException){
                 throw new Exception( 'CSRF token is not set in session variable.' );	//Missing CSRF session token.
@@ -126,5 +126,4 @@ class csrf
     }
 
 }
-?>
 

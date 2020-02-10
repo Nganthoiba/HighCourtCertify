@@ -1,5 +1,5 @@
 <?php
-class Process extends model{
+class Process extends EasyEntity{
     public $process_id;
     public $process_name;
     public $process_description;
@@ -8,9 +8,5 @@ class Process extends model{
         parent::__construct();
         $this->setTable("process");
         $this->setKey("process_id");
-    }
-    
-    public function read($columns = array(), $cond = array(), $order_by = "process_id") {
-        return parent::read($columns, $cond, $order_by);
     }
 }

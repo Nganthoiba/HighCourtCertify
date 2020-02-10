@@ -49,7 +49,7 @@ class EasyEntity {
     }
     
     //method to get query builder
-    protected function getQueryBuilder():EasyQueryBuilder{
+    public function getQueryBuilder():EasyQueryBuilder{
         return $this->queryBuilder;
     }
     
@@ -209,7 +209,7 @@ class EasyEntity {
     
     //find maximum value of a column, the column should be of integer data type preferrably
     public function findMaxColumnValue($column/*Column/Attribute name*/){
-        $stmt = $this->read("max(".$column.") as max_val")->execute();
+        $stmt = $this->read(" max(".$column.") as max_val")->execute();
         if($stmt->rowCount() == 0){
             return 0;
         }

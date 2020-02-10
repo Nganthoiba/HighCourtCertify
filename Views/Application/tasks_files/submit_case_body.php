@@ -100,30 +100,32 @@
 <?php
 if($caseBody === null){
 ?>
+<br/>
 <h3>Add New Case Body:</h3>
 <form name="case_body_form" id="case_body_form" action="<?= Config::get('host') ?>/Casebody/uploadCaseBody">
     
     <div class="row">
-        <div class="col-sm-3">Case Number:</div>
+        <div class="col-sm-3"><strong>Case Number:</strong></div>
         <div class="col-sm-4">
             <input type="text" name="case_number" id="case_number" value="<?= $application->case_no ?>" class="form-control" readonly />
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">Case Type:</div>
+        <div class="col-sm-3"><strong>Case Type:</strong></div>
         <div class="col-sm-4">
-            <input type="text" name="case_type" id="case_type" value="<?= $application->case_type ?>" class="form-control" readonly />
+            <div class="form-control"><?= $application->case_type_name."-".$application->case_type_full_form ?></div>
+            <input type="hidden" name="case_type_id" id="case_type" value="<?= $application->case_type_id ?>" readonly />
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">Case Year:</div>
+        <div class="col-sm-3"><strong>Case Year:</strong></div>
         <div class="col-sm-4">
             <input type="text" name="case_year" id="case_year" value="<?= $application->case_year ?>" class="form-control" readonly />
         </div>
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label>Upload Case Body Document:</label>
+            <label><strong>Upload Case Body Document:</strong></label>
             <input type="hidden" value="<?= $application->application_id ?>" name="application_id" />
             <input type="hidden" value="<?= $tasks_id ?>" name="tasks_id" />
         </div>

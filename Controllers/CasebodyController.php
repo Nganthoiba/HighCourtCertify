@@ -39,7 +39,7 @@ class CasebodyController extends Controller{
             return $this->sendResponse($this->response);
         }
         
-        $upload_directory = UPLOAD_PATH."/documents/case_body/".$input_data['case_number']."_".$input_data['case_year']."_".$input_data['case_type']."/";
+        $upload_directory = UPLOAD_PATH."/documents/case_body/".$input_data['case_number']."_".$input_data['case_year']."_".$input_data['case_type_id']."/";
         $file_upload = new Upload();
         $file_upload->setFileUploadKeyName("case_body_file");
         $this->response = $file_upload->uploadSingleFile($upload_directory);
@@ -53,7 +53,7 @@ class CasebodyController extends Controller{
         $casebody = new Casebody();
         $casebody->case_number = $input_data['case_number'];
         $casebody->case_year = $input_data['case_year'];
-        $casebody->case_type = $input_data['case_type'];
+        $casebody->case_type_id = $input_data['case_type_id'];
         $casebody->document_path = $this->response->data['file_paths'][0];
         $casebody->created_by = $user_id;
         
@@ -92,7 +92,7 @@ class CasebodyController extends Controller{
     
     //function to validate case body
     private function validateCasebody($input_data = array()){
-        if(!isset($input_data['case_type']) || !isset($input_data['case_number']) || !isset($input_data['case_year'])){
+        if(!isset($input_data['case_type_id']) || !isset($input_data['case_number']) || !isset($input_data['case_year'])){
             $this->response->set([
                 "status"=>false,
                 "status_code"=>400,
@@ -101,7 +101,7 @@ class CasebodyController extends Controller{
         }
         else{
             $casebody = new Casebody();
-            $res = $casebody->isCaseBodyExist($input_data['case_type'], $input_data['case_number'], $input_data['case_year']);
+            $res = $casebody->isCaseBodyExist($input_data['case_type_id'], $input_data['case_number'], $input_data['case_year']);
             if($res){
                 $this->response->set([
                     "status"=>false,

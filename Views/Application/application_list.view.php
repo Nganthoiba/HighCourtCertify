@@ -42,15 +42,18 @@ else
             <thead>
                 <tr>
                     <th>Sl. No.</th>
+                    <th>Application ID</th>
                     <th>Applicant</th>
                     <th>Application for</th>
                     <th>Applied on</th>
-                    <th>Case Type</th>
+                    
+<!--                    <th>Case Type</th>
                     <th>Case No.</th>
                     <th>Case Year</th>
-                    <th>Order Date</th>
+                    <th>Order Date</th>-->
+                    
                     <th>Certificate Type</th>
-                    <th>View</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -60,15 +63,18 @@ else
                 foreach($applications as $item){
                     echo '<tr>';
                     echo '<td>'.$i++.'</td>';
+                    echo '<td>'.$item['application_id'].'</td>';
                     echo '<td>'.$item['applicant_name'].'</td>';
-                    echo '<td>'.$item['application_for'].'</td>';
+                    echo '<td>'.$item['certificate_type_name'].'</td>';
                     echo '<td>'.date('d-m-Y',strtotime($item['create_at'])).'</td>';
-                    echo '<td>'.$item['case_type'].'</td>';
-                    echo '<td>'.$item['case_no'].'</td>';
-                    echo '<td>'.$item['case_year'].'</td>';
-                    echo '<td>'.date('d-m-Y',strtotime($item['order_date'])).'</td>';
+                    
+//                    echo '<td>'.$item['case_type_name'].'-'.$item['case_type_full_form'].'</td>';
+//                    echo '<td>'.$item['case_no'].'</td>';
+//                    echo '<td>'.$item['case_year'].'</td>';
+//                    echo '<td>'.date('d-m-Y',strtotime($item['order_date'])).'</td>';
+                    
                     echo '<td>'.$item['copy_name'].'</td>';
-                    echo '<td><a href="'.Config::get('host').'/Application/applicationDetails/'.$item['application_id'].'">View</a></td>';
+                    echo '<td><a href="'.Config::get('host').'/Application/applicationDetails/'.$item['application_id'].'">View Details</a></td>';
                     echo '</tr>';
                 }
                 ?>

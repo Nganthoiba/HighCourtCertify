@@ -28,19 +28,19 @@ else{
         if($user_info['role_id']!=14){//if not applicant
         ?>
         <tr>
-            <td style="width:20%;"><strong>Applicant Name:</strong></td>
-            <td style="width:80%;"><?= $application->applicant_name ?></td>
+            <td style="width:20%"><strong>Applicant Name:</strong></td>
+            <td><?= $application->applicant_name ?></td>
         </tr>
         <?php
         }
         ?>
         <tr>
-            <td style="width:20%;"><strong>Application For:</strong></td>
-            <td style="width:80%;"><?= $application->application_for ?></td>
+            <td><strong>Application For:</strong></td>
+            <td><?= $application->certificate_type_name ?></td>
         </tr>
         <tr>
             <td><strong>Case Type:</strong></td>
-            <td><?= $application->case_type ?></td>
+            <td><?= $application->case_type_name."-".$application->case_type_full_form ?></td>
         </tr>
         <tr>
             <td><strong>Case Number:</strong></td>
@@ -103,27 +103,11 @@ else{
                 <?php
                 }
                 else{
-                    echo "Not available";
+                    echo "Document is not prepared yet.";
                 }
                 ?>
             </td>
         </tr>
-        
-        <?php 
-        if($application->certificate_type_id !="1"){
-           //if the application is not for order copy
-        ?>
-        <tr>
-            <td colspan="2">
-                <strong>Application body:</strong>
-                <div class="alert alert-light">
-                    <?= str_replace("&nbsp;"," ",htmlspecialchars_decode($application->body)) ?>
-                </div>
-            </td>
-        </tr>
-        <?php
-        } 
-        ?>
     </table>
     <script type="text/javascript">
         function insertIntoApplicationTasksLog(application_id,tasks_id,action_name,remark=""){

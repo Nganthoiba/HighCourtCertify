@@ -17,52 +17,6 @@ class UserController extends Controller{
         parent::__construct($data);
         $this->resp = new Response();
     }
-    public function index(){
-        $params = $this->getParams();
-        $user_id = isset($params[0])?$params[0]:"";
-        $users = new Users();//creating user model
-        if($user_id == ""){
-            $columns = array(
-                'user_id' , 
-                'full_name' ,     
-                'email'  ,        
-                'phone_number'  ,     
-                'role_id',        
-                'user_password',  
-                'verify',         
-                'create_at',     
-                'update_at',      
-                'delete_at',      
-                'profile_image',  
-                'aadhaar',        
-                'update_by'
-                
-                );
-            $cond = array();
-            $this->resp = $users->read($columns,$cond, "full_name");
-            return $this->sendResponse($this->resp);
-        }
-        else{
-            $users = $users->find($user_id);
-            if($users == null){
-                
-                $this->resp->set(array(
-                    "status"=>false,
-                    "msg"=>"User not found",
-                    "status_code"=>404
-                ));
-            }
-            else{
-                $this->resp->set(array(
-                    "status"=>true,
-                    "msg"=>"User found",
-                    "status_code"=>200,
-                    "data"=>$users
-                ));
-            }
-            return $this->sendResponse($this->resp);
-        }
-    }
     public function viewUsers(){
         if(Logins::getRoleName()!="Admin"){
             redirectTo();

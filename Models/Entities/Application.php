@@ -119,13 +119,13 @@ class Application extends EasyEntity{
     //methode to check whether case body exists for the particular application
     public function isCaseBodyFound(){
         $caseBody = new Casebody();
-        return $caseBody->isCaseBodyExist($this->case_type, $this->case_no, $this->case_year);
+        return $caseBody->isCaseBodyExist($this->case_type_id, $this->case_no, $this->case_year);
     }
     
     //method to get case body if found
     public function getCaseBody(){
         $caseBody = new Casebody();
-        return $caseBody->getCaseBody($this->case_type, $this->case_no, $this->case_year);
+        return $caseBody->getCaseBody($this->case_type_id, $this->case_no, $this->case_year);
     }
     
     //method to get certificate (document) if already prepared
@@ -134,11 +134,7 @@ class Application extends EasyEntity{
         $cond = [
             "application_id" => $this->application_id
         ];
-        $res = $doc->read([], $cond);
-        if($res->status){
-            return $res->data[0];
-        }
-        return null;
+        return $doc->read()->where($cond)->getFirst();
     }
     
     /** method to check if processing fee is completed for this application ***/

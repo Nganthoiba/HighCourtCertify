@@ -65,9 +65,12 @@ class EasyQueryBuilder {
             //Throw an exception when error occurs while executing query
             $this->errorInfo = $stmt->errorInfo();
             $this->errorCode = $stmt->errorCode();
-            throw new Exception("An error occurs while executing the query. ".$this->errorInfo[2], 
+            throw new Exception("An error occurs while executing the query. ".$this->errorInfo[2]."\n", 
                     $this->errorCode);
         }
+        /*Refresing query and values after query execution */
+        $this->qry = "";
+        $this->values = [];
         return $stmt;
     }
     

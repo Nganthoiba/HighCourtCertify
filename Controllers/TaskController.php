@@ -170,8 +170,8 @@ class TaskController extends Controller{
     //action for process and task mapping
     public function ProcessTaskMapping(){
         $process = new Process();
-        $res = $process->read();
-        $this->data['processes'] = $res->data;
+        $process_list = $process->read()->toList();
+        $this->data['processes'] = $process_list;
         return $this->view();
     }
     

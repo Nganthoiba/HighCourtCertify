@@ -118,9 +118,15 @@ function getApplicationTasksHistory(PDO $conn, $tasks_id,$task_type){
         return $response;
     }
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $objs = array();
+    $objs = array();//array of application objects
     foreach($rows as $row){
-        $objs[] = (object)$row;
+        $app = new Application();
+        foreach ($row as $col=>$val){
+            $app->{$col} = $val;
+        }
+        if($app->isPaymentCompleted()){
+            $objs[] = $app;
+        }
     }
     $response->set([
         "status"=>true,
@@ -154,15 +160,23 @@ function getLatestApplicationDetails(PDO $conn, $application_id){
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $app = new Application();
     foreach ($row as $col_name=>$val){
-        $app->$col_name = $val;
+        $app->{$col_name} = $val;
     }
-    //$obj = (object)$row;
-    $response->set([
-        "status"=>true,
-        "status_code"=>200,
-        "msg"=>"list of applications.",
-        "data"=>$app
-    ]);
+    if($app->isPaymentCompleted()){
+        $response->set([
+            "status"=>true,
+            "status_code"=>200,
+            "msg"=>"list of applications.",
+            "data"=>$app
+        ]);
+    }
+    else{
+        $response->set([
+            "status"=>false,
+            "status_code"=>403,
+            "msg"=>"Processing fee is not paid yet."
+        ]);
+    }
     return $response;
 }
 //function to check how manu times an application has been already rejected

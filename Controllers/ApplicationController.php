@@ -251,8 +251,8 @@ class ApplicationController extends Controller{
         }
         else{
             $this->data['tasks_name'] = $task->tasks_name;
-            
-            $this->response = getApplicationTasksHistory($task::$conn,$tasks_id,$task_type);
+            $conn = Database::connect();
+            $this->response = getApplicationTasksHistory($conn,$tasks_id,$task_type);
             if($this->response->status){
                 $all = $approve = $reject = array();
                 foreach($this->response->data as $item){
@@ -370,15 +370,13 @@ class ApplicationController extends Controller{
             ]);
         }
         else{
-            $user_info = $_SESSION['user_info'];
-            $user_id = $user_info['user_id'];
+            $user_id = Logins::getUserId();
             $application_id = $input_data['application_id'];
             $tasks_id = $input_data['tasks_id'];
-            $this->applications = $this->applications->find($application_id);
-            //process id = 1 is for application for non order copy whereas 2 for order copy
             $process_id = $this->applications->getProcessId();//getProcessId
             $action_name = $input_data['action_name'];
-            $remark = isset($input_data['remark'])??"";
+            $remark = isset($input_data['remark'])?$input_data['remark']:"";          
+            
             $this->response = insertApplicationTasksLog(Database::connect(), $application_id, $user_id, $action_name, $tasks_id, $process_id,$remark);
         }
         return $this->sendResponse($this->response);
@@ -414,15 +412,14 @@ class ApplicationController extends Controller{
             return $this->sendResponse($this->response);
         }
         
+        $user_id = Logins::getUserId();
         
-        $user_info = $_SESSION['user_info'];
-        $user_id = $user_info['user_id'];
         $file_path = $this->response->data['file_paths'][0];
         $document = new Document();
         $document->application_id = $application_id;
         $document->document_path = $file_path;
         $document->created_by = $user_id;
-        $document::$conn->beginTransaction();
+        $document->getQueryBuilder()->beginTransaction();
         $this->response = $document->add();
         $application = new Application();
         $application = $application->find($application_id);
@@ -431,14 +428,13 @@ class ApplicationController extends Controller{
         if(!$this->response->status){
             return $this->sendResponse($this->response);
         }
-        
-        $this->response = insertApplicationTasksLog($document::$conn, $application_id, $user_id, "forward", $tasks_id, $process_id, $remark);
+        $this->response = insertApplicationTasksLog($document->getQueryBuilder()::$conn, $application_id, $user_id, "forward", $tasks_id, $process_id, $remark);
         if(!$this->response->status)
         {
-            $document::$conn->rollback();
+            $document->getQueryBuilder()->rollbackTransaction();
         }
         else{
-            $document::$conn->commit();
+            $document->getQueryBuilder()->commitTransaction();
         }
         return $this->sendResponse($this->response);
     }

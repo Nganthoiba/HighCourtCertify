@@ -20,12 +20,14 @@ class Model {
     
     public function setKey($key){
         $this->key = $key;
+        return $this;
     }
     public function getKey(){
         return $this->key;
     }
     public function setTable($table_name){
         $this->table_name = $table_name;
+        return $this;
     }
     public function getTable(){
         return $this->table_name;
