@@ -217,10 +217,6 @@ class ApplicationController extends Controller{
         }
         return $this->view();
     }
-
-    public function status(){
-        return $this->view();
-    }
     
     public function application_list(){
         $params = $this->getParams();

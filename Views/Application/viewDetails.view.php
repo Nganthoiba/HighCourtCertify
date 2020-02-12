@@ -71,11 +71,15 @@ else{
             <td><?= date('D, d M, Y',$create_at_timestamp) ?></td>
         </tr>
         <tr>
-            <td><strong>Application Status:</strong></td>
+            <td><strong>Intimation:</strong></td>
             <td>
                 <?php
+                $intemation = $application->getIntimation();
                 if(!$application->isPaymentCompleted()){
                     echo "First complete your payment, then your application will be processed.";
+                }
+                else if($intemation !== null){
+                    echo $intemation->description;
                 }
                 else{
                     echo "Processing...";
@@ -83,7 +87,10 @@ else{
                 ?>
             </td>
         </tr>
-        
+         <tr>
+            <td><strong>View Application Status:</strong></td>
+            <td><a href="/Status/viewStatus/<?= $application->application_id ?>">Click here</a></td>
+        </tr>
     </table>
 <?php
 }

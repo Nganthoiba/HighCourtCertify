@@ -53,7 +53,7 @@ if($applications!=null && sizeof($applications)){
                     } 
                     ?>
                 </td>
-                <td><a href="javascript:viewApplicationDetails('<?= $app->application_id ?>')">View Details</a></td>
+                <td><a href="javascript:viewApplicationDetails('<?= $app->application_id ?>')">Details</a></td>
             </tr>
     <?php 
         }
@@ -67,9 +67,9 @@ if($applications!=null && sizeof($applications)){
     $(document).ready(function() {
         $('#application_table').DataTable({
             "columnDefs": [
-                    { "orderable": false, "targets": [6,7] },
-                    { "searchable": false, "targets": [6,7] },
-                    { "className": "align-center", "targets": [6,7] }
+                    { "orderable": false, "targets": [6,7,8] },
+                    { "searchable": false, "targets": [6,7,8] },
+                    { "className": "align-center", "targets": [6,7,8] }
                 ]
         });
     } );

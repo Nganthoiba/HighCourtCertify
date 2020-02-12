@@ -129,7 +129,7 @@ class PaypalController extends Controller{
     
     /*method to check if transaction already exists, it returns an object of Payments if exists
     otherwise null     */
-    private function isTransactionExists(string $txn_id): Payments{
+    private function isTransactionExists(string $txn_id){
         $payment = new Payments();
         $res = $payment->read()->where([
             "transaction_id"=>$txn_id

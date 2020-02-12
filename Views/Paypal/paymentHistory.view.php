@@ -4,7 +4,7 @@ $list_of_payments = $response->data;
 ?>
 <div class="container">
     <h3>Payment History</h3>
-    <table class="table table-light">
+    <table class="table_style blue_header">
         <thead>
             <tr>
                 <th>Transaction ID</th>

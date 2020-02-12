@@ -1,5 +1,9 @@
+<div><br/>
+    <p>Submit an status to tell the applicant when to collect the certificate from the court.</p>
+    <textarea name="application_status" id="application_status" class="form-control" required></textarea>
+</div>
 <div style="text-align: center">
-    <button onclick="approve();" id="approve_btn" class="btn btn-success">Approve</button>
+    <button onclick="approve();" id="approve_btn" class="btn btn-success">Submit</button>
     <button onclick="reject()" id="reject_btn" class="btn btn-danger">Reject</button>
 </div>
 <div class="modal fade" id="rejectApplicationModal">
@@ -36,25 +40,52 @@
     var application_id = "<?= $application->application_id ?>";
     
     function approve(){
-        swal.fire({
-            title: 'Approve!',
-            text: "Are you sure to approve?",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'YES',
-            cancelButtonText: "No, I am not sure!"
-        }).then((result) => {
-            if (result.value) {
-                var resp = insertIntoApplicationTasksLog(application_id,tasks_id,"approve");
-                if(resp.status){
-                    swal.fire('Forwarded.',resp.msg,'success');
-                    window.history.back();
+        var application_status = document.getElementById("application_status");//$("#application_status").val();
+        if(application_status.value.trim() === ""){            
+            swal.fire({
+                async: false,
+                title: 'Say something',
+                text: "Please say something in the status box.",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonText: 'OK',
+                closeOnConfirm: false
+            }).then((result) => {
+                if (result.value) {
+                    window.setTimeout(function () { 
+                        document.getElementById('application_status').focus(); 
+                    }, 300);
                 }
-                else{
-                    swal.fire('Forward Failed.',resp.msg,'error');
+            });
+            return;
+        }
+        else{
+            swal.fire({
+                title: '',
+                text: "Are you sure to submit?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'YES',
+                cancelButtonText: "No, I am not sure!"
+            }).then((result) => {
+                if (result.value) {
+                    var setAppStatus = setApplicationStatus(application_id,document.getElementById("application_status").value);
+                    if(setAppStatus.status==false){
+                        swal.fire('Status update failed',setAppStatus.msg,'error');
+                        return;
+                    }
+                    //This function "insertIntoApplicationTasksLog" is defined in applicationDetails.view.php
+                    var resp = insertIntoApplicationTasksLog(application_id,tasks_id,"approve");
+                    if(resp.status){
+                        swal.fire('Success.',resp.msg,'success');
+                        window.history.back();
+                    }
+                    else{
+                        swal.fire('Failed.',resp.msg,'error');
+                    }
                 }
-            }
-        });
+            });
+        }
         
     }
     
@@ -89,4 +120,14 @@
             swal.fire('Failed to reject.',resp.msg,'error');
         }
     };
+    
+    function setApplicationStatus(application_id, status_description){
+        var args = {
+            url:"<?= Config::get('host') ?>/Status/submitStatus",
+            param: JSON.stringify({"application_id": application_id,"description":status_description}),
+            ContentType:"application/json",
+            method: "POST"
+        };
+        return ajax_request(args);
+    }
 </script>

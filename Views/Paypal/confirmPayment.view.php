@@ -12,7 +12,7 @@ $application_id = $data['application_id'];
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-2"><label>Amount:</label></div>
+            <div class="col-sm-2"><label>Amount in Rs:</label></div>
             <div class="col-sm-4">
                 <input type="text" class="form-control" name="amount" value="<?= $amount ?>"  readonly />
             </div>

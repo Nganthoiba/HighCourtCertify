@@ -7,7 +7,7 @@
  * Description of EasyQueryBuilder
  *  This class generates SQL (DML). The query is purely based on PDO.
  * #Note: this query builder generates query which can only be executed successfully 
- * on a single table, nested queries are not supported. Sorry for this inconvenience we are still 
+ * on a single table, nested queries are not supported effectively. Sorry for this inconvenience we are still 
  * working on it to solve SQL complex queries.
  * So, for now you can set your own query using setQuery() method and execute using execute() method
  * @author Nganthoiba
@@ -68,10 +68,15 @@ class EasyQueryBuilder {
             throw new Exception("An error occurs while executing the query. ".$this->errorInfo[2]."\n", 
                     $this->errorCode);
         }
-        /*Refresing query and values after query execution */
+        /* Refresing query and values after query execution */
+        $this->clear();
+        return $stmt;
+    }
+    /** This will clear existing query statement and parameter values ***/
+    public function clear(){
         $this->qry = "";
         $this->values = [];
-        return $stmt;
+        return $this;
     }
     
     /*** Set query and get query ***/

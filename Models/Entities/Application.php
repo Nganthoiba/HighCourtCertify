@@ -149,4 +149,12 @@ class Application extends EasyEntity{
         }
         return true;
     }
+    //getting user intemation
+    public function getIntimation(){
+        $status = new Status();
+        $intemation = $status->read()->where([
+            "application_id"=>$this->application_id
+        ])->getFirst();
+        return $intemation;
+    }
 }

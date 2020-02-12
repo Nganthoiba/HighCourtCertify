@@ -224,6 +224,7 @@ class TaskController extends Controller{
         $Process_Tasks_Mapping = new Process_Tasks_Mapping();
         $Process_Tasks_Mapping->process_id=$process_id;
         $this->response = $Process_Tasks_Mapping->setTasksProcessMap($included_tasks);
+        
         return $this->sendResponse($this->response);
     }
     // end of action for process and task mapping

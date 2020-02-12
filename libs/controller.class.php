@@ -12,7 +12,6 @@
  */
 class Controller {
     protected $params;
-    protected $model;
     protected $data;
     public $response;
     private $router;
@@ -23,9 +22,7 @@ class Controller {
     public function getData(){
         return $this->data;
     }
-    public function getModel(){
-        return $this->model;
-    }
+    
     //these are the parameters appended in urls
     public function getParams(){
         return $this->params;

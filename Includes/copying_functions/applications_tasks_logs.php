@@ -89,7 +89,7 @@ function insertApplicationTasksLog(PDO $conn,$application_id,$user_id,$action_na
     return $response;
 }
 
-//to get list of applications for pending,approval or forwarding, or deleted
+//to get list of all applications for pending,approval or forwarding, or deleted
 function getApplicationTasksHistory(PDO $conn, $tasks_id,$task_type){
     $response = new Response();
     if($task_type == "in"){
@@ -226,7 +226,7 @@ function isApplicationRecordAlreadyExist($application_id, $process_id,$tasks_id)
 
 //function to find next task id using current process id and current task id
 
-function findNextTaskId(PDO $conn,int $process_id, int $tasks_id):int{
+function findNextTaskId(PDO $conn,int $process_id, int $tasks_id){
     
     $qry = "select * from process_tasks_mapping_view "
             . " where process_id = ? and tasks_id = ? ";
@@ -236,7 +236,57 @@ function findNextTaskId(PDO $conn,int $process_id, int $tasks_id):int{
         return null;
     }
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    return (int)$row['next_tasks_id'];
+    return $row['next_tasks_id'];
 }
 
+//function to get a task history of a particular application
+function getApplicationHistory($application_id):Response{
+    $conn = Database::connect();
+    $response = new Response();
+    $qry = "select * from application_tasks_log_view where application_id = ? order by action_date";
+    $stmt = $conn->prepare($qry);
+    $res = $stmt->execute([$application_id]);
+    if(!$res){
+        $response->set([
+            "error"=>$stmt->errorInfo()
+        ]);
+        return $response;
+    }
+    if($stmt->rowCount()==0){
+        $response->set([
+            "msg"=>"No record found",
+            "status_code"=>404
+        ]);
+        return $response;
+    }
+    
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $objs = array();//array of application objects
+    foreach($rows as $row){
+        $app = new EmptyClass();
+        foreach ($row as $col=>$val){
+            $app->{$col} = $val;
+        }
+        $objs[] = $app;
+    }
+    $response->set([
+        "status"=>true,
+        "status_code"=>200,
+        "msg"=>"list of applications.",
+        "data"=>$objs
+    ]);
+    return $response;
+}
 
+function getProcessSteps($application_id){
+    $conn = Database::connect();
+    $app = new Application();
+    $app = $app->find($application_id);
+    $process_id = $app->getProcessId();
+    
+    $qry = "select tasks_id,tasks_name,tasks_description from process_tasks_mapping_view "
+            . "where process_id = ? and is_enabled='y' ";
+    $stmt = $conn->prepare($qry);
+    $stmt->execute([$process_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}

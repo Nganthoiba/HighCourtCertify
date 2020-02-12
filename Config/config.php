@@ -35,7 +35,7 @@ Config::set('DB_CONFIG', [
 ]);
 
 /********* Paypal Configuration ********/
-Config::set("business", "khangembamc@gmail.com");
+Config::set("business", "khangembamc@gmail.com");//paypal business account
 Config::set("IdentityToken","xyvzY6f0sSDiz5W1G9Z-kpTdQDka1JIxTFVKIcaCFdM31R0ZIXExkJoL7ly");
 Config::set("IsSandbox",true);
 Config::set("currency_code","INR");

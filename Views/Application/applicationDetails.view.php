@@ -35,8 +35,16 @@ else{
         }
         ?>
         <tr>
+            <td><strong>Application ID:</strong></td>
+            <td><?= $application->application_id ?></td>
+        </tr>
+        <tr>
             <td><strong>Application For:</strong></td>
             <td><?= $application->certificate_type_name ?></td>
+        </tr>
+        <tr>
+            <td><strong>Third Party:</strong></td>
+            <td><?= $application->is_third_party=='y'?"Yes":"No" ?></td>
         </tr>
         <tr>
             <td><strong>Case Type:</strong></td>
@@ -103,10 +111,14 @@ else{
                 <?php
                 }
                 else{
-                    echo "Document is not prepared yet.";
+                    echo "Certificate is not prepared yet.";
                 }
                 ?>
             </td>
+        </tr>
+        <tr>
+            <td><strong>View Application Status:</strong></td>
+            <td><a href="/Status/viewStatus/<?= $application->application_id ?>">Click here</a></td>
         </tr>
     </table>
     <script type="text/javascript">
@@ -131,7 +143,7 @@ else{
     $process_id = (int)$data['process_id'];
     $application_id = $data['application_id'];
     
-    //if user has already commited the task then dont load any further approval or rejected layout
+    //if user has already commited the task then don't load any further approval or rejection layout
     if(!isApplicationRecordAlreadyExist($application_id, $process_id, $tasks_id)){
         switch($tasks_id){
             case 2:

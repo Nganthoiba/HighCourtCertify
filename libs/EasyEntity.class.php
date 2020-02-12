@@ -135,6 +135,7 @@ class EasyEntity {
                             "values"=>$this->queryBuilder->getValues()
                         ]
                     ]);
+                $this->queryBuilder->clear();
             }catch(Exception $e){
                 $this->response->set([
                         "msg" => "Sorry, an error occurs while updating the record. ".$e->getMessage(),
