@@ -395,6 +395,12 @@ class EasyQueryBuilder {
                         }
                         $cond_string .= $key." ".$values[0]." (".rtrim($str_range,',').")";
                     }
+                    else if(strtolower(trim($values[0])) === "is" || strtolower(trim($values[0])) === "not is"){
+                        if($values[1]==null){
+                            $values[1]="NULL";
+                        }
+                        $cond_string .= $key." ".$values[0]." ".$values[1];
+                    }
                     else{
                         $cond_string .= $key." ".$values[0]." ?";
                     }
@@ -419,6 +425,9 @@ class EasyQueryBuilder {
             if(is_array($val) && sizeof($val)>=2){
                 if(strtolower(trim($val[0])) === "in" || strtolower(trim($val[0])) === "not in"){
                     $values = array_merge($values,$val[1]);
+                }
+                else if(strtolower(trim($val[0])) === "is" || strtolower(trim($val[0])) === "not is"){
+                    //do nothing, not to put any values for IS operator
                 }
                 else{
                     array_push($values,$val[1]);

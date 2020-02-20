@@ -6,6 +6,11 @@ $paypal = $data['paypal'];
     <p style="text-align: center">
         <center>Redirecting for payment, please wait …</center>
     </p>
+    <div style="text-align: center">
+        <div class="spinner-border text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
     <form id="hiddenPaypalForm" name="paypal_submit_form" action="<?= $paypal->actionURL ?>" method="post">
         <input type='hidden' name='business'
                 value='<?= $paypal->business ?>'> 

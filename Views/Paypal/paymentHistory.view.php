@@ -8,7 +8,7 @@ $list_of_payments = $response->data;
         <thead>
             <tr>
                 <th>Transaction ID</th>
-                <th>Date</th>
+                <th>Date & Time</th>
                 <th>Application ID</th>
                 <th>Purpose</th>
                 <th align="right">Amount (Rs)</th>
@@ -22,10 +22,12 @@ $list_of_payments = $response->data;
             ?>
             <tr>
                 <td><?= $payment->transaction_id ?></td>
-                <td><?= date('d-M-Y',$create_at_timestamp) ?></td>
+                <td><?= date('d-M-Y, h:i:s a',$create_at_timestamp) ?></td>
                 <td><?= $payment->application_id ?></td>
                 <td><?= $payment->purpose ?></td>
-                <td align="right"><?= $payment->amount ?></td>
+                <td align="right">
+                    <span style="padding-right: 15px "><?= $payment->amount ?></span>
+                </td>
             </tr>
             <?php
                 $cnt++;

@@ -70,13 +70,16 @@ else{
             <td><strong>Application Submitted on:</strong></td>
             <td><?= date('D, d M, Y',$create_at_timestamp) ?></td>
         </tr>
-        <tr>
-            <td><strong>Intimation:</strong></td>
+         <tr>
+            <td><strong>View Application Status:</strong></td>
             <td>
                 <?php
                 $intemation = $application->getIntimation();
                 if(!$application->isPaymentCompleted()){
-                    echo "First complete your payment, then your application will be processed.";
+                ?>
+                    First complete your payment, then your application will be processed.
+                    <a class="btn btn-primary" href="<?= getHtmlLink("Paypal", "confirmPayment",$application->application_id) ?>">Pay Now</a>
+                <?php
                 }
                 else if($intemation !== null){
                     echo $intemation->description;
@@ -85,11 +88,8 @@ else{
                     echo "Processing...";
                 }
                 ?>
+                To see more, <a href="/Status/viewStatus/<?= $application->application_id ?>">Click here</a>
             </td>
-        </tr>
-         <tr>
-            <td><strong>View Application Status:</strong></td>
-            <td><a href="/Status/viewStatus/<?= $application->application_id ?>">Click here</a></td>
         </tr>
     </table>
 <?php

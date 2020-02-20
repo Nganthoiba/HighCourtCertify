@@ -153,8 +153,14 @@ class Application extends EasyEntity{
     public function getIntimation(){
         $status = new Status();
         $intemation = $status->read()->where([
-            "application_id"=>$this->application_id
+            "application_id"=>$this->application_id,
+            "deleted_at"=>["IS",NULL]
         ])->getFirst();
         return $intemation;
+    }
+    
+    //generate appication ID
+    public function generateID(){
+        return "MNHC".date("mm-Y")."-".randId(6);
     }
 }

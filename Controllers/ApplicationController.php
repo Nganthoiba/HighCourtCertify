@@ -143,7 +143,7 @@ class ApplicationController extends Controller{
             else{
                 
                 $applicationModel = new Application();
-                $applicationModel->application_id = UUID::v4();
+                $applicationModel->application_id = $applicationModel->generateID();//UUID::v4();
                 
                 $applicationModel->case_no = $case_no;
                 $applicationModel->case_type_id = $case_type;
@@ -177,12 +177,16 @@ class ApplicationController extends Controller{
         $certificate_list = $certificate_type->read()->orderBy("certificate_type_id")->toList();
         $this->data['certificate_list'] = $certificate_list;
         
+        /***** getting copy type ****/
         $copy_type = new copy_type();
         $this->data['copy_type_list'] = $copy_type->read()->orderBy("copy_type_id")->toList();
         
-        
+        /**** Getting case type *****/
         $caseType = new case_type();
         $this->data['case_type_list'] = $caseType->read(['case_type_id','type_name','full_form'])->orderBy('type_name')->toList();
+        
+        $third_party_reasons = new third_party_reasons();
+        $this->data['third_party_reasons'] = $third_party_reasons->read()->orderBy("third_party_reasons_id")->toList();
         
         return $this->view();
     }

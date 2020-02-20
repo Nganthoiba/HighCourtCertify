@@ -80,8 +80,7 @@ class User_apiController extends Api{
                 ];
         }
         
-
-        $qryBuilder = $users->read([],$cond, "full_name");
+        $qryBuilder = $users->read($columns,$cond, "full_name");
         try{
             $user_lists = $qryBuilder->toList();
             if($user_lists == null){

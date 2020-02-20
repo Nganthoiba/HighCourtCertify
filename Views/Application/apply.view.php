@@ -1,7 +1,8 @@
 <?php
 $certificate_list = $data['certificate_list'];
 $case_type_list = $data['case_type_list'];
-$copy_type_list = $data['copy_type_list']
+$copy_type_list = $data['copy_type_list'];
+$third_party_reasons = $data['third_party_reasons'];
 ?>
 <div class="container">            
     <div id="application_form_layout" >
@@ -111,17 +112,46 @@ $copy_type_list = $data['copy_type_list']
                 <div class="col-sm-4">
                     <label class="control-label">Are you third party? (*):</label>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-1" style="margin-top: 5px">
                     <div class="custom-control custom-radio">
-                        <input type="radio" class="custom-control-input" name="third_party" id="third_party_yes" value="y" checked />&nbsp;
-                        <label class="custom-control-label" style="cursor:pointer" for="third_party_yes">Yes</label>&nbsp;
-                    </div>
-                    <div class="custom-control custom-radio">
-                        <input type="radio" class="custom-control-input" name="third_party" id="third_party_no" value="n" />&nbsp;
+                        <input type="radio" onclick="display_reason(false);" class="custom-control-input" name="third_party" id="third_party_no" value="n" checked/>&nbsp;
                         <label class="custom-control-label" style="cursor:pointer" for="third_party_no">No</label>&nbsp;
                     </div>
                 </div>
+                <div class="col-sm-1" style="margin-top: 5px">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" onclick="display_reason(true);" class="custom-control-input" name="third_party" id="third_party_yes" value="y" />&nbsp;
+                        <label class="custom-control-label" style="cursor:pointer" for="third_party_yes">Yes</label>&nbsp;
+                    </div>
+                </div>
             </div>
+            
+            <div class="row"  id="third_party_reason_options" style="display:none;margin-top:-10px;">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-6">
+                    <select id="reasons" class="form-control" onchange="selectReasons(this);">
+                        <option value="">Select a reason</option>
+                        <?php
+                        foreach ($third_party_reasons as $reason){
+                        ?>
+                        <option value="<?= $reason->third_party_reasons_id ?>">
+                            <?= $reason->reasons ?>
+                        </option>
+                        <?php
+                        }
+                        ?>
+                        <option value="<?= count($third_party_reasons)+1 ?>">Others</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row"  id="third_party_reason_input_layout" style="display:none;">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="third_party_reason" 
+                           placeholder="Give reason for requesting certify copy." id="third_party_reason" />
+                </div>
+            </div>
+            
             <div class="row"  >
                 <div class="col-sm-4">
                     <label for="appel_petitioner" class="control-label">Appellant/Petitioner (*):</label>
@@ -213,6 +243,26 @@ $copy_type_list = $data['copy_type_list']
          style="margin-bottom: 50px; text-align: center; display:none"></div>
 </div>
 <script type="text/javascript">
+    function selectReasons(obj){
+        //alert(obj.options[obj.value].innerHTML);
+        if(obj.options[obj.value].innerHTML === "Others"){
+            $("#third_party_reason_input_layout").show();
+            $("#third_party_reason").val("");
+        }
+        else{
+            $("#third_party_reason_input_layout").hide();
+            $("#third_party_reason").val(obj.options[obj.value].innerHTML.trim());
+        }
+    }
+    function display_reason(flag){
+        if(flag){
+            $("#third_party_reason_options").show();
+        }
+        else{
+            //$("#third_party_reason_layout").hide();
+            $("#third_party_reason_options").hide();
+        }
+    }
     function enableSubmitButton(obj){
         //alert(obj.checked);
         if(obj.checked == true){
@@ -311,6 +361,7 @@ $copy_type_list = $data['copy_type_list']
         var copy_type_id = $("#copy_type_id").val().trim();
 
         var order_date = $("#order_date").val().trim();
+        var third_party = getSelectedRadioButtonValue("third_party");
         
         if(certificate_type_id === ""){
             //customAlert("Please select Certificate type");
@@ -323,6 +374,14 @@ $copy_type_list = $data['copy_type_list']
             //$("#certificate_type_id").attr("class","form-control invalid");
             document.getElementById("copy_type_id").focus();
             return false;
+        }
+        
+        if(third_party.trim() === "Yes"){
+            var third_party_reason = $("#third_party_reason").val().trim();
+            if(third_party_reason === ""){
+                alert("Please mention why you need this certificate.");
+                return false;
+            }
         }
         
         if(case_type === "" || case_no === "" || case_year === "" || appel_petitioner === "" || respondant_opp === "" || order_date === ""){
@@ -353,6 +412,7 @@ $copy_type_list = $data['copy_type_list']
         var copy_type_id = $("#copy_type_id").val().trim();
         var order_date = $("#order_date").val().trim();
         var csrf_token = $("#csrf_token").val().trim();
+        var third_party_reason = $("#third_party_reason").val().trim();
         
         var data = {
             copy_type_id: copy_type_id,
@@ -367,7 +427,8 @@ $copy_type_list = $data['copy_type_list']
             certificate_type_id: certificate_type_id,
             order_date: order_date,
             csrf_token: csrf_token,
-            is_third_party: getSelectedRadioButtonValue("third_party")
+            is_third_party: getSelectedRadioButtonValue("third_party"),
+            third_party_reason: third_party_reason
         };
         //$("#application_form").serialize();
         $.ajax({
