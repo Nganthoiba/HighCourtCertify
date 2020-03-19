@@ -98,9 +98,11 @@
 <script src="<?= Config::get('host') ?>/root/MDB/js/pdf.js" type="text/javascript"></script>
 <script src="<?= Config::get('host') ?>/root/MDB/js/pdf.worker.js" type="text/javascript"></script>
 <form name="cert_preparation_form" id="cert_preparation_form" action="<?= Config::get('host') ?>/Application/uploadDocument">
+    
+    
     <div class="row">
         <div class="col-sm-3">
-            <label>Upload Prepared Certificate:</label>
+            <label>Upload Certificate:</label>
             <input type="hidden" value="<?= $application->application_id ?>" name="application_id" />
             <input type="hidden" value="<?= $tasks_id ?>" name="tasks_id" />
         </div>
@@ -112,8 +114,13 @@
                 <label for="file-to-upload" class="custom-file-label rounded-pill">Choose file</label>
             </div>
         </div>
-        <div class="col-sm-3" style="margin-top:-10px;">
+        <div class="col-sm-4" style="margin-top:-10px;">
             <button type="submit" class="btn btn-primary">Upload and forward <span class="fa fa-upload"></span></button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10 alert alert-warning">
+            #Note: The certificate must be the scanned copy of certificate manually signed by concerned authorities.
         </div>
     </div>
     <div class="row">

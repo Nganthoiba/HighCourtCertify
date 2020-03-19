@@ -4,9 +4,16 @@ $payment = $report->data;
 ?>
 
 <div class="container">
-    <div class="col-sm-6">
-        <h3>Receipt</h3>
-        <table class="table table-bordered">
+    <div class="row">
+        <span class="col-sm-3"><h3>Receipt</h3></span>
+        <span class="col-sm-3" style="text-align: right">
+            <button class="btn btn-primary" onclick="printReceipt();">
+                <span class="fa fa-print"></span> Print
+            </button>
+        </span>
+    </div>
+    <div class="col-sm-6" id="receipt_contents">        
+        <table border="1" class="table table-bordered">
             <tr>
                 <td><strong>Transaction ID:</strong></td>
                 <td><?= $payment->transaction_id ?></td>
@@ -39,3 +46,23 @@ $payment = $report->data;
         </table>
     </div>
 </div>
+<script type="text/javascript">
+    function printReceipt() { 
+        var divContents = document.getElementById("receipt_contents").innerHTML; 
+        var a = window.open('', '', 'height=450, width=550'); 
+        a.document.write('<html>'); 
+        a.document.write('<body>'); 
+        a.document.write('<link href="<?=Config::get('host')?>/root/MDB/css/bootstrap.css" rel="stylesheet">');
+        a.document.write('<div class="container-fluid">'); 
+        a.document.write('<div style="text-align:center;"><h2>The High Court of Manipur</h2></div>'); 
+        a.document.write('<h4>Receipt</h4>'); 
+        
+        a.document.write(divContents); 
+        
+        a.document.write("</div>"); 
+        
+        a.document.write('</body></html>'); 
+        a.document.close(); 
+        a.print(); 
+    } 
+</script>

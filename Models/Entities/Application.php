@@ -19,7 +19,8 @@ class Application extends EasyEntity{
             $create_at,
             $user_id,
             $is_order,
-            $is_third_party;
+            $is_third_party,
+            $is_offline;
     
     private $response;
     public function __construct() {
@@ -51,40 +52,26 @@ class Application extends EasyEntity{
             foreach ($res as $col_name=>$val){
                 $this->{$col_name} = $val;
             }
+            if($this->is_offline === "y"){
+                $offline_app = new offline_application();
+                $offline_app = $offline_app->read()->where([
+                    "application_id"=>$this->application_id
+                ])->getFirst();
+                $this->applicant_name = $offline_app!=null?$offline_app->applicant_name:"Not found!";
+            }
         }
         else{
             return null;
         }
         return $this;
     }
-    //Overriding parent method
-    public function add(): Response {
-        $this->getQueryBuilder()->beginTransaction();
-        $add_resp = parent::add();
-        if($add_resp->status_code!=200){
-            return $add_resp;
-        }
-        
-        $tasks_id = 1;//Task id for applying a new copy
-        $process_id = $this->getProcessId();//process_id =2 for order copy whereas 1 for non order copy
-        $remark = "Submit a new application.";
-        $app_log_resp = insertApplicationTasksLog(EasyQueryBuilder::$conn, $this->application_id, $this->user_id, "create", $tasks_id, $process_id, $remark);
-        if(!$app_log_resp->status){
-            $this->getQueryBuilder()->rollbackTransaction();
-        }
-        else{
-            $this->getQueryBuilder()->commitTransaction();
-            $app_log_resp->msg = "You have submitted your application";
-        }
-        return $app_log_resp;
-    }
     
     //read application details from application_tasks_log table
-    public function readAppTasksLog($user_id){
+    public function readAppTasksLog($user_id,$is_offline="n"){
         $conn = Database::connect();
-        $qry = "select * from application_tasks_log_view where action_user_id = ? order by create_at desc limit 100";
+        $qry = "select * from latest_application_tasks_log_view where action_user_id = ? and is_offline = ? order by create_at desc limit 100";
         $stmt = $conn->prepare($qry);
-        $res = $stmt->execute([$user_id]);
+        $res = $stmt->execute([$user_id,$is_offline]);
         if($res){
             if($stmt->rowCount()==0){
                 $this->response->status = false;
@@ -100,7 +87,15 @@ class Application extends EasyEntity{
                 foreach ($rows as $row){
                     $obj = new Application();
                     foreach ($row as $key=>$val){
-                        $obj->$key = $val;
+                        $obj->{$key} = $val;
+                    }
+                    //check if application is submitted in offline mode
+                    if($obj->is_offline === "y"){
+                        $offline_app = new offline_application();
+                        $offline_app = $offline_app->read()->where([
+                            "application_id"=>$obj->application_id
+                        ])->getFirst();
+                        $obj->applicant_name = $offline_app!=null?$offline_app->applicant_name:"Not found!";
                     }
                     $data[] = $obj;
                 }
@@ -144,7 +139,7 @@ class Application extends EasyEntity{
             "application_id"=> $this->application_id,
             "status"=>"Completed"
         ])->getFirst();
-        if($payment == null){
+        if($payment === null){
             return false;
         }
         return true;
@@ -161,6 +156,50 @@ class Application extends EasyEntity{
     
     //generate appication ID
     public function generateID(){
-        return "MNHC".date("mm-Y")."-".randId(6);
+        return "MNHC".date("m-Y")."-".randId(6);
     }
+    
+    //get total application request
+    public static function count($type){
+        
+        $qryBuilder = new EasyQueryBuilder();
+        //$conn = Database::connect();
+        //$qry = "";
+        switch($type){
+            case 'all':
+                //$qry = "select count(*) as cnt from application";
+                $stmt = $qryBuilder->select("count(*) as cnt")->from("application")->execute();
+                break;
+            case 'completed':
+                //$qry = "select count(*) as cnt from latest_application_tasks_log_view where next_tasks_id is NULL";
+                $stmt = $qryBuilder->select("count(*) as cnt")
+                        ->from("latest_application_tasks_log_view")
+                        ->where([
+                            "next_tasks_id"=>["IS",NULL]
+                        ])
+                        ->execute();
+                break;
+            case 'pending':
+                //$qry = "select count(*) as cnt from latest_application_tasks_log_view where next_tasks_id IS NOT NULL";
+                $stmt = $qryBuilder->select("count(*) as cnt")
+                        ->from("latest_application_tasks_log_view")
+                        ->where([
+                            "next_tasks_id"=>["IS NOT",NULL]
+                        ])
+                        ->execute();
+                break;
+            default :
+        }
+        
+        //$stmt = $conn->prepare($qry);
+        
+        if($stmt->rowCount() == 0){
+            return 0;
+        }
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['cnt'];
+    }
+    
+    
+    
 }

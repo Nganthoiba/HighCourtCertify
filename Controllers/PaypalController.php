@@ -77,6 +77,16 @@ class PaypalController extends Controller{
         if($this->request->isMethod("POST")){
             $input_data = $this->request->getData();
             if(isset($input_data['amount']) && $input_data['amount']!==""){
+                
+                //check if input amount is correct or not
+                $payable_amount = new payable_amount();
+                $payable_amount = $payable_amount->read()->where([
+                    "purpose"=>"certificate processing fee"
+                ])->getFirst();
+                if($input_data['amount'] !== $payable_amount->amount){
+                    return "Invalid amount";
+                }
+                
                 $paypal = new PaypalModel(Config::get('IsSandbox'));
                 $paypal->item_name = $input_data['application_id'];//"certificate processing fee";
                 $paypal->amount = $input_data['amount'];
@@ -90,7 +100,11 @@ class PaypalController extends Controller{
         $params = $this->getParams();
         if(isset($params[0])){
             $this->data['application_id'] = $params[0];
-            $this->data['amount'] = 20;
+            //payable amount
+            $payable_amount = new payable_amount();
+            $payable_amount = $payable_amount->read()->where([
+                "purpose"=>"certificate processing fee"])->getFirst();
+            $this->data['amount'] = $payable_amount->amount;
             return $this->view();
         }
     }
@@ -125,6 +139,209 @@ class PaypalController extends Controller{
         }
         $this->data['response'] = $this->response;
         return $this->view();
+    }
+    
+    public function offlinePayment(){
+        $params = $this->getParams();
+        
+        if(!isset($params[0])){
+            $this->data['status'] = false;
+            $this->data['msg'] = "Invalid request";
+            return $this->view();
+        }
+        $application = new Application();
+        $application = $application->find($params[0]);
+        if($application == null){
+            $this->data['status'] = false;
+            $this->data['msg'] = "Application not found.";
+            return $this->view();
+        }
+        
+        if($application->isPaymentCompleted()){
+            $this->data['status'] = false;
+            $this->data['msg'] = "Payment already completed.";
+            return $this->view();
+        }
+        
+        $this->data['status'] = true;
+        $this->data['application_id'] = $params[0];
+        $this->data['amount'] = 20;
+            
+        return $this->view();
+    }
+    
+    public function generateOfflineReceipt(){
+        $params = $this->getParams();
+        if(!isset($params[0])){
+            $this->data['msg'] = "Invalid request";
+            return $this->view();
+        }
+        
+        $application_id = $params[0];
+        $application = new Application();
+        $application = $application->find($application_id);
+        if($application === null){
+            $this->data['msg'] = "Application not found.";
+            return $this->view();
+        }
+        $create_at_timestamp = strtotime($application->create_at);
+        $order_date_timestamp = strtotime($application->order_date);
+        
+        //******************* INITIATING THE REQUIRMENT FOR PDF ****************************
+        global $pdf;
+        $pdf=new PDF('P','mm','A4');
+        // $pdf->fontpath='fpdf17/font/';
+        $pdf->AliasNbPages();
+        $pdf->SetFont('times','',14);
+        $pdf->SetMargins(15, 20, 15); //left top right
+        $pdf->AddPage();  //startng a new page
+
+        //******************* Global variables to be used by maximum functions *************************
+        global $x,$yr,$y,$xg,$x_posi,$y_place;
+        $page_width = $pdf->GetPageWidth() - 30 ; //10 is for left and right margin
+        $page_height = $pdf->GetPageHeight() - 20 ; //10 is for top and bottom margin
+        $x = $page_width/20;  //manually devided page width into 10
+        $y = 8; 
+
+        //**************** NOTE: size of A4 210mm X 297.01 **************************
+        //****************  starting to print data  ********************
+
+        //Cell(float w , float h , string txt , mixed border , int ln , string align , boolean fill , mixed link)
+        $pdf->SetFont('times','B',24);
+        $pdf->ln();
+        $pdf->Cell($x*8,10,"",0,0);
+        $pdf->Cell($x*4,10,"INVOICE",'B',1,'C');
+        $pdf->ln();
+
+        $pdf->Cell($x*20,$x*0.5,"",'LRT',1);
+        print_line("Application ID", $application->application_id);
+        print_line("Application For", $application->certificate_type_name);
+        print_line("Applicant Name", $application->applicant_name);
+        print_line("Case Type", $application->case_type_name."-".$application->case_type_full_form);
+        print_line("Case Number", $application->case_no);
+        print_line("Case Year", $application->case_year);
+        print_line("Certificate Copy Type", $application->copy_name);
+        print_line("Petitioner", $application->petitioner);
+        print_line("Respondent", $application->respondent);
+        print_line("Order Date", date('d-m-Y',$order_date_timestamp));
+        print_line("Application Submitted On", date('D, d M, Y',$create_at_timestamp));
+        print_line("Amount", "Rs. 20");
+        $pdf->Cell($x*20,$x*0.5,"",'LRB',1);
+
+        $pdf->ln();
+        print_stamp('Stamp Area 1','');
+        print_stamp('Stamp Area 2','');
+        $pdf->Output();
+        die();
+        //************************************* END OF PDF DOCUMENT ***********************************************
+    }
+    
+    public function uploadInvoice(){
+        if(!Logins::isAuthenticated()){
+            $this->response->set([
+                "msg"=>"Please login and try again.",
+                "status_code"=>400
+            ]);
+            return $this->sendResponse($this->response);
+        }
+        if(!$this->request->isMethod("POST")){
+            $this->response->set([
+                "msg"=>"Invalid request.",
+                "status_code"=>400
+            ]);
+            return $this->sendResponse($this->response);
+        }
+        $input_data = $this->_cleanInputs($this->request->getData());
+        
+        if(sizeof($input_data) === 0){
+            $this->response->set([
+                "msg"=>"No input data",
+                "status_code"=>400
+            ]);
+            return $this->sendResponse($this->response);
+        }
+        
+        $this->response = verifyCSRFToken();
+        if(!$this->response->status){
+            return $this->sendResponse($this->response);
+        }
+        
+        /*** check if application exsts ***/
+        $app = new Application();
+        $app = $app->find($input_data['application_id']);
+        if($app === null){
+            $this->response->set([
+                "msg"=>"Application not found",
+                "status_code"=>404
+            ]);
+            return $this->sendResponse($this->response);
+        }
+        /*** check if already paid ***/
+        if($app->isPaymentCompleted()){
+            $this->response->set([
+                "msg"=>"Payment already completed.",
+                "status_code"=>403
+            ]);
+            return $this->sendResponse($this->response);
+        }
+        
+        $upload_directory = UPLOAD_PATH."/documents/receipt/".$input_data['application_id']."/";
+        $file_upload = new Upload();
+        $file_upload->setFileUploadKeyName("scan_copy");
+        $upload_response = $file_upload->uploadSingleFile($upload_directory);
+        
+        
+        if(!$upload_response->status){
+            return $this->sendResponse($upload_response);
+        }
+        
+        $offline_payment_receipt = new offline_payment_receipt();
+        $offline_payment_receipt->application_id = $input_data['application_id'];
+        $offline_payment_receipt->receipt_path = $upload_response->data['file_paths'][0];
+        $offline_payment_receipt->created_at = date('Y-m-d H:i:s');
+        $offline_payment_receipt->offline_payment_receipt_id = $offline_payment_receipt->findMaxColumnValue("offline_payment_receipt_id")+1;
+        
+        $offline_payment_receipt->getQueryBuilder()->beginTransaction();
+        $this->response = $offline_payment_receipt->add();
+        if($this->response->status == false){
+            return $this->sendResponse($this->response);
+        }
+        /** payment info **/
+        $payment = new Payments();
+        $payment->amount = $input_data['amount'];
+        $payment->application_id = $input_data['application_id'];
+        $payment->payment_date = date('Y-m-d H:i:s');
+        $payment->created_at = date('Y-m-d H:i:s');
+        $payment->payment_type = "offline";
+        $payment->payments_id = $payment->findMaxColumnValue("payments_id")+1;
+        $payment->purpose = "Certificate processing fee";
+        $payment->status = "Completed";
+        $payment->transaction_id = "OFF-".date('m-Y'). randId(6);
+        $paymentResp = $payment->add();
+        if($paymentResp->status == false){
+            $offline_payment_receipt->getQueryBuilder()->rollbackTransaction();
+            return $this->sendResponse($paymentResp);
+        }
+        $offline_payment_receipt->getQueryBuilder()->commitTransaction();
+        //$this->response->msg = "Payment completed";       
+        $paymentResp->msg = "Payment completed";       
+        return $this->sendResponse($paymentResp);
+    }
+    
+    public function getReceipt(){
+        $param = $this->getParams();
+        if(isset($param[0])){
+            $payment = new Payments();
+            $payment = $payment->find($param[0]);
+            if($payment!==null){
+                $this->data['report'] = $this->response->set([
+                    "status"=>true,
+                    "status_code"=>200,
+                    "data"=>$payment
+                ]);
+                return $this->view();
+            }
+        }
     }
     
     /*method to check if transaction already exists, it returns an object of Payments if exists

@@ -7,7 +7,7 @@ function redirectTo() {
             break;
         default :
             //echo "default ".Logins::getRoleName();
-            redirect("default", "index");
+            redirect("Application", "index");
     }
 }
 

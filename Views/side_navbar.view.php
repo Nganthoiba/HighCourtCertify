@@ -59,7 +59,7 @@ function getMenuHtml($menus=array()){
                     . "</li>";
         }
         else{
-            $str .= "<li class='".isLinkActive($menu['link'])."'><a href='".$menu['link']."'>".$menu['menu_name']."</a></li>";
+            $str .= "<li class='".isLinkActive($menu['link'])."'><a href='". Config::get('host').$menu['link']."'>".$menu['menu_name']."</a></li>";
         }
     }
     return $str;

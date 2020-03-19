@@ -140,8 +140,10 @@ if($caseBody === null){
     </div>
     <div class="row">
         <div class="col-sm-3"></div>
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <button type="submit" class="btn btn-primary">Upload &nbsp;<span class="fa fa-upload"></span></button>
+            <button type="button" onclick="reject()" id="reject_application" class="btn btn-danger">Reject</button>
+            <button type="button" onclick="forward()" id="forward_application" class="btn btn-danger" style="display:none">Forward</button>
         </div>
     </div>
     <div class="row">
@@ -212,8 +214,8 @@ if($caseBody === null){
             },
             success: function(resp){
                 document.getElementById("output").innerHTML = resp.msg+
-                        " Scroll down and you can forward or reject the application.";
-                document.getElementById("approve_n_reject_layout").style.display = "block";
+                        "You can forward the application.";
+                document.getElementById("forward_application").style.display = "block";
                 //$("#approve_n_reject_layout").show();
             },
             error: function(jqXHR, exception, errorThrown){
@@ -392,9 +394,12 @@ if($caseBody === null){
     });
 </script>
 
-<div id='approve_n_reject_layout' style="display: none">
 <?php include_once ("forward_n_reject.php"); ?>
-</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#approve_n_reject_layout").hide();
+    });
+</script>
 <?php
 if($caseBody!== null){
     
@@ -402,9 +407,10 @@ if($caseBody!== null){
 <script type="text/javascript">
     //displaying case body if found
     showPDF("<?= Config::get('host') ?>/Casebody/displayFile/<?= $caseBody->casebody_id ?>");
-    //$("#approve_n_reject_layout").show();
-    document.getElementById("approve_n_reject_layout").style.display = "block";
     
+    $(document).ready(function(){
+        $("#approve_n_reject_layout").show();
+    });
 </script>
 
 <?php

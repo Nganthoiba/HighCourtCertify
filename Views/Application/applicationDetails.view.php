@@ -24,6 +24,10 @@ else{
     <h3>Application Details:</h3>
     <?= writeCSRFToken() ?>
     <table class="table_style">
+        <tr>
+            <td><strong>Application ID:</strong></td>
+            <td><?= $application->application_id ?></td>
+        </tr>
         <?php
         if($user_info['role_id']!=14){//if not applicant
         ?>
@@ -35,17 +39,10 @@ else{
         }
         ?>
         <tr>
-            <td><strong>Application ID:</strong></td>
-            <td><?= $application->application_id ?></td>
-        </tr>
-        <tr>
             <td><strong>Application For:</strong></td>
             <td><?= $application->certificate_type_name ?></td>
         </tr>
-        <tr>
-            <td><strong>Third Party:</strong></td>
-            <td><?= $application->is_third_party=='y'?"Yes":"No" ?></td>
-        </tr>
+        
         <tr>
             <td><strong>Case Type:</strong></td>
             <td><?= $application->case_type_name."-".$application->case_type_full_form ?></td>
@@ -59,8 +56,30 @@ else{
             <td><?= $application->case_year ?></td>
         </tr>
         <tr>
-            <td><strong>Certificate Type:</strong></td>
+            <td><strong>Certificate Copy Type:</strong></td>
             <td><?= $application->copy_name ?></td>
+        </tr>
+        <tr>
+            <td><strong>Third Party:</strong></td>
+            <td>
+            <?php
+            if($application->is_third_party === "y"){
+                $reasons = new third_party_applicant_reasons();
+                $reasons = $reasons->read()->where([
+                    "application_id"=>$application->application_id
+                ])->getFirst();
+                if($reasons==null){
+                    echo "Yes";
+                }
+                else{
+                    echo "Yes, ".$reasons->reason;
+                }
+            }
+            else{
+                echo "No";
+            }
+            ?>
+            </td>
         </tr>
         <tr>
             <td><strong>Petitioner:</strong></td>
@@ -78,6 +97,49 @@ else{
             <td><strong>Application Submitted on:</strong></td>
             <td><?= date('D, d M, Y',$create_at_timestamp) ?></td>
         </tr>
+        <tr>
+            <td><strong>Application Mode:</strong></td>
+            <td>
+            <?php 
+            if($application->is_offline == "y"){
+                echo "Offline Mode";
+            }
+            else{
+                echo "Online Mode";
+            }
+            ?>
+            </td>
+        </tr>
+        <?php 
+        if($application->is_offline == "y"){
+        ?>
+        <tr>
+            <td><strong>Offline payslip:</strong></td>
+            <td>
+                <?php
+                if($application->isPaymentCompleted()){
+                ?>
+                <a href="<?= getHtmlLink("Application", 
+                        "downloadOfflinePayslip",
+                        $application->application_id) ?>">Download</a>
+                <?php
+                }
+                else{
+                    echo "Complete payment first.";
+                }
+                ?>
+            </td>
+        </tr>
+        
+        <tr>
+            <td><strong>Record entered by:</strong></td>
+            <td><?= $application->action_user_full_name ?></td>
+        </tr>
+        <?php
+        }
+        ?>
+        
+        
         <tr>
             <td><strong>Case Body:</strong></td>
             <td>
@@ -118,7 +180,7 @@ else{
         </tr>
         <tr>
             <td><strong>View Application Status:</strong></td>
-            <td><a href="/Status/viewStatus/<?= $application->application_id ?>">Click here</a></td>
+            <td><a href="<?= Config::get('host') ?>/Status/viewStatus/<?= $application->application_id ?>">Click here</a></td>
         </tr>
     </table>
     <script type="text/javascript">

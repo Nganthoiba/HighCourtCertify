@@ -93,7 +93,7 @@ $third_party_reasons = $data['third_party_reasons'];
                             foreach ($case_type_list as $case_type){
                             ?>
                             <option value="<?= $case_type->case_type_id ?>">
-                                    <?= $case_type->type_name ?> - <?= $case_type->full_form ?>
+                                <?= $case_type->type_name ?> - <?= $case_type->full_form ?>
                             </option>
                             <?php
                             }
@@ -148,7 +148,7 @@ $third_party_reasons = $data['third_party_reasons'];
                 <div class="col-sm-4"></div>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" name="third_party_reason" 
-                           placeholder="Give reason for requesting certify copy." id="third_party_reason" />
+                           placeholder="Give reason for requesting certificate copy." id="third_party_reason" />
                 </div>
             </div>
             
@@ -197,6 +197,7 @@ $third_party_reasons = $data['third_party_reasons'];
                 </div>
                 <div class="col-sm-6">
                     <select class="custom-select small_font" name="copy_type_id" id="copy_type_id" required>
+                        <option value="">-- Select --</option>
                         <?php
                         foreach($copy_type_list as $copy_type){
                         ?>
@@ -255,12 +256,22 @@ $third_party_reasons = $data['third_party_reasons'];
         }
     }
     function display_reason(flag){
+        var reasons = document.getElementById("reasons");
         if(flag){
             $("#third_party_reason_options").show();
+            if(reasons.options[reasons.value].innerHTML === "Others"){
+                $("#third_party_reason_input_layout").show();
+            }
+            if(document.getElementById("third_party_reason").value.trim() === "dummy"){
+                document.getElementById("third_party_reason").value = "";
+            }
         }
         else{
-            //$("#third_party_reason_layout").hide();
             $("#third_party_reason_options").hide();
+            $("#third_party_reason_input_layout").hide();
+            if(document.getElementById("third_party_reason").value.trim() === ""){
+                document.getElementById("third_party_reason").value = "dummy";
+            }
         }
     }
     function enableSubmitButton(obj){
@@ -272,21 +283,7 @@ $third_party_reasons = $data['third_party_reasons'];
             document.getElementById("submit_application").disabled = true;
         }
     }
-    //var case_type_options = document.getElementById("case_type");
-    function displayCaseTypeOptions() {
-        var x = document.getElementById("case_type");
-        var txt = "All options: ";
-        var i;
-        var cases = [];
-        var j=0;
-        for (i = 0; i < x.length; i++) {
-            //txt = txt + "\n" + x.options[i].value+") "+x.options[i].innerHTML;
-            if(x.options[i].value.trim()!==""){
-                cases[j++] = {"case_id":parseInt(x.options[i].value),"case_name":x.options[i].innerHTML.trim()};
-            }
-        }
-        alert(JSON.stringify(cases));
-    }
+    
     document.forms["application_form"].onsubmit = function(event){
         event.preventDefault();
         if(!validateForm()){
@@ -306,6 +303,7 @@ $third_party_reasons = $data['third_party_reasons'];
             daysOfWeekHighlighted: "6,0",
             autoclose: true,
             todayHighlight: true,
+            endDate: "now"
         });
         
     });
@@ -384,6 +382,17 @@ $third_party_reasons = $data['third_party_reasons'];
             }
         }
         
+        // validating order date
+        
+        var splitedDate = order_date.split("/");
+        var orderDate = new Date(parseInt(splitedDate[2]),parseInt(splitedDate[1])-1,parseInt(splitedDate[0]));
+        var todayDate = new Date();
+        if(orderDate.getTime() > todayDate.getTime()){
+            alert("Order date can not be greater than today's date.");
+            document.getElementById("order_date").focus();
+            return false;
+        }
+        
         if(case_type === "" || case_no === "" || case_year === "" || appel_petitioner === "" || respondant_opp === "" || order_date === ""){
             return false;
         }
@@ -428,7 +437,8 @@ $third_party_reasons = $data['third_party_reasons'];
             order_date: order_date,
             csrf_token: csrf_token,
             is_third_party: getSelectedRadioButtonValue("third_party"),
-            third_party_reason: third_party_reason
+            third_party_reason: third_party_reason,
+            is_offline: "n"
         };
         //$("#application_form").serialize();
         $.ajax({

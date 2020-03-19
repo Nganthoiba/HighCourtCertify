@@ -13,6 +13,9 @@
 class Controller {
     protected $params;
     protected $data;
+    /*viewData : an object of ViewData class, 
+     * which will be passed over view files for displaying*/
+    protected $viewData;
     public $response;
     private $router;
 
@@ -28,9 +31,9 @@ class Controller {
         return $this->params;
     }
     
-    public function __construct($data = array()) {
+    public function __construct($data = array(),ViewData $viewData = null) {
         $this->data = isset($data['content'])?$data:array("content"=>"");//check for content
-        
+        $this->viewData = $viewData===null?new ViewData():$viewData;
         $this->params = App::getRouter()->getParams();
         $this->response = new Response();
     }
@@ -103,11 +106,11 @@ class Controller {
         
         header('X-Frame-Options: SAMEORIGIN');//preventing clickjacking as the page can only be displayed in a frame on the same origin as the page itself. 
         //header('X-Frame-Options: deny');//The page cannot be displayed in a frame, regardless of the site attempting to do so.
-        $view_obj = new View($this->getData(),$view_path);
-        $content = $view_obj->render();
+        $view_obj = new View($this->getData(),$view_path,$this->viewData);
+        $this->viewData->content = $content = $view_obj->render();
         $layout = $this->router->getRoute();
         $layout_path = VIEWS_PATH.DS.$layout.'.view.php';
-        $layout_view_obj = new View(array("content"=>$content),$layout_path);
+        $layout_view_obj = new View(array("content"=>$content),$layout_path,$this->viewData);
         return $layout_view_obj->render();
     }
 }

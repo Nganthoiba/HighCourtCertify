@@ -12,7 +12,8 @@
  * @author Nganthoiba
  */
 class View {
-    protected $data;
+    protected $data;// This is also data to be passed on to view in array format
+    protected $viewData; //view data: data to be passed on to view in object oriented
     protected $path;
     
     protected static function getDefaultViewPath(){
@@ -25,7 +26,7 @@ class View {
         return VIEWS_PATH.DS.$controller.DS.$template_name;
     }
 
-    public function __construct($data=array(),$path = null) {
+    public function __construct($data=array(),$path = null, ViewData $viewData) {
         
         if(!$path || ($path==null) || trim($path)==""){
             $this->path = self::getDefaultViewPath();  
@@ -37,11 +38,14 @@ class View {
             throw new Exception("View file is not found in the path: ".$path,404);
         }
         $this->data = $data;
+        $this->viewData = $viewData;
     }
     
     public function render(){
         ob_start();
         $data = $this->data;
+        $viewData = $this->viewData;
+        
         if(file_exists($this->path)){
             include_once($this->path);
         }

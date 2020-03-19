@@ -34,6 +34,7 @@ function ajax_request(args)
         async: false,
         url: url,
         type: method,
+        method: method,
         data: param,
         dataType: type,
         contentType: ContentType,

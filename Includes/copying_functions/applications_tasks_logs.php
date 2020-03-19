@@ -124,6 +124,22 @@ function getApplicationTasksHistory(PDO $conn, $tasks_id,$task_type){
         foreach ($row as $col=>$val){
             $app->{$col} = $val;
         }
+        
+        if($app->is_offline === "y"){
+            $offline_app = new offline_application();
+            $qry_builder = $offline_app->read()->where([
+                "application_id"=>["=",$app->application_id]
+            ]);
+            $offline_app = $qry_builder->getFirst();
+            $qry = $qry_builder->getQuery();
+            $app->applicant_name = $offline_app !== null?$offline_app->applicant_name:"Not found!";
+        }
+        else{
+            $user = new Users();
+            $user = $user->find($app->user_id);
+            $app->applicant_name = $user->full_name;
+        }
+        
         if($app->isPaymentCompleted()){
             $objs[] = $app;
         }
@@ -162,6 +178,23 @@ function getLatestApplicationDetails(PDO $conn, $application_id){
     foreach ($row as $col_name=>$val){
         $app->{$col_name} = $val;
     }
+    
+    if($app->is_offline === "y"){
+        $offline_app = new offline_application();
+        $qry_builder = $offline_app->read()->where([
+            "application_id"=>["=",$app->application_id]
+        ]);
+        $offline_app = $qry_builder->getFirst();
+        $qry = $qry_builder->getQuery();
+        $app->applicant_name = $offline_app !== null?$offline_app->applicant_name:"Not found!";
+    }
+    else{
+        $user = new Users();
+        $user = $user->find($app->user_id);
+        $app->applicant_name = $user->full_name;
+    }
+    
+    
     if($app->isPaymentCompleted()){
         $response->set([
             "status"=>true,

@@ -90,6 +90,15 @@
     }
     
     function reject(){
+        $("#rejectApplicationModal").modal();
+    }
+    document.forms['reject_application_form'].onsubmit = function(event){
+        event.preventDefault();
+        var data = getFormDataAsJson(this);
+        if(data.reason.trim() === ""){
+            swal.fire('Give reason.','Please specify reason.','error');
+            return;
+        }
         swal.fire({
             title: 'Reject!',
             text: "Are you sure to reject?",
@@ -99,26 +108,16 @@
             cancelButtonText: "No, I am not sure!"
         }).then((result) => {
             if (result.value) {
-                $("#rejectApplicationModal").modal();
-                
+                var resp = insertIntoApplicationTasksLog(data.application_id,data.tasks_id,"reject",data.reason);
+                if(resp.status){
+                    swal.fire('Rejected.',resp.msg,'success');
+                    window.history.back();
+                }
+                else{
+                    swal.fire('Failed to reject.',resp.msg,'error');
+                }
             }
         });
-        
-    }
-    document.forms['reject_application_form'].onsubmit = function(event){
-        event.preventDefault();
-        var data = getFormDataAsJson(this);
-        if(data.reason.trim() === ""){
-            return;
-        }
-        var resp = insertIntoApplicationTasksLog(data.application_id,data.tasks_id,"reject",data.reason);
-        if(resp.status){
-            swal.fire('Rejected.',resp.msg,'success');
-            window.history.back();
-        }
-        else{
-            swal.fire('Failed to reject.',resp.msg,'error');
-        }
     };
     
     function setApplicationStatus(application_id, status_description){

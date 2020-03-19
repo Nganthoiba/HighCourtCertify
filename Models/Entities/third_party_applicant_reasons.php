@@ -10,6 +10,7 @@ class third_party_applicant_reasons extends EasyEntity{
             $reason;
     public function __construct() {
         parent::__construct();
-        $this->setTable("third_party_applicant_reasons")->setKey("third_party_application_reasons_id");
+        $this->setTable("third_party_applicant_reasons")
+                ->setKey("third_party_application_reasons_id");
     }
 }

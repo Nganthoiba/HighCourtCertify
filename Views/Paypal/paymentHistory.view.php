@@ -11,7 +11,9 @@ $list_of_payments = $response->data;
                 <th>Date & Time</th>
                 <th>Application ID</th>
                 <th>Purpose</th>
+                <th>Status</th>
                 <th align="right">Amount (Rs)</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -25,9 +27,11 @@ $list_of_payments = $response->data;
                 <td><?= date('d-M-Y, h:i:s a',$create_at_timestamp) ?></td>
                 <td><?= $payment->application_id ?></td>
                 <td><?= $payment->purpose ?></td>
+                <td><?= $payment->status ?></td>
                 <td align="right">
                     <span style="padding-right: 15px "><?= $payment->amount ?></span>
                 </td>
+                <td><a href="<?= getHtmlLink("Paypal", "getReceipt", $payment->payments_id) ?>">Receipt</a></td>
             </tr>
             <?php
                 $cnt++;

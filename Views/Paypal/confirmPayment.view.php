@@ -1,9 +1,10 @@
 <?php
 $amount = $data['amount'];
 $application_id = $data['application_id'];
+///Paypal/ValidateCommand
 ?>
 <div class="container">
-    <form name="paymentConfirmForm" method="POST" action="/Paypal/ValidateCommand">
+    <form name="paymentConfirmForm" method="POST" action="<?= getHtmlLink("Paypal", "ValidateCommand") ?>">
         <h3>Payment for processing fee of application.</h3>
         <div class="row">
             <div class="col-sm-2"><label>Application ID:</label></div>

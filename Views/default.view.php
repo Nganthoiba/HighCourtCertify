@@ -66,7 +66,7 @@ and open the template in the editor.
             ?>
             <!-- Page Content  -->
             <div id="content" style="padding: 5px;margin-top: 70px">
-                <?= $data['content'] ?>
+                <?= $viewData->content ?>
             </div>
         </div>
         

@@ -151,4 +151,17 @@ class Users extends EasyEntity{
         }
         return ($user->role_id == 1);
     }
+    
+    //User counts (only for applicants)
+    public static function count(){
+        $qryBuilder = new EasyQueryBuilder();
+        $stmt = $qryBuilder->select("count(*) as cnt")->from("users")->where([
+            "role_id"=>["=",14]
+        ])->execute();
+        if($stmt->rowCount()==0){
+            return 0;
+        }
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['cnt'];
+    }
 }

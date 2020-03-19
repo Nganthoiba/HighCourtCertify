@@ -15,7 +15,7 @@
 class DefaultController extends Controller{
     public function index(){
         Config::set('site_name', 'index');
-        $this->data['content'] = 'Hello this is the index action of default controller.';
+        
         return $this->view();
     }
     public function contact(){

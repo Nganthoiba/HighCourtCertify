@@ -1,6 +1,5 @@
 <div class="container">
 <?php
-/* This page is only for applicant role_id = 14*/
 if($data['status']==false){
     echo $data['msg'];
 }
@@ -55,6 +54,28 @@ else{
             <td><?= $application->copy_name ?></td>
         </tr>
         <tr>
+            <td><strong>Third Party:</strong></td>
+            <td>
+            <?php
+            if($application->is_third_party === "y"){
+                $reasons = new third_party_applicant_reasons();
+                $reasons = $reasons->read()->where([
+                    "application_id"=>$application->application_id
+                ])->getFirst();
+                if($reasons==null){
+                    echo "Yes";
+                }
+                else{
+                    echo "Yes, ".$reasons->reason;
+                }
+            }
+            else{
+                echo "No";
+            }
+            ?>
+            </td>
+        </tr>
+        <tr>
             <td><strong>Petitioner:</strong></td>
             <td><?= $application->petitioner ?></td>
         </tr>
@@ -70,15 +91,54 @@ else{
             <td><strong>Application Submitted on:</strong></td>
             <td><?= date('D, d M, Y',$create_at_timestamp) ?></td>
         </tr>
-         <tr>
+        <tr>
+            <td><strong>Application Mode:</strong></td>
+            <td>
+            <?php 
+            if($application->is_offline == "y"){
+                echo "Offline Mode";
+            }
+            else{
+                echo "Online Mode";
+            }
+            ?>
+            </td>
+        </tr>
+        <?php 
+        if($application->is_offline == "y"){
+        ?>
+        <tr>
+            <td><strong>Offline payslip:</strong></td>
+            <td>
+                <?php
+                if($application->isPaymentCompleted()){
+                ?>
+                <a href="<?= getHtmlLink("Application", "downloadOfflinePayslip",$application->application_id) ?>">Download</a>
+                <?php
+                }
+                else{
+                    echo "Complete payment first.";
+                }
+                ?>
+            </td>
+        </tr>
+        
+        <tr>
+            <td><strong>Record entered by:</strong></td>
+            <td><?= $application->action_user_full_name ?></td>
+        </tr>
+        <?php
+        }
+        ?>
+        <tr>
             <td><strong>View Application Status:</strong></td>
             <td>
                 <?php
                 $intemation = $application->getIntimation();
                 if(!$application->isPaymentCompleted()){
                 ?>
-                    First complete your payment, then your application will be processed.
-                    <a class="btn btn-primary" href="<?= getHtmlLink("Paypal", "confirmPayment",$application->application_id) ?>">Pay Now</a>
+                    First complete payment, then application will be processed.
+                    <a href="<?= $application->is_offline == "y"?getHtmlLink("Paypal", "offlinePayment",$application->application_id):getHtmlLink("Paypal", "confirmPayment",$application->application_id) ?>">Pay Now</a>
                 <?php
                 }
                 else if($intemation !== null){
@@ -88,7 +148,7 @@ else{
                     echo "Processing...";
                 }
                 ?>
-                To see more, <a href="/Status/viewStatus/<?= $application->application_id ?>">Click here</a>
+                To see more, <a href="<?= getHtmlLink("Status", "viewStatus",$application->application_id) ?>">Click here</a>
             </td>
         </tr>
     </table>
