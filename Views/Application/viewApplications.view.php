@@ -1,8 +1,22 @@
 <?php 
-$applications = $data['applications'];
+$applications = $viewData->applications;
+$selectedApplicationId = $viewData->selectedApplicationId;
 if($applications!=null && sizeof($applications)){
 ?>
 <link href="<?= Config::get('host') ?>/root/MDB/css/dataTable.css" rel="stylesheet" type="text/css"/>
+
+<style type="text/css">
+    .selected {
+        background-color: #FF0065;
+        color: #f2f2f2;
+    }
+    .selected a {
+        color: #e8f5e9;
+    }
+    .selected a:hover {
+        text-decoration: underline;
+    }
+</style>
 
 <div class="container-fluid">
     <table class="table_style yellow_header" id="application_table">
@@ -26,7 +40,7 @@ if($applications!=null && sizeof($applications)){
         
         foreach ($applications as $app) {
     ?>
-            <tr>
+            <tr class="<?= ($selectedApplicationId==$app->application_id)?"selected":"" ?>">
                 <?php 
                     $create_at_timestamp = strtotime($app->create_at);
                     $order_date_timestamp = strtotime($app->order_date);
@@ -66,6 +80,7 @@ if($applications!=null && sizeof($applications)){
 <script type="text/javascript">
     $(document).ready(function() {
         $('#application_table').DataTable({
+            "order": [[ 0, "desc" ]],
             "columnDefs": [
                     { "orderable": false, "targets": [6,7,8] },
                     { "searchable": false, "targets": [6,7,8] },
@@ -75,7 +90,8 @@ if($applications!=null && sizeof($applications)){
     } );
     
     function viewApplicationDetails(application_id){
-        location.assign("viewDetails/"+application_id);
+        var link = "<?= getHtmlLink("Application", "viewDetails") ?>";
+        location.assign(link+"/"+application_id);
     }
 </script>
 <?php

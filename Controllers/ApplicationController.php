@@ -39,9 +39,11 @@ class ApplicationController extends Controller{
         
         $application = new Application();
         $list = $application->readAppTasksLog($user_id);
-        
-        $this->data['applications'] = $list->data;
-        $this->data['user_id'] = $user_id;
+        $this->viewData->applications = $list->data;
+        $this->viewData->user_id = $user_id;
+        $this->viewData->selectedApplicationId = sizeof($this->getParams())?trim(($this->getParams())[0]):"";
+        //$this->data['applications'] = $list->data;
+        //$this->data['user_id'] = $user_id;
         return $this->view();
     }
     public function viewOfflineApplications(){
@@ -565,6 +567,26 @@ class ApplicationController extends Controller{
         $this->data['third_party_reasons'] = $third_party_reasons->read()->orderBy("third_party_reasons_id")->toList();
         
         return $this->view();
+    }
+    
+    public function barchartInfo(){
+        $year = sizeof($this->getParams())?$this->getParams()[0]:0;
+        if($year == 0){
+            $this->response->set([
+                "status"=>false,
+                "status_code"=>500,
+                "msg"=>"Please pass the year"
+            ]);
+        }
+        else{
+            $this->response->set([
+                "status"=>true,
+                "status_code"=>200,
+                "msg"=>"Month wide data collection",
+                "data" => Application::barchartInfo($year)
+            ]);
+        }
+        return $this->sendResponse($this->response);
     }
     
     private function validateApplicationData($data): Response{

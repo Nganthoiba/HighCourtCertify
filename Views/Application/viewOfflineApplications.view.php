@@ -72,6 +72,7 @@ if($applications!=null && sizeof($applications)){
 <script type="text/javascript">
     $(document).ready(function() {
         $('#application_table').DataTable({
+            "order": [[ 0, "asc" ]],
             "columnDefs": [
                     { "orderable": false, "targets": [5,6] },
                     { "searchable": false, "targets": [5,6] },
@@ -81,7 +82,8 @@ if($applications!=null && sizeof($applications)){
     } );
     
     function viewApplicationDetails(application_id){
-        location.assign("viewDetails/"+application_id);
+        var link = "<?= getHtmlLink("Application", "viewDetails") ?>";
+        location.assign(link+"/"+application_id);
     }
 </script>
 <?php

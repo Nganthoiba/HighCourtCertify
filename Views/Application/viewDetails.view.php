@@ -50,6 +50,24 @@ else{
             <td><?= $application->case_year ?></td>
         </tr>
         <tr>
+            <td><strong>Reference:</strong></td>
+            <td>
+                <?php
+                if($application->case_type_reference === -1 || $application->case_no_reference === -1 || $application->case_year_reference === -1){
+                    echo "No reference.";
+                }
+                else
+                {
+                ?>
+                <div>Case Type: <?= $application->case_type_reference ?></div>
+                <div>Case Number: <?= $application->case_no_reference ?></div>
+                <div>Case Year: <?= $application->case_year_reference ?></div>
+                <?php 
+                }
+                ?>
+            </td>
+        </tr>
+        <tr>
             <td><strong>Certificate Copy Type:</strong></td>
             <td><?= $application->copy_name ?></td>
         </tr>
@@ -137,8 +155,8 @@ else{
                 $intemation = $application->getIntimation();
                 if(!$application->isPaymentCompleted()){
                 ?>
-                    First complete payment, then application will be processed.
-                    <a href="<?= $application->is_offline == "y"?getHtmlLink("Paypal", "offlinePayment",$application->application_id):getHtmlLink("Paypal", "confirmPayment",$application->application_id) ?>">Pay Now</a>
+                    First <a href="<?= $application->is_offline == "y"?getHtmlLink("Paypal", "offlinePayment",$application->application_id):getHtmlLink("Paypal", "confirmPayment",$application->application_id) ?>">complete payment Now</a>, then application will be processed.
+                    
                 <?php
                 }
                 else if($intemation !== null){

@@ -30,7 +30,7 @@ class Application extends EasyEntity{
         $this->response = new Response();
     }
     
-    public function getProcessId(){
+    public function getProcessId():int{
         if($this->is_order=="y"){
             return 2;
         }
@@ -38,8 +38,7 @@ class Application extends EasyEntity{
             return 3;
         }
         return 1;
-    }
-    
+    }    
     //Overriding parent method
     public function find($id){
         $qryBuilder = $this->getQueryBuilder();
@@ -68,11 +67,17 @@ class Application extends EasyEntity{
     
     //read application details from application_tasks_log table
     public function readAppTasksLog($user_id,$is_offline="n"){
-        $conn = Database::connect();
-        $qry = "select * from latest_application_tasks_log_view where action_user_id = ? and is_offline = ? order by create_at desc limit 100";
-        $stmt = $conn->prepare($qry);
-        $res = $stmt->execute([$user_id,$is_offline]);
-        if($res){
+        
+        $qryBuilder = new EasyQueryBuilder();   
+        
+        try{
+            $stmt = $qryBuilder->select()
+                ->from("application_tasks_log_view")
+                ->where([
+                        "action_user_id"=>["=",$user_id],
+                        "is_offline"=>["=",$is_offline]
+                    ])
+                ->execute();
             if($stmt->rowCount()==0){
                 $this->response->status = false;
                 $this->response->msg = "No record found";
@@ -102,11 +107,11 @@ class Application extends EasyEntity{
                 $this->response->data = $data;
             }
         }
-        else{
+        catch(Exception $e){
             $this->response->status = false;
             $this->response->msg = "Oops! An internal error occurs.";
             $this->response->status_code = 500;
-            $this->response->error = $stmt->errorInfo();
+            $this->response->error = $e->getMessage();
         }
         return $this->response;
     }
@@ -200,6 +205,50 @@ class Application extends EasyEntity{
         return $row['cnt'];
     }
     
-    
+    public static function barchartInfo($year){
+        $qryBuilder = new EasyQueryBuilder();
+        $months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        $dataSet = [];
+        
+        for($i = 1; $i <= 12; $i++){
+            /*** finding total request for every month ***/
+            $m = $i<10? '0'.$i : $i;//month expression
+            $obj = new EmptyClass();
+            $stmt = $qryBuilder->select("count(*) as cnt")
+                    ->from("latest_application_tasks_log_view")
+                    ->where([
+                        "EXTRACT(YEAR FROM create_at)"=>['=',$year],
+                        "EXTRACT(MONTH FROM create_at)"=>['=',$m]
+                    ])
+                    ->execute();
+            if($stmt->rowCount() == 0){
+                $obj->total_request = 0;
+            }
+            else{
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $obj->total_request = $row['cnt'];
+            }
+            
+            /*** finding completed request for a month ***/
+            $stmt2 = $qryBuilder->select("count(*) as cnt")
+                    ->from("latest_application_tasks_log_view")
+                    ->where([
+                        "EXTRACT(YEAR FROM create_at)"=>['=',$year],
+                        "EXTRACT(MONTH FROM create_at)"=>['=',$m],
+                        "next_tasks_id"=>["IS",null]
+                    ])
+                    ->execute();
+            if($stmt2->rowCount() == 0){
+                $obj->completed_request = 0;
+            }
+            else{
+                $row = $stmt2->fetch(PDO::FETCH_ASSOC);
+                $obj->completed_request = $row['cnt'];
+            }
+            $obj->month = $months[$i-1];
+            $dataSet[] = $obj;
+        }
+        return $dataSet;
+    }
     
 }

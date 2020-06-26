@@ -463,7 +463,7 @@ $third_party_reasons = $data['third_party_reasons'];
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.value) {
-                            window.location.assign("viewApplications");
+                            window.location.assign("viewApplications/"+resp.data.application_id);
                         }
                     });
                 }

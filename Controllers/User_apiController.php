@@ -1,11 +1,4 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of User_apiController
  *
@@ -42,7 +35,7 @@ class User_apiController extends Api{
     }
     public function index(){
         $params = $this->getParams();
-        $user_type = (sizeof($params)>0)?$params[0]:"all";//classified into tw type of users
+        $user_type = (sizeof($params)>0)?$params[0]:"all_users";//classified into tw type of users
         $users = new Users();//creating user model
         
         $columns = array(
@@ -69,7 +62,7 @@ class User_apiController extends Api{
                         ]                  
                 ];
                 break;
-            case "applicants":
+            case "applicant_users":
                 $cond = [
                     "role_id"=>["=",14]
                 ];
@@ -109,6 +102,60 @@ class User_apiController extends Api{
         return $this->sendResponse($this->response);
     }
     
+    public function getUsers(){
+        //$params = $this->getParams();
+        //$user_type = (sizeof($params)>0)?$params[0]:"all_users";//classified into tw type of users
+        $this->request = new Request();
+        $input = $this->request->getData();
+        $user_type = $input['user_type'];
+        
+        switch ($user_type){
+            case "court_users":
+                $cond = "role_id NOT IN (1,14)"; 
+                break;
+            case "applicant_users":
+                $cond = "role_id = 14";
+                break;
+            default :
+                $cond = "role_id != 1";
+        }
+        $fields = array(
+            'user_id' ,
+            'full_name' ,     
+            'email'  ,        
+            'phone_number',    
+            'aadhaar',  
+            'role_name',
+            'role_id'
+            );
+        $table = " (select U.*,R.role_name "
+                . " from users U left join role R "
+                . " on U.role_id = R.role_id) as USER_TABLE ";
+        
+        $dataTable = new DataTable();
+        
+        $dataTable->select($fields)
+                ->from($table)
+                ->where($cond);
+        $records = $dataTable->processData();
+        $data = $records['data'];
+        for($i=0; $i<sizeof($data);$i++){
+            if($data[$i]['role_id'] !== 14){
+                $data[$i]['x'] = "<a href='editUser/".$data[$i]['user_id']."'>Edit</a>";
+                $data[$i]['y'] = "<a href='javascript: removeUser(\"".$data[$i]['user_id']."\")'>Remove</a>";
+        
+            }
+            else{
+                $data[$i]['x'] = "";
+                $data[$i]['y'] = "";
+            }
+        }
+        
+        $records['data'] = $data;
+        return json_encode($records);
+    }
+
+
     //put your code here
     public function removeUser(){
         $login_id = getAuthorizedToken();

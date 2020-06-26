@@ -20,7 +20,7 @@
  */
 class EasyEntity {
     private $table_name;
-    private $key;
+    private $key;//primary key
     private $queryBuilder;
     private $response;
     public function __construct() {
@@ -35,7 +35,7 @@ class EasyEntity {
         $this->queryBuilder->setEntityClassName($this->table_name);
         return $this;
     }
-    protected function getTable(){
+    public function getTable(){
         return $this->table_name;
     }
     //method to set key of the enity
@@ -44,7 +44,7 @@ class EasyEntity {
         return $this;
     }
     //method to get key of the enity
-    protected function getKey(){
+    public function getKey(){
         return $this->key;
     }
     
@@ -54,12 +54,12 @@ class EasyEntity {
     }
     
     /*Convert self object to array*/
-    private function toArray(){
+    public function toArray(){
         return json_decode(json_encode($this),true);
     }
     
     /*** Check for valid Entity ***/
-    private function isValidEntity():bool{
+    public function isValidEntity():bool{
         //If table name and key is not set, then entity is invalid
         if(trim($this->table_name) == "" || trim($this->key) == "" || $this->table_name == "EasyEntity"){
             return false;//entity is invalid
@@ -67,7 +67,7 @@ class EasyEntity {
         return true;//entity is valid
     }
     
-    /********* START CRUD OPERATIONS ********/
+    /********* START METHODS FOR CRUD OPERATIONS ********/
     //Creat or add a new record in the table
     public function add(): Response{   
         if(!$this->isValidEntity()) {
@@ -121,7 +121,7 @@ class EasyEntity {
                 ];
                 $stmt = $this->queryBuilder
                         ->update($this->table_name)
-                        ->setValues($data)
+                        ->set($data)
                         ->where($cond)
                         ->execute();
                 
@@ -210,7 +210,10 @@ class EasyEntity {
     
     //find maximum value of a column, the column should be of integer data type preferrably
     public function findMaxColumnValue($column/*Column/Attribute name*/){
-        $stmt = $this->read(" max(".$column.") as max_val")->execute();
+        $stmt = $this->queryBuilder->select(" max(".$column.") as max_val")
+                ->from($this->getTable())
+                ->execute();
+        //$stmt = $this->read(" max(".$column.") as max_val")->execute();
         if($stmt->rowCount() == 0){
             return 0;
         }

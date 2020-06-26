@@ -15,40 +15,10 @@
 class DefaultController extends Controller{
     public function index(){
         Config::set('site_name', 'index');
-        
-        return $this->view();
-    }
-    public function contact(){
-        Config::set('site_name', 'contact');
-        $this->data['content'] = 'Hello this is the contact action of default controller.';
-        return $this->view();
-    }
-    public function about(){
-        Config::set('site_name', 'about');
-        //$this->data['content'] = 'Hello this is the about action of default controller.';
-        return $this->view();
-    }
-    public function feedback(){
-        Config::set('site_name', 'Feedback');
-        return $this->view();
-    }
-    /*** just for testing ***/
-    public function add(){
-        $params = $this->getParams(); 
-        $sum = 0;
-        foreach ($params as $val){
-            if(is_numeric($val)){
-                $sum += $val;
-            }
-        }
-        return $this->send_data(array("Sum"=>$sum));
-    }
-    public function testing(){
-        //first check whether a user is already logged in, if no one logged in then redirect the page to the login page
-        if(!Logins::isAuthenticated()){
-            session_destroy();//destroy the existing session information
-            header("Location: ".Config::get('host')."/account/login");            
-        }
+        $this->viewData->total_request = Application::count("all");
+        $this->viewData->completed_request = Application::count("completed");
+        $this->viewData->pending_request = Application::count("pending");
+        $this->viewData->totalApplicants = Users::count();
         return $this->view();
     }
     

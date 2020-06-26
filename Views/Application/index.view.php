@@ -3,7 +3,7 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Cards</h1>
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
           </div>
 
           <div class="row">
@@ -22,7 +22,7 @@
               </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
+            <!-- Total request completed -->
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
@@ -50,7 +50,7 @@
               </div>
             </div>
             
-            <!-- Earnings (Monthly) Card Example -->
+            <!-- Total number of applicants -->
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
@@ -72,74 +72,70 @@
           </div>
 
           <div class="row">
-
-            <div class="col-lg-6">
-
-              <!-- Default Card Example -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  Default Card Example
-                </div>
-                <div class="card-body">
-                  This card uses Bootstrap's default styling with no utility classes added. Global styles are the only things modifying the look and feel of this default card example.
-                </div>
-              </div>
-
+            <div class="col-lg-12">
               <!-- Basic Card Example -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Basic Card Example</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                    <p>Showing number of requests for certify copy and how many of them has been completed month wise.</p>
+                    <label>Select Year: </label>
+                    <select onchange="getBarchartInfo(this.value);" id="barchar_year">
+                        <?php 
+                        $base_year = 2019;
+                        $curr_date = (int)date('Y');
+                        for($y = $curr_date; $y>=$base_year; $y--){
+                            echo "<option>".$y."</option>";
+                        }
+                        ?>
+                    </select>
                 </div>
-                <div class="card-body">
-                  The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!
+                <div class="card-body" >
+                    <canvas id="barchart"></canvas>
                 </div>
               </div>
-
             </div>
-
-            <div class="col-lg-6">
-
-              <!-- Dropdown Card Example -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Dropdown Card Example</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Dropdown Header:</div>
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                  </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  Dropdown menus can be placed in the card header in order to extend the functionality of a basic card. In this dropdown card example, the Font Awesome vertical ellipsis icon in the card header can be clicked on in order to toggle a dropdown menu.
-                </div>
-              </div>
-
-              <!-- Collapsable Card Example -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Accordion -->
-                <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                  <h6 class="m-0 font-weight-bold text-primary">Collapsable Card Example</h6>
-                </a>
-                <!-- Card Content - Collapse -->
-                <div class="collapse show" id="collapseCardExample">
-                  <div class="card-body">
-                    This is a collapsable card example using Bootstrap's built in collapse functionality. <strong>Click on the card header</strong> to see the card body collapse and expand!
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
           </div>
-
         </div>
         <!-- /.container-fluid -->
+        <script src="../../root/MDB/charts/chart.js" type="text/javascript"></script>
+        <script src="../../root/MDB/charts/chart_functions.js" type="text/javascript"></script>
+        
+        <script type="text/javascript">
+            function getBarchartInfo(year){
+                $.ajax({
+                    url:"barchartInfo/"+year,
+                    success:function(resp){
+                        var data = resp.data;
+                        var total_request = [];
+                        var completed_request = [];
+                        var labels = [];
+                        for(var i=0; i<data.length; i++){
+                            labels[i] = data[i].month;
+                            total_request[i] = data[i].total_request;
+                            completed_request[i] = data[i].completed_request;
+                        }
+                        var barchartInfo = {
+                            labels: labels,
+                            datasets:[
+                                {
+                                    label: 'No of Applications',
+                                    backgroundColor: "#26B99A",
+                                    data: total_request
+                                },
+                                {
+                                    label: 'No of Completed Applications',
+                                    backgroundColor: "#03586A",
+                                    data: completed_request
+                                }
+                            ]
+                        };
+                        drawBarChart("barchart",barchartInfo);
+                    }
+                });
+            }
+            
+            $(document).ready(function(){
+                getBarchartInfo(document.getElementById("barchar_year").value);
+            });
+            
+        </script>

@@ -99,12 +99,26 @@ class PaypalController extends Controller{
     public function confirmPayment(){
         $params = $this->getParams();
         if(isset($params[0])){
-            $this->data['application_id'] = $params[0];
-            //payable amount
-            $payable_amount = new payable_amount();
-            $payable_amount = $payable_amount->read()->where([
-                "purpose"=>"certificate processing fee"])->getFirst();
-            $this->data['amount'] = $payable_amount->amount;
+            $this->viewData->application_id = $params[0];
+            //check if application is already paid
+            $application = new Application();
+            $application = $application->find($params[0]);
+            if($application == null){
+                $this->viewData->status = false;
+                $this->viewData->msg = "Application not found.";
+            }
+            else if($application->isPaymentCompleted()){
+                $this->viewData->status = false;
+                $this->viewData->msg = "Payment already completed.";
+            }
+            else{
+                //payable amount
+                $payable_amount = new payable_amount();
+                $payable_amount = $payable_amount->read()->where([
+                    "purpose"=>"certificate processing fee"])->getFirst();
+                $this->viewData->amount = $payable_amount->amount;
+                $this->viewData->status = true;
+            }
             return $this->view();
         }
     }
@@ -139,6 +153,28 @@ class PaypalController extends Controller{
         }
         $this->data['response'] = $this->response;
         return $this->view();
+    }
+    
+    public function paymentDataTable(){
+        
+        $data = $this->request->getData();
+        $user_id = $data['user_id'];
+        
+        $table = "(SELECT P.transaction_id,P.application_id,TO_CHAR(P.created_at,'DD Mon YYYY, HH12:MI:SS am') as created_at,P.purpose,P.amount,P.status,P.payments_id"
+                . " FROM payments P JOIN application A ON "
+                . " P.application_id = A.application_id AND A.user_id='$user_id') "
+                . "as DATA_TABLE";
+        
+        $dataTable = new DataTable();
+        $records = $dataTable->select([])->from($table)->processData();
+        $data = $records['data'];
+        for($i=0; $i<sizeof($data); $i++){
+            //$data[$i]['created_at'] = date('d M Y, h:i:s a',strtotime($data[$i]['created_at']));
+            $data[$i]['application_id'] = ($data[$i]['application_id']);
+            $data[$i]['receipt_link'] = "<a href='". getHtmlLink("Paypal", "getReceipt", $data[$i]['payments_id'])."'>Receipt</a>";
+        }
+        $records['data'] = $data;
+        return $this->send_data($records);
     }
     
     public function offlinePayment(){

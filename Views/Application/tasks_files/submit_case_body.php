@@ -143,7 +143,7 @@ if($caseBody === null){
         <div class="col-sm-6">
             <button type="submit" class="btn btn-primary">Upload &nbsp;<span class="fa fa-upload"></span></button>
             <button type="button" onclick="reject()" id="reject_application" class="btn btn-danger">Reject</button>
-            <button type="button" onclick="forward()" id="forward_application" class="btn btn-danger" style="display:none">Forward</button>
+            <button type="button" onclick="forward()" id="forward_application" class="btn btn-success" style="display:none">Forward</button>
         </div>
     </div>
     <div class="row">

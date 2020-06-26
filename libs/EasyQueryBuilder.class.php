@@ -99,10 +99,14 @@ class EasyQueryBuilder {
         $columns = "";//strings of names of the columns
         $param = "";//parameters
         foreach($data as $column => $value){
+            if(trim($value)==="" || $value===NULL || $value==="NULL"){
+                //blank or null values will not be inserted
+                continue;
+            }
             $columns .= $column.",";
             $param .= "?,";
+            $this->values[] = $value;
         }
-        $this->values = array_values($data);
         $this->qry = "insert into ".$table_name."(".rtrim($columns,',').") values(".rtrim($param,',').")";
         return $this;
     }
@@ -124,12 +128,36 @@ class EasyQueryBuilder {
     }
     //method to get/read/load first row or data after executing the query.
     //it returns either null or object of the entity if record is found
-    public function getFirst(){
-        $this->entiy_class_name = $this->entiy_class_name==""?"EmptyClass":$this->entiy_class_name;
+    public function getFirst(){        
+        if($this->entiy_class_name==""){
+            $this->entiy_class_name = "EmptyClass";
+        }
         try{
             $stmt = $this->execute();
             if($stmt !== null && $stmt->rowCount()>0){
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);//result
+                $temp_obj = new $this->entiy_class_name();
+                foreach($row as $col_name=>$value){
+                    $temp_obj->{$col_name} = $value;
+                }
+                return $temp_obj;
+            }
+        }catch(Exception $e){
+            //throw $e;
+        }
+        return null;
+    }
+    //method to get/read/load last row or data after executing the query.
+    //it returns either null or object of the entity if record is found
+    public function getLast(){
+        if($this->entiy_class_name==""){
+            $this->entiy_class_name = "EmptyClass";
+        }
+        try{
+            $stmt = $this->execute();
+            if($stmt !== null && $stmt->rowCount()>0){
+                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);//result
+                $row = $rows[$stmt->rowCount()-1];
                 $temp_obj = new $this->entiy_class_name();
                 foreach($row as $col_name=>$value){
                     $temp_obj->{$col_name} = $value;
@@ -146,7 +174,12 @@ class EasyQueryBuilder {
      * which are retrieved from a database table.
      */
     public function toList(){
-        $this->entiy_class_name = $this->entiy_class_name==""?"EmptyClass":$this->entiy_class_name;
+        //If there is no class name specified or if the class is not defined, 
+        //then we give default an empty class
+        if($this->entiy_class_name==""){
+            $this->entiy_class_name = "EmptyClass";
+        }
+        
         try{
             $stmt = $this->execute();
             if($stmt !== null){
@@ -205,7 +238,7 @@ class EasyQueryBuilder {
         return $this->values;
     }
     //this will be called just after update method
-    public function setValues($params = array()):EasyQueryBuilder{
+    public function set($params = array()):EasyQueryBuilder{
         //$params (parameters) are set of key-value pairs where key represent the column 
         //and value represent the value to be set to the column while updating the table
         $this->qry .= " set ";
@@ -214,6 +247,13 @@ class EasyQueryBuilder {
             array_push($this->values,$value);
         }
         $this->qry = rtrim($this->qry,',');
+        return $this;
+    }
+    //this will be called just after update method
+    public function setValues($params = array()):EasyQueryBuilder{
+        //$params (parameters) are set of key-value pairs where key represent the column 
+        //and value represent the value to be set to the column while updating the table
+        $this->values = $params;
         return $this;
     }
     

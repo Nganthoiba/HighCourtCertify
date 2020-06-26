@@ -1,6 +1,7 @@
 <?php
-$amount = $data['amount'];
-$application_id = $data['application_id'];
+if($viewData->status){
+$amount = $viewData->amount;
+$application_id = $viewData->application_id;
 ///Paypal/ValidateCommand
 ?>
 <div class="container">
@@ -24,7 +25,15 @@ $application_id = $data['application_id'];
                 <button type="submit" class="btn btn-default">Confirm
                 </button>
             </div>
+            
         </div>
     </form>
 </div>
+<?php
+}
+else{
+?>
+<div class="container"><div class="alert alert-warning"><?= $viewData->msg ?></div></div>
+<?php
+}
 

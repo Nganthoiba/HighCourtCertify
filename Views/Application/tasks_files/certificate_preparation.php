@@ -120,7 +120,7 @@
     </div>
     <div class="row">
         <div class="col-sm-10 alert alert-warning">
-            #Note: The certificate must be the scanned copy of certificate manually signed by concerned authorities.
+            #Note: The certificate must be the scanned copy of certificate signed by concerned authorities.
         </div>
     </div>
     <div class="row">
