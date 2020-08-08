@@ -13,7 +13,8 @@ Config::set('default_action', 'index');
 Config::set('default_language', 'en');
 
 //Domain configuration
-Config::set('host', 'http://copying.nic.in');
+//Config::set('host', 'http://copying.nic.in:8085');
+Config::set('host', '');
 //Config::set('host', 'http://10.178.2.133/copying.nic.in');
 
 /*** Database Configuration ***/

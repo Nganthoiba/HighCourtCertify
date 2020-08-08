@@ -68,13 +68,13 @@
           </div>
 
           <div class="row">
-            <div class="col-lg-12">
+            <div class="col-sm-12">
               <!-- Basic Card Example -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
                     <p>Showing number of requests for certify copy and how many of them has been completed month wise.</p>
-                    <label>Select Year: </label>
+                    <label>Select a Year: </label>
                     <select onchange="getBarchartInfo(this.value);" id="barchar_year">
                         <?php 
                         $base_year = 2019;
@@ -85,8 +85,9 @@
                         ?>
                     </select>
                 </div>
-                <div class="card-body" >
-                    <canvas id="barchart"></canvas>
+                <div class="card-body">
+                    <canvas id="barchart" 
+                            style="width: 488px; height: 244px;"></canvas>
                 </div>
               </div>
 

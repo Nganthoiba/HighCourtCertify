@@ -67,4 +67,31 @@ class Request {
     public function getSourceIP(){
         return $this->source;
     }
+    /*
+    public function getRequestHeaders(){
+        return apache_request_headers();
+    }
+    */
+    function getRequestHeaders() {
+        $headers = array();
+        foreach($_SERVER as $key => $value) {
+            if (substr($key, 0, 5) <> 'HTTP_') {
+                continue;
+            }
+            $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
+            $headers[$header] = $value;
+        }
+        return $headers;
+        //return apache_request_headers();
+    }
+    //returns domain
+    public static function getHost(){
+        $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
+        $protocol = ($isHttps)?"https://":"http://";
+        $headers = $this->getRequestHeaders();
+        return isset($headers['Host'])?$protocol.$headers['Host']:null;
+    }
+    public static function getURI(){
+        return filter_input(INPUT_GET, "uri", FILTER_SANITIZE_SPECIAL_CHARS);
+    }
 }

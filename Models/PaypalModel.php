@@ -23,8 +23,8 @@ class PaypalModel {
         $this->item_number = 1;
         $this->no_shipping = 1;
         $this->business = Config::get('business');
-        $this->cancel_return = Config::get('cancel_return');
-        $this->return_url = Config::get('return_url');
+        $this->cancel_return = Request::getHost().'/'.Config::get('cancel_return');
+        $this->return_url = Request::getHost().'/'.Config::get('return_url');
         if ($useSandbox)
         {
             $this->actionURL = Config::get('test_url');
