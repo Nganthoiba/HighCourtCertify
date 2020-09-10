@@ -4,13 +4,18 @@
         margin-left: auto;
         margin-right: auto;
     }
+    /*
+    body{
+        background-image: url('<?=Config::get('host')?>/root/MDB/img/highcourt_bg.jpg');
+        background-size: cover;
+    }
+    */
 </style>
 <div class="vertical-center">
     
     <div class="col-md-4 mb-4 login_layout">
         <!-- Material form login -->
         <div class="card">
-            
             <h5 class="card-header default-color white-text text-center py-4">Welcome, <strong>Sign in</strong></h5>
             <!--
             <div style="text-align: center">

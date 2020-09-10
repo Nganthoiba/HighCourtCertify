@@ -1,7 +1,7 @@
 <?php
 //Configuration set up file
-Config::set("app_name", "Application For Copy");/*Name of the application*/
-Config::set("site_name", "Application For Copy");
+Config::set("app_name", "Application For Certify Copy");/*Name of the application*/
+Config::set("site_name", "Application For Certify Copy");
 Config::set("languages", array('en','fr'));
 Config::set("default_time_zone", "Asia/Kolkata");
 Config::set('routes', array(

@@ -97,8 +97,8 @@
 
         </div>
         <!-- /.container-fluid -->
-        <script src="../../root/MDB/charts/chart.js" type="text/javascript"></script>
-        <script src="../../root/MDB/charts/chart_functions.js" type="text/javascript"></script>
+        <script src="<?=Config::get('host')?>/root/MDB/charts/chart.js" type="text/javascript"></script>
+        <script src="<?=Config::get('host')?>/root/MDB/charts/chart_functions.js" type="text/javascript"></script>
         
         <script type="text/javascript">
             function getBarchartInfo(year){
